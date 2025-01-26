@@ -1,8 +1,8 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.iimik.finalaio</id>
-    <name>final-aio</name>
-    <vendor>iimik</vendor>
+    <id>org.ifinalframework.plugins.aio</id>
+    <name>Final AIO</name>
+    <vendor email="iimik@qq.com" url="https://github.com/iimik">米克¹²³</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
