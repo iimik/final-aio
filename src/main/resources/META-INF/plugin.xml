@@ -8,11 +8,17 @@
 
     <resource-bundle>messages.i18n</resource-bundle>
 
+    <depends optional="true" config-file="final-api-java.xml">com.intellij.modules.java</depends>
+    <depends optional="true" config-file="final-api-kotlin.xml">org.jetbrains.kotlin</depends>
+
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.iimik.finalaio.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <codeInsight.lineMarkerProvider language="UAST"
+                                        implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.iimik.finalaio.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
+        <listener class="com.github.iimik.finalaio.listeners.MyApplicationActivationListener"
+                  topic="com.intellij.openapi.application.ApplicationActivationListener"/>
     </applicationListeners>
 </idea-plugin>

@@ -33,6 +33,13 @@ repositories {
 dependencies {
     testImplementation(libs.junit)
 
+    // spring boot
+    implementation("org.springframework.boot:spring-boot-starter:${properties["spring.boot.version"]}")
+    implementation("org.springframework.boot:spring-boot-starter-aop:${properties["spring.boot.version"]}")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.2.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-web:${properties["spring.boot.version"]}")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:${properties["spring.boot.version"]}")
+
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {
         create(providers.gradleProperty("platformType"), providers.gradleProperty("platformVersion"))
@@ -125,6 +132,8 @@ kover {
     }
 }
 
+
+
 tasks {
     wrapper {
         gradleVersion = providers.gradleProperty("gradleVersion").get()
@@ -145,6 +154,7 @@ intellijPlatformTesting {
                         "-Dide.mac.message.dialogs.as.sheets=false",
                         "-Djb.privacy.policy.text=<!--999.999-->",
                         "-Djb.consents.confirmation.enabled=false",
+                        "-Xmx4096m"
                     )
                 }
             }
