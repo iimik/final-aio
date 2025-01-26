@@ -5,7 +5,8 @@ import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.psi.PsiElement
-import org.ifinalframework.plugins.aio.psi.service.kotlin.KotlinDocService
+import org.ifinalframework.plugins.aio.psi.service.DocService
+import org.ifinalframework.plugins.aio.util.SpiUtil
 import java.awt.event.MouseEvent
 
 
@@ -18,7 +19,7 @@ import java.awt.event.MouseEvent
  **/
 class IssueLineMarkerProvider : LineMarkerProvider {
 
-    private val issueService = DefaultIssueService(KotlinDocService())
+    private val issueService = DefaultIssueService(SpiUtil.languageSpi(DocService::class))
     private val logger = logger<IssueLineMarkerProvider>()
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
@@ -29,7 +30,7 @@ class IssueLineMarkerProvider : LineMarkerProvider {
         return builder.createLineMarkerInfo(
             element
         ) { mouseEvent: MouseEvent?, element: PsiElement? ->
-            
+
         }
     }
 }

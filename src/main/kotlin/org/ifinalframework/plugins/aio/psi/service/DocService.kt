@@ -1,6 +1,9 @@
 package org.ifinalframework.plugins.aio.psi.service
 
 import com.intellij.psi.PsiElement
+import org.ifinalframework.plugins.aio.psi.service.java.JavaDocService
+import org.ifinalframework.plugins.aio.psi.service.kotlin.KotlinDocService
+import org.ifinalframework.plugins.aio.spi.annotation.LanguageSpi
 
 
 /**
@@ -9,6 +12,10 @@ import com.intellij.psi.PsiElement
  * @author iimik
  * @since 0.0.1
  **/
+@LanguageSpi<DocService>(
+    JavaDocService::class,
+    KotlinDocService::class
+)
 interface DocService {
 
     fun getSummary(element: PsiElement): String?

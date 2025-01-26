@@ -1,8 +1,9 @@
-package org.ifinalframework.plugins.aio.psi.service.kotlin;
+package org.ifinalframework.plugins.aio.psi.service.kotlin
 
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.R
+import org.ifinalframework.plugins.aio.application.condition.ConditionOnKotlin
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.jetbrains.kotlin.kdoc.parser.KDocKnownTag
 import org.jetbrains.kotlin.kdoc.psi.api.KDoc
@@ -10,6 +11,7 @@ import org.jetbrains.kotlin.kdoc.psi.api.KDocElement
 import org.jetbrains.kotlin.kdoc.psi.impl.KDocSection
 import org.jetbrains.kotlin.kdoc.psi.impl.KDocTag
 import org.jetbrains.kotlin.psi.KtDeclaration
+import org.springframework.stereotype.Component
 
 
 /**
@@ -18,6 +20,8 @@ import org.jetbrains.kotlin.psi.KtDeclaration
  * @author iimik
  * @since 0.0.1
  **/
+@Component
+@ConditionOnKotlin
 class KotlinDocService : DocService {
     override fun getSummary(element: PsiElement): String? {
         return when (element) {
@@ -43,10 +47,6 @@ class KotlinDocService : DocService {
     }
 
     override fun findTagValueByTag(element: PsiElement, tag: String): String? {
-        if (element == null || tag == null) {
-            return null
-        }
-
         val kDoc = findKDoc(element) ?: return null
 
         val kTag = KDocKnownTag.findByTagName(tag)
@@ -71,7 +71,7 @@ class KotlinDocService : DocService {
 
     override fun getLineComment(element: PsiElement): String? {
         return if (element !is KDocElement && element is PsiComment) {
-            element.text.replace("//","").trimStart()
+            element.text.replace("//", "").trimStart()
         } else null
     }
 

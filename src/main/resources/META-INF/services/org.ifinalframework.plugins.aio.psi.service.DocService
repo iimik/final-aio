@@ -1,0 +1,2 @@
+org.ifinalframework.plugins.aio.psi.service.java.JavaDocService
+org.ifinalframework.plugins.aio.psi.service.kotlin.KotlinDocService
