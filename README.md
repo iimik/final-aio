@@ -23,8 +23,12 @@
 - [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
 
 <!-- Plugin description -->
-* Issue 管理
-  * 添加Issue行标记，并支持在浏览器中打开，支持Git Issue和Jira。
+
+Final AIO(All In One)旨在打造一个为开发者提供快速开发的一站式插件。
+
+- Issue 管理
+  - 添加Issue行标记，并支持在浏览器中打开，支持Git Issue和Jira。
+
 <!-- Plugin description end -->
 
 ## Installation
