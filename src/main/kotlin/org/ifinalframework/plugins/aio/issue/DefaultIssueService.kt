@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component
 /**
  * Issue 服务
  *
+ * @jira 1
  * @issue 10
  * @author iimik
  * @since 0.0.1

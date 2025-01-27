@@ -4,8 +4,9 @@
 [![Version](https://img.shields.io/jetbrains/plugin/v/MARKETPLACE_ID.svg)](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/MARKETPLACE_ID.svg)](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID)
 
+## 功能
 
-
+- [Issue行标记](docs/issue.md)：快速在浏览器中打开Git Issue和Jira。
 
 ---
 
@@ -21,15 +22,6 @@
 - [ ] Set the [Plugin Signing](https://plugins.jetbrains.com/docs/intellij/plugin-signing.html?from=IJPluginTemplate) related [secrets](https://github.com/JetBrains/intellij-platform-plugin-template#environment-variables).
 - [ ] Set the [Deployment Token](https://plugins.jetbrains.com/docs/marketplace/plugin-upload.html?from=IJPluginTemplate).
 - [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
-
-<!-- Plugin description -->
-
-Final AIO(All In One)旨在打造一个为开发者提供快速开发的一站式插件。
-
-- Issue 管理
-  - 添加Issue行标记，并支持在浏览器中打开，支持Git Issue和Jira。
-
-<!-- Plugin description end -->
 
 ## Installation
 
