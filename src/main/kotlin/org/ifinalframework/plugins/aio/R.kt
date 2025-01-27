@@ -1,5 +1,6 @@
 package org.ifinalframework.plugins.aio
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.util.ThrowableComputable
 
@@ -20,6 +21,14 @@ class R {
                 } catch (e: Exception) {
                     throw RuntimeException(e)
                 }
+            }
+        }
+    }
+
+    class Async {
+        companion object {
+            fun run(action: Runnable) {
+                ApplicationManager.getApplication().executeOnPooledThread(action)
             }
         }
     }
