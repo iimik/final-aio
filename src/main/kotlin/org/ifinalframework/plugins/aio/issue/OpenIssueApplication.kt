@@ -19,6 +19,7 @@ import org.ifinalframework.plugins.aio.psi.service.DocService
         DocService::class,
         DefaultGitService::class,
         GitIssueOpener::class,
+        JiraIssueOpener::class
     ]
 )
 class OpenIssueApplication(

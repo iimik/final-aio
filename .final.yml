@@ -1,0 +1,5 @@
+final:
+  issue:
+    jira:
+      server-url: https://iimik.atlassian.net
+      project-code: AIO
