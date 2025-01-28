@@ -2,6 +2,13 @@
 
 # Final AIO 变更日志
 
+## [Unreleased]
+
+### 新增功能
+
+- Api 管理
+  - 添加Api方法Markdown行标记，并可快速在编辑器中打开进行编辑。([#14](https://github.com/iimik/final-aio/issues/14))
+
 ## [0.0.1] - 2025-01-27
 
 ### 新增功能

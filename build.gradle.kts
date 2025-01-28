@@ -64,7 +64,15 @@ intellijPlatform {
         version = providers.gradleProperty("pluginVersion")
 
         // Extract the <!-- Plugin description --> section from DESCRIPTION.md and provide for the plugin's manifest
-        description = providers.fileContents(layout.projectDirectory.file("DESCRIPTION.md")).asText.get().let(::markdownToHTML)
+        description = providers.fileContents(layout.projectDirectory.file("DESCRIPTION.md")).asText.map {
+            val regex = Regex("""(#\d+)""")
+            val foundMatches = regex.findAll(it)
+            var formatIssues: String = it
+            foundMatches.forEach { result ->
+                formatIssues = formatIssues.replace("(${result.value})", "([${result.value}](https://github.com/iimik/final-aio/issues/${result.value.trimStart('#')}))")
+            }
+            formatIssues
+        }.get().let(::markdownToHTML)
 
         val changelog = project.changelog // local variable for configuration cache compatibility
         // Get the latest available change notes from the changelog file
