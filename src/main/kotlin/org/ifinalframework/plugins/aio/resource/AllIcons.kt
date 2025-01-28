@@ -18,6 +18,12 @@ class AllIcons {
         }
     }
 
+    class Api{
+        companion object {
+            val MARKDOWN = load("assets/icons/markdown.svg")
+        }
+    }
+
     companion object {
         fun load(path: String): Icon {
             return IconLoader.getIcon(path, AllIcons::class.java)
