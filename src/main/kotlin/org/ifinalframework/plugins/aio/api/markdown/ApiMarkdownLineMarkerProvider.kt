@@ -1,5 +1,6 @@
 package org.ifinalframework.plugins.aio.api.markdown;
 
+import com.github.iimik.finalaio.I18NBundle
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
@@ -27,7 +28,7 @@ class ApiMarkdownLineMarkerProvider : LineMarkerProvider {
         val builder: NavigationGutterIconBuilder<PsiElement> =
             NavigationGutterIconBuilder.create(AllIcons.Api.MARKDOWN)
         builder.setTargets(psiElement)
-        builder.setTooltipText("打开Markdown文件")
+        builder.setTooltipText(I18NBundle.message("ApiMarkdownLineMarkerProvider.tooltip"))
         return builder.createLineMarkerInfo(
             psiElement
         ) { mouseEvent, psiElement ->

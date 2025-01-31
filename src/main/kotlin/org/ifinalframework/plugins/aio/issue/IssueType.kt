@@ -12,7 +12,7 @@ import javax.swing.Icon
  * @since 0.0.1
  **/
 enum class IssueType(
-    val icon: Icon
+    val icon: Icon,
 ) {
     ISSUE(AllIcons.Issues.ISSUE),
     JIRA(AllIcons.Issues.JIRA);

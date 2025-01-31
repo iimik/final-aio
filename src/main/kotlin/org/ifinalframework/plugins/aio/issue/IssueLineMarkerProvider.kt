@@ -1,5 +1,6 @@
 package org.ifinalframework.plugins.aio.issue;
 
+import com.github.iimik.finalaio.I18NBundle
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
@@ -8,6 +9,7 @@ import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.application.ElementApplication
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.util.SpiUtil
+import org.jetbrains.kotlin.idea.gradleTooling.get
 import java.awt.event.MouseEvent
 
 
@@ -27,7 +29,7 @@ class IssueLineMarkerProvider : LineMarkerProvider {
         val issue = issueService.getIssue(element) ?: return null
         val builder = NavigationGutterIconBuilder.create(issue.type.icon)
         builder.setTargets(element)
-        builder.setTooltipText("Open issue in Browser!")
+        builder.setTooltipText(I18NBundle.getMessage("${this::class.simpleName}.${issue.type.name.lowercase()}Tooltip"))
         return builder.createLineMarkerInfo(
             element
         ) { mouseEvent: MouseEvent?, element: PsiElement? ->
