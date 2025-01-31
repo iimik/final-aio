@@ -1,4 +1,6 @@
+import org.gradle.internal.impldep.org.joda.time.format.ISODateTimeFormat.date
 import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.ChangelogSectionUrlBuilder
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
@@ -57,6 +59,7 @@ dependencies {
         testFramework(TestFrameworkType.Platform)
     }
 }
+
 
 // Configure IntelliJ Platform Gradle Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-extension.html
 intellijPlatform {

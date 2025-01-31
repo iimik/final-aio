@@ -5,6 +5,7 @@ import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.api.spi.SpringApiMethodService
+import org.ifinalframework.plugins.aio.application.ElementApplication
 import org.ifinalframework.plugins.aio.resource.AllIcons
 
 
@@ -30,7 +31,8 @@ class ApiMarkdownLineMarkerProvider : LineMarkerProvider {
         return builder.createLineMarkerInfo(
             psiElement
         ) { mouseEvent, psiElement ->
-            // #15 TODO
+            // #15 open markdown
+            ElementApplication.run(MarkdownOpenApplication::class, psiElement)
         }
 
     }
