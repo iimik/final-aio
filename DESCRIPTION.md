@@ -24,3 +24,8 @@ final:
       # Jira 项目编码
       project-code: AIO
 ```
+
+## Api 管理
+
+- 添加Api Method Markdown行标记，点击行标记可快速打开Markdown文件，不存在时自动创建。
+- 添加Api Method View行标记，点击行标记可快速在浏览器中打开对应在线文档。 
