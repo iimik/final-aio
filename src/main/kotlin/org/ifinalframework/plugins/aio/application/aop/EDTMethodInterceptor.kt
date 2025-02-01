@@ -9,7 +9,7 @@ import org.aopalliance.intercept.MethodInvocation
  * EDTMethodInterceptor
  *
  * @author iimik
- * @since 1.6.0
+ * @since 0.0.2
  **/
 class EDTMethodInterceptor : MethodInterceptor {
     @Throws(Throwable::class)

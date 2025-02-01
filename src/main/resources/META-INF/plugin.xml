@@ -17,6 +17,8 @@
                                         implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="UAST"
                                         implementationClass="org.ifinalframework.plugins.aio.api.markdown.ApiMarkdownLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="UAST"
+                                        implementationClass="org.ifinalframework.plugins.aio.api.open.OpenApiLineMarkerProvider"/>
     </extensions>
 
     <applicationListeners>

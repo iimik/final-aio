@@ -1,6 +1,7 @@
 package org.ifinalframework.plugins.aio.application;
 
 import org.ifinalframework.plugins.aio.application.annotation.ElementApplication
+import org.ifinalframework.plugins.aio.application.annotation.ImplementedBy
 import org.ifinalframework.plugins.aio.spi.annotation.LanguageSpi
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.support.AbstractBeanDefinition
@@ -34,15 +35,24 @@ class ElementApplicationBeanFactoryPostProcessor : BeanDefinitionRegistryPostPro
                     val components: Array<KClass<*>> = elementApplication.value
                     for (component in components) {
                         val languageSpi = AnnotationUtils.getAnnotation(component.java, LanguageSpi::class.java)
-                        if (Objects.isNull(languageSpi)) {
+                        val implementedBy = AnnotationUtils.getAnnotation(component.java, ImplementedBy::class.java)
+                        if (Objects.nonNull(languageSpi)) {
+                            val classes: Array<out KClass<*>> = languageSpi.value
+                            classes.forEach { reader.register(it.java) }
+                        } else if (Objects.nonNull(implementedBy)) {
+                            implementedBy.value.forEach {
+                                if (registry is AnnotationConfigRegistry) {
+                                    registry.register(it.java)
+                                } else {
+                                    reader.register(it.java)
+                                }
+                            }
+                        } else {
                             if (registry is AnnotationConfigRegistry) {
                                 registry.register(component.java)
                             } else {
                                 reader.register(component.java)
                             }
-                        } else {
-                            val classes: Array<out KClass<*>> = languageSpi.value
-                            classes.forEach { reader.register(it.java) }
                         }
                     }
                 }

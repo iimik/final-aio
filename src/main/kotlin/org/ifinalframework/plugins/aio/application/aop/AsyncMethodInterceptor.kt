@@ -9,7 +9,7 @@ import org.aopalliance.intercept.MethodInvocation
  * AsyncMethodInterceptor
  *
  * @author iimik
- * @since 1.6.0
+ * @since 0.0.2
  **/
 class AsyncMethodInterceptor : MethodInterceptor {
     @Throws(Throwable::class)

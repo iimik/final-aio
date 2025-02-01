@@ -6,6 +6,8 @@ import org.ifinalframework.plugins.aio.api.model.ApiMarker
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.util.SpiUtil
 import org.jetbrains.uast.*
+import org.jetbrains.uast.java.JavaAnnotationArrayInitializerUCallExpression
+import org.jetbrains.uast.java.JavaULiteralExpression
 import org.jetbrains.uast.kotlin.KotlinStringULiteralExpression
 import org.jetbrains.uast.kotlin.KotlinUCollectionLiteralExpression
 import org.jetbrains.uast.kotlin.KotlinUVarargExpression
@@ -81,7 +83,7 @@ class SpringApiMethodService : ApiMethodService {
         if (classPaths.isNotEmpty() && methodPaths.isEmpty()) return classPaths
 
 
-        return classPaths.flatMap { prefix -> methodPaths.map { "$prefix/$it" } }.toList()
+        return classPaths.flatMap { prefix -> methodPaths.map { "${prefix.trimEnd('/')}/${it.trimStart('/')}" } }.toList()
 
     }
 
@@ -103,6 +105,14 @@ class SpringApiMethodService : ApiMethodService {
 
             is KotlinStringULiteralExpression -> {
                 listOf(it.text)
+            }
+
+            is JavaAnnotationArrayInitializerUCallExpression -> {
+                it.valueArguments.mapNotNull { valueArg -> (valueArg as JavaULiteralExpression).value.toString() }.toList()
+            }
+
+            is JavaULiteralExpression -> {
+                listOf(it.value.toString())
             }
 
             else -> listOf()

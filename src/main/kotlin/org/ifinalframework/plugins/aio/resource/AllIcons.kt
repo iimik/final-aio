@@ -21,6 +21,7 @@ class AllIcons {
     class Api{
         companion object {
             val MARKDOWN = load("assets/icons/markdown.svg")
+            val VIEW = load("assets/icons/apiView.svg")
         }
     }
 

@@ -1,5 +1,7 @@
 package org.ifinalframework.plugins.aio.application;
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtil
@@ -8,7 +10,13 @@ import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.application.aop.AopConfig
 import org.springframework.aop.framework.AopConfigException
+import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration
+import org.springframework.cloud.openfeign.EnableFeignClients
+import org.springframework.cloud.openfeign.FeignAutoConfiguration
+import org.springframework.cloud.openfeign.FeignClientsConfiguration
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
+import org.springframework.core.annotation.AnnotatedElementUtils
 import java.util.*
 import java.util.function.Consumer
 import java.util.function.Supplier
@@ -39,6 +47,8 @@ internal class ElementApplication(
                 val classLoader = AopConfigException::class.java.classLoader
                 val context = AnnotationConfigApplicationContext()
                 context.classLoader = classLoader
+                Thread.currentThread().contextClassLoader = classLoader
+                context.beanFactory.beanClassLoader = classLoader
                 System.setProperty("final.language", lang)
                 val environment = ElementEnvironment()
                 environment.load(classLoader, element!!)
@@ -55,13 +65,20 @@ internal class ElementApplication(
                 context.register(primarySource.java)
                 // aop
                 context.register(AopConfig::class.java)
-                // jackson
-                // feign
-//                context.register(FeignClientsConfiguration.class);
-//                context.register(HttpMessageConvertersAutoConfiguration.class);
-//                context.register(FeignAutoConfiguration.class);
+                val hasFeign = AnnotatedElementUtils.isAnnotated(primarySource.java, EnableFeignClients::class.java)
+                if (hasFeign) {
+                    // feign
+                    context.register(JacksonAutoConfiguration::class.java);
+                    context.register(FeignClientsConfiguration::class.java);
+                    context.register(HttpMessageConvertersAutoConfiguration::class.java);
+                    context.register(FeignAutoConfiguration::class.java);
+                }
                 // refresh
                 context.refresh()
+                if (hasFeign) {
+                    val objectMapper = context.getBean(ObjectMapper::class.java)
+                    objectMapper.registerModule(KotlinModule.Builder().build())
+                }
 
                 // handle
                 val elementHandlers: List<ElementHandler> =

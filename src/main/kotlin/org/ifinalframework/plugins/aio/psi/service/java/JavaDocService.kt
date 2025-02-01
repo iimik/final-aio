@@ -56,7 +56,7 @@ class JavaDocService : DocService {
 
     override fun getTagValue(element: PsiElement): String? {
         return if (element is PsiDocTag) {
-            element.valueElement!!.text.trim()
+            element.valueElement?.text?.trim()
         } else null
     }
 
