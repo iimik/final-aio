@@ -50,6 +50,7 @@ internal class ElementApplication(
                 Thread.currentThread().contextClassLoader = classLoader
                 context.beanFactory.beanClassLoader = classLoader
                 System.setProperty("final.language", lang)
+                System.setProperty("final.jvm", (lang == "java" || lang == "kotlin").toString())
                 val environment = ElementEnvironment()
                 environment.load(classLoader, element!!)
                 context.environment = environment

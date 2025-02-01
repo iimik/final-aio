@@ -40,6 +40,7 @@ class LanguageSpiProxy : InvocationHandler {
     }
 
     private fun findLanguage(clazz: Class<*>): String? {
-        return AnnotatedElementUtils.getMergedAnnotation(clazz, ConditionOnLanguage::class.java).value.lowercase()
+        val language = AnnotatedElementUtils.getMergedAnnotation(clazz, ConditionOnLanguage::class.java) ?: return "uast"
+        return language.value.lowercase()
     }
 }

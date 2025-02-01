@@ -1,7 +1,9 @@
 package org.ifinalframework.plugins.aio.issue;
 
 import com.intellij.psi.PsiElement
+import org.ifinalframework.plugins.aio.application.condition.ConditionOnJvm
 import org.ifinalframework.plugins.aio.psi.service.DocService
+import org.ifinalframework.plugins.aio.util.SpiUtil
 import org.springframework.stereotype.Component
 
 
@@ -14,9 +16,12 @@ import org.springframework.stereotype.Component
  * @since 0.0.1
  **/
 @Component
-class DefaultIssueService(
+@ConditionOnJvm
+class JvmIssueService(
     private val docService: DocService,
 ) : IssueService {
+
+    constructor(): this(SpiUtil.languageSpi<DocService>())
 
     override fun getIssue(element: PsiElement): Issue? {
         // @issue 10 docTag issue
@@ -44,14 +49,14 @@ class DefaultIssueService(
         return parseLineIssue(comment);
     }
 
-    override fun parseDocTagIssue(name: String, value: String): Issue? {
+    private fun parseDocTagIssue(name: String, value: String): Issue? {
         val issueType = IssueType.ofNullable(name) ?: return null
         val code = value.substringBefore(" ")
         val description = value.substringAfter(" ")
         return Issue(issueType, code, description)
     }
 
-    override fun parseLineIssue(comment: String): Issue? {
+    private fun parseLineIssue(comment: String): Issue? {
         val comment = comment.removePrefix("//").trimStart()
         val issueType = parseLineIssueType(comment) ?: return null
         val code = parseLineIssueCode(comment) ?: return null

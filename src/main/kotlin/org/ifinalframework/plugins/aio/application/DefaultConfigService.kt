@@ -4,6 +4,8 @@ import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
 import org.apache.commons.lang3.StringUtils
 import org.ifinalframework.plugins.aio.common.util.getBasePath
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -19,6 +21,10 @@ class DefaultConfigService : ConfigService {
         val module = ModuleUtil.findModuleForPsiElement(element)
         val modulePath: String = module!!.getBasePath()
         val projectPath: String = module.project!!.basePath!!
+
+        if(modulePath == projectPath) {
+            return Collections.singletonList(projectPath)
+        }
 
         var configPath = modulePath
 

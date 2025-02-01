@@ -15,7 +15,7 @@ import org.ifinalframework.plugins.aio.psi.service.DocService
  **/
 @ElementApplication(
     value = [
-        DefaultIssueService::class,
+        IssueService::class,
         DocService::class,
         DefaultGitService::class,
         GitIssueOpener::class,

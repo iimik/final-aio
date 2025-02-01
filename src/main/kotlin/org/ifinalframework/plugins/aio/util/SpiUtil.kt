@@ -3,7 +3,6 @@ package org.ifinalframework.plugins.aio.util;
 import org.ifinalframework.plugins.aio.spi.LanguageSpiProxy
 import java.lang.reflect.Proxy
 import java.util.*
-import kotlin.reflect.KClass
 
 
 /**
@@ -12,15 +11,13 @@ import kotlin.reflect.KClass
  * @author iimik
  * @since 0.0.1
  **/
-class SpiUtil {
-    companion object {
+object SpiUtil {
 
-        fun <T : Any> languageSpi(klz: KClass<T>): T {
-            val services = ServiceLoader.load(klz.java, klz.java.classLoader).toList()
-            val interfaces = arrayOf(klz.java)
-            return Proxy.newProxyInstance(klz.java.classLoader, interfaces, LanguageSpiProxy(services)) as T
-        }
-
-
+    inline fun <reified T : Any> languageSpi(): T {
+        val clazz = T::class.java
+        val loader = clazz.classLoader
+        val services = ServiceLoader.load(clazz, loader).toList()
+        val interfaces = arrayOf(clazz)
+        return Proxy.newProxyInstance(loader, interfaces, LanguageSpiProxy(services)) as T
     }
 }

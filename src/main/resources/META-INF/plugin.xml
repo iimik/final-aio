@@ -13,6 +13,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.iimik.finalaio.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <codeInsight.lineMarkerProvider language="Markdown"
+                                        implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="UAST"
                                         implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="UAST"

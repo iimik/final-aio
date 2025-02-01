@@ -22,7 +22,7 @@ import java.util.stream.Stream
  **/
 class SpringApiMethodService : ApiMethodService {
 
-    private val docService = SpiUtil.languageSpi(DocService::class)
+    private val docService = SpiUtil.languageSpi<DocService>()
 
     override fun getApiMarker(element: PsiElement): ApiMarker? {
         val uElement = element.toUElement() ?: return null

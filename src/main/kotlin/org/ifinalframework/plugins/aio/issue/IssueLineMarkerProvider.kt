@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.application.ElementApplication
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.util.SpiUtil
-import org.jetbrains.kotlin.idea.gradleTooling.get
 import java.awt.event.MouseEvent
 
 
@@ -22,10 +21,11 @@ import java.awt.event.MouseEvent
  **/
 class IssueLineMarkerProvider : LineMarkerProvider {
 
-    private val issueService = DefaultIssueService(SpiUtil.languageSpi(DocService::class))
+    private val issueService = SpiUtil.languageSpi<IssueService>()
     private val logger = logger<IssueLineMarkerProvider>()
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
+
         val issue = issueService.getIssue(element) ?: return null
         val builder = NavigationGutterIconBuilder.create(issue.type.icon)
         builder.setTargets(element)
