@@ -13,14 +13,21 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.iimik.finalaio.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-        <codeInsight.lineMarkerProvider language="Markdown"
-                                        implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="UAST"
-                                        implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="UAST"
-                                        implementationClass="org.ifinalframework.plugins.aio.api.markdown.ApiMarkdownLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="UAST"
-                                        implementationClass="org.ifinalframework.plugins.aio.api.open.OpenApiLineMarkerProvider"/>
+        <!-- Issue -->
+        <codeInsight.lineMarkerProvider
+                language="Markdown"
+                implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
+        <!-- Api Markdown -->
+        <codeInsight.lineMarkerProvider
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.api.markdown.ApiMarkdownLineMarkerProvider"/>
+        <!-- Api View -->
+        <codeInsight.lineMarkerProvider
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.api.open.OpenApiLineMarkerProvider"/>
     </extensions>
 
     <applicationListeners>

@@ -2,6 +2,8 @@
 
 ## Issue行标记
 
+### Java & Kotlin
+
 给特定的注释添加Issue行标记。支持以下格式的注释：
 
 * 块注释
@@ -24,6 +26,10 @@
 ```
 
 ![Issue Liner Marker](./images/issue-line-marker.png)
+
+### Markdown
+
+在Markdown文件中，特定的文本格式`(#18)`也会被标记为Issue。
 
 ## 打开 Issue
 
