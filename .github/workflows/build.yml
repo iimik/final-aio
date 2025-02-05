@@ -38,8 +38,11 @@ jobs:
 
       - name: free disk space
         run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo swapoff -a
+          sudo rm -f /swapfile
+          sudo rm -rf /home/runner/runners/2.322.0/_diag
+          sudo rm -rf /home/runner/.gradle
+          sudo apt clean
           df -h
 
       # Check out the current repository
