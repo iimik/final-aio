@@ -15,14 +15,14 @@ class DefaultGitServiceTest : BasePlatformTestCase() {
 
 
 //    @Test
-    fun testGetRemotes() {
+    fun getRemotes() {
         val gitService = DefaultGitService(project)
         val remotes = gitService.getRemotes()
         Assertions.assertNotNull(remotes)
     }
 
 //    @Test
-    fun testGetRemoteByNameOrDefault() {
+    fun getRemoteByNameOrDefault() {
         val gitService = DefaultGitService(project)
         val remote = gitService.getRemoteByNameOrDefault("github")
         Assertions.assertNotNull(remote)
