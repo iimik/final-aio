@@ -35,4 +35,19 @@
 
 ### 打开 Git Issue
 
+![Open Git Issue](images/Open-Git-Issue.gif)
+
 ### 打开 Jira
+
+在使用Jira管理项目时，需要在配置文件中添加以下配置：
+```yaml
+final:
+  issue:
+    jira:
+      # Jira 服务地址
+      server-url: https://iimik.atlassian.net
+      # Jira 项目编码
+      project-code: AIO
+```
+
+![Open Jira Issue](images/Open-Jira-Issue.gif)
