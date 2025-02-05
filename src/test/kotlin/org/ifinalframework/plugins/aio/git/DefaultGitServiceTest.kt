@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
  */
 class DefaultGitServiceTest : BasePlatformTestCase() {
 
-    private val gitService = DefaultGitService(getProjectDir())
+    private val gitService = DefaultGitService(project)
 
     @Test
     fun testGetRemotes() {
@@ -32,8 +32,5 @@ class DefaultGitServiceTest : BasePlatformTestCase() {
         return "src/main/kotlin/" + DefaultGitService::class.java.packageName.replace('.', '/')
     }
 
-    private fun getProjectDir(): String {
-        return StringUtils.substringBefore(java.nio.file.Path.of(".").toAbsolutePath().toString(), "/final-aio") + "/final-aio"
-    }
 
 }
