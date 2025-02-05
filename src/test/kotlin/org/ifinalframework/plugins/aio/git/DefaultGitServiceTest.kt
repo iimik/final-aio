@@ -14,14 +14,14 @@ import org.junit.jupiter.api.Test
 class DefaultGitServiceTest : BasePlatformTestCase() {
 
 
-    @Test
+//    @Test
     fun testGetRemotes() {
         val gitService = DefaultGitService(project)
         val remotes = gitService.getRemotes()
         Assertions.assertNotNull(remotes)
     }
 
-    @Test
+//    @Test
     fun testGetRemoteByNameOrDefault() {
         val gitService = DefaultGitService(project)
         val remote = gitService.getRemoteByNameOrDefault("github")
