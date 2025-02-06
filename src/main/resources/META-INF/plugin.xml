@@ -12,6 +12,9 @@
     <depends optional="true" config-file="final-api-kotlin.xml">org.jetbrains.kotlin</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup displayType="BALLOON" id="FINAL_AIO_BALLOON"/>
+        <notificationGroup displayType="TOOL_WINDOW" id="FINAL_AIO_TOOL_WINDOW"/>
+        <notificationGroup displayType="STICKY_BALLOON" id="FINAL_AIO_STICKY_BALLOON"/>
         <!-- Issue -->
         <codeInsight.lineMarkerProvider
                 language="Markdown"
