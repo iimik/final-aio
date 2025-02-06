@@ -52,7 +52,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: zulu
+          distribution: corretto
           java-version: 17
 
       # Setup Gradle
@@ -112,7 +112,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: zulu
+          distribution: corretto
           java-version: 17
 
       # Setup Gradle
@@ -166,7 +166,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: zulu
+          distribution: corretto
           java-version: 17
 
       # Run Qodana inspections
@@ -197,7 +197,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: zulu
+          distribution: corretto
           java-version: 17
 
       # Setup Gradle
