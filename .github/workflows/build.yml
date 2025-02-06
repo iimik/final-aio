@@ -35,11 +35,11 @@ jobs:
       changelog: ${{ steps.properties.outputs.changelog }}
       pluginVerifierHomeDir: ${{ steps.properties.outputs.pluginVerifierHomeDir }}
     steps:
-      - name: free disk space
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-          df -h
+#      - name: free disk space
+#        run: |
+#          sudo rm -rf /usr/share/dotnet
+#          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+#          df -h
       # Check out the current repository
       - name: Fetch Sources
         uses: actions/checkout@v4
