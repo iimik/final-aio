@@ -10,10 +10,21 @@ import org.springframework.stereotype.Component
 /**
  * Issue 服务
  *
+ * 提取注释中的issue，支持以下格式的注释：
+ *
+ * - 文档注释
+ *    - @jira 编号 [描述]
+ *    - @issue 编号 [描述]
+ * - 行注释
+ *    - @jira 编号 [描述]
+ *    - @issue 编号 [描述]
+ *    - #编号 [描述]
+ *
  * @jira 1
  * @issue 10
  * @author iimik
  * @since 0.0.1
+ * @see MarkdownIssueService
  **/
 @Component
 @ConditionOnJvm
@@ -21,7 +32,7 @@ class JvmIssueService(
     private val docService: DocService,
 ) : IssueService {
 
-    constructor(): this(SpiUtil.languageSpi<DocService>())
+    constructor() : this(SpiUtil.languageSpi<DocService>())
 
     override fun getIssue(element: PsiElement): Issue? {
         // @issue 10 docTag issue

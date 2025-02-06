@@ -9,9 +9,12 @@ import org.springframework.stereotype.Component
 /**
  * Markdown Issue 服务
  *
+ * 提取Markdown文件中的Issue，格式`(#18)`
+ *
  * @issue 18
  * @author iimik
  * @since 0.0.2
+ * @see JvmIssueService
  **/
 @Component
 @ConditionOnMarkdown
