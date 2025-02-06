@@ -12,7 +12,6 @@
     <depends optional="true" config-file="final-api-kotlin.xml">org.jetbrains.kotlin</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.iimik.finalaio.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
         <!-- Issue -->
         <codeInsight.lineMarkerProvider
                 language="Markdown"
@@ -29,9 +28,4 @@
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.api.open.OpenApiLineMarkerProvider"/>
     </extensions>
-
-    <applicationListeners>
-        <listener class="com.github.iimik.finalaio.listeners.MyApplicationActivationListener"
-                  topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
 </idea-plugin>
