@@ -1,8 +1,8 @@
 package org.ifinalframework.plugins.aio.application.aop;
 
-import com.intellij.openapi.application.WriteAction
 import org.aopalliance.intercept.MethodInterceptor
 import org.aopalliance.intercept.MethodInvocation
+import org.ifinalframework.plugins.aio.R
 
 
 /**
@@ -19,10 +19,10 @@ class WriteActionMethodInterceptor : MethodInterceptor {
         val returnType = method.returnType
 
         if (Void.TYPE == returnType) {
-            WriteAction.run<Throwable> { invocation.proceed() }
+            R.runInWrite { invocation.proceed() }
             return null
         } else {
-            return WriteAction.compute<Any?, Throwable> { invocation.proceed() }
+            return R.computeInWrite { invocation.proceed() }
         }
     }
 }

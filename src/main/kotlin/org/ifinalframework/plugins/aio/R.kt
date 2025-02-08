@@ -16,7 +16,7 @@ import com.intellij.util.ThrowableRunnable
 
 object R {
 
-    fun async(action: Runnable) {
+    fun async(action: () -> Unit) {
         ApplicationManager.getApplication().executeOnPooledThread(action)
     }
 

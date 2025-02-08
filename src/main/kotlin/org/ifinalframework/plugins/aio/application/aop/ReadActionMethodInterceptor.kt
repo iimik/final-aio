@@ -1,8 +1,8 @@
 package org.ifinalframework.plugins.aio.application.aop;
 
-import com.intellij.openapi.application.ReadAction
 import org.aopalliance.intercept.MethodInterceptor
 import org.aopalliance.intercept.MethodInvocation
+import org.ifinalframework.plugins.aio.R
 
 
 /**
@@ -18,10 +18,10 @@ class ReadActionMethodInterceptor : MethodInterceptor {
         val returnType = method.returnType
 
         if (Void.TYPE == returnType) {
-            ReadAction.run<Throwable> { invocation.proceed() }
+            R.runInRead { invocation.proceed() }
             return null
         } else {
-            return ReadAction.compute<Any?, Throwable> { invocation.proceed() }
+            return R.computeInRead { invocation.proceed() }
         }
     }
 }
