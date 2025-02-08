@@ -9,7 +9,7 @@ package org.ifinalframework.plugins.aio.jvm
  **/
 object AnnotationForResolver {
     @Retention(AnnotationRetention.RUNTIME)
-    @Target(AnnotationTarget.CLASS)
+    @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
     annotation class StringValue(
         val value: String
     )
@@ -35,7 +35,7 @@ object AnnotationForResolver {
 
     // --
     @Retention(AnnotationRetention.RUNTIME)
-    @Target(AnnotationTarget.CLASS)
+    @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
     annotation class StringVararg(
         vararg val value: String
     )

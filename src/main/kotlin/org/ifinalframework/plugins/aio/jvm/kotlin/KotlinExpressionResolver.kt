@@ -1,6 +1,7 @@
 package org.ifinalframework.plugins.aio.jvm.kotlin;
 
 import org.ifinalframework.plugins.aio.jvm.ExpressionResolver
+import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCollectionLiteralExpression
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
@@ -20,4 +21,5 @@ class KotlinExpressionResolver : ExpressionResolver<KtExpression> {
             else -> expression
         }
     }
+
 }

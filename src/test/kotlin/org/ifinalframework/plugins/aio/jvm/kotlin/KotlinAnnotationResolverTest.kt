@@ -2,14 +2,10 @@ package org.ifinalframework.plugins.aio.jvm.kotlin
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
-import org.ifinalframework.plugins.aio.R
-import org.ifinalframework.plugins.aio.api.constans.SpringAnnotations
 import org.ifinalframework.plugins.aio.jvm.AnnotationForResolver
-import org.jetbrains.kotlin.idea.util.findAnnotation
-import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClass
-import org.springframework.web.bind.annotation.RequestMapping
-import kotlin.reflect.KClass
+import org.jetbrains.kotlin.psi.KtClassBody
+import org.jetbrains.kotlin.psi.KtNamedFunction
 
 /**
  * KotlinAnnotationResolverTest
@@ -17,27 +13,31 @@ import kotlin.reflect.KClass
  * @author iimik
  * @since 0.0.2
  */
-@AnnotationForResolver.StringValue("Hello World!")
-@RequestMapping
 class KotlinAnnotationResolverTest : BasePlatformTestCase() {
 
-    private var resolver: KotlinAnnotationResolver? = null
-    private val annotationFinder = KotlinAnnotationFinder()
+    private var resolver = KotlinAnnotationResolver()
+    private val functionMap = mutableMapOf<String, KtNamedFunction>()
 
     override fun setUp() {
         super.setUp()
-        resolver = KotlinAnnotationResolver()
+        val classBody = getKtClass().children.first { it is KtClassBody } as KtClassBody
+        classBody.functions.forEach { function ->
+            functionMap[function.name!!] = function
+        }
     }
 
-    fun testResolve() {
-        TestCase.assertEquals("Hello World!", getValue(AnnotationForResolver.StringValue::class))
+    @AnnotationForResolver.StringValue("Hello World!")
+    fun testStringValue() {
+        TestCase.assertEquals("Hello World!", getValue())
     }
 
-    private fun getValue(ann: KClass<out Annotation>): Any? {
-        val ktClass = getKtClass()
-        val annotation = R.computeInRead { annotationFinder.findAnnotation(ktClass, SpringAnnotations.REQUEST_MAPPING) }
-        val ktAnnotationEntry = ktClass.findAnnotation(FqName(ann.simpleName.toString()!!))
-        val map = resolver!!.resolve(ktAnnotationEntry!!)
+    private fun getFun(): KtNamedFunction {
+        val methodName = qualifiedTestMethodName.substringAfterLast(".")
+        return functionMap[methodName]!!
+    }
+
+    private fun getValue(): Any? {
+        val map = resolver!!.resolve(getFun().annotationEntries[0])
         return map["value"]
     }
 
