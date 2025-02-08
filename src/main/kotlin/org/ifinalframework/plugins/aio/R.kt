@@ -4,6 +4,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.util.ThrowableComputable
+import com.intellij.util.ThrowableRunnable
 
 
 /**
@@ -13,36 +14,49 @@ import com.intellij.openapi.util.ThrowableComputable
  * @since 0.0.1
  **/
 
-class R {
-    class Read {
-        companion object {
-            fun <T> compute(action: ThrowableComputable<T, Throwable>): T? {
-                try {
-                    return ReadAction.compute(action)
-                } catch (e: Exception) {
-                    throw RuntimeException(e)
-                }
-            }
+object R {
+
+    fun async(action: Runnable) {
+        ApplicationManager.getApplication().executeOnPooledThread(action)
+    }
+
+    fun <T> computeInRead(action: () -> T): T? {
+        try {
+            return ReadAction.compute<T, Throwable>(action)
+        } catch (e: Exception) {
+            throw RuntimeException(e)
         }
     }
 
-    class Write {
-        companion object {
-            fun <T> compute(action: ThrowableComputable<T, Throwable>): T? {
-                try {
-                    return WriteAction.compute(action)
-                } catch (e: Exception) {
-                    throw RuntimeException(e)
-                }
-            }
+    fun runInRead(action: () -> Unit) {
+        try {
+            ReadAction.run<Throwable>(action)
+        } catch (e: Exception) {
+            throw RuntimeException(e)
         }
     }
 
-    class Async {
-        companion object {
-            fun run(action: Runnable) {
-                ApplicationManager.getApplication().executeOnPooledThread(action)
-            }
+    fun <T> computeInWrite(action: () -> T): T? {
+        try {
+            return WriteAction.compute<T,Throwable>(action)
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+    }
+
+    fun runInWrite(action: () -> Unit) {
+        try {
+            WriteAction.run<Throwable>(action)
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+    }
+
+    fun dispatch(action: () -> Unit) {
+        try {
+            ApplicationManager.getApplication().invokeLater(action)
+        } catch (e: Exception) {
+            throw RuntimeException(e)
         }
     }
 }

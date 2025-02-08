@@ -64,19 +64,24 @@ class MarkdownOpenApplication(
 
         val apiMarker = apiMethodService.getApiMarker(element) ?: return
 
-        val markdownFile = getMarkdownFile(apiMarker) ?: return
+        getMarkdownFile(apiMarker) {
+            it?.let {
+                val editorManager = FileEditorManager.getInstance(project)
+                R.dispatch {
+                    editorManager.openFile(it, true)
+                }
+            }
+        }
 
-        val editorManager = FileEditorManager.getInstance(project)
-        editorManager.openFile(markdownFile, true)
     }
 
-    private fun getMarkdownFile(apiMarker: ApiMarker): VirtualFile? {
+    private fun getMarkdownFile(apiMarker: ApiMarker, handler: (VirtualFile) -> Unit) {
 
         val markdownPath = apiMarkdownPathFormatter.format(apiMarker)
 
-        val files = R.Read.compute {
-            FilenameIndex.getVirtualFilesByName("${apiMarker.name}.md",  GlobalSearchScope.everythingScope(project))
-        } ?: return null
+        val files = R.computeInRead {
+            FilenameIndex.getVirtualFilesByName("${apiMarker.name}.md", GlobalSearchScope.everythingScope(project))
+        } ?: return
         var markdownFile = files.stream().filter { it: VirtualFile? -> it!!.path.endsWith(markdownPath) }.findFirst().orElse(null)
 
 
@@ -84,25 +89,29 @@ class MarkdownOpenApplication(
             val path = StringUtils.substringBeforeLast(markdownPath, "/")
             val fileName = StringUtils.substringAfterLast(markdownPath, "/")
             try {
-                markdownFile = createMarkdownFile(path, fileName)
+                createMarkdownFile(path, fileName, handler)
                 notificationService!!.notify(
                     NotificationDisplayType.TOOL_WINDOW, "创建Markdown文件：$fileName", NotificationType.INFORMATION
                 )
             } catch (e: IOException) {
                 logger.error("create markdown file error: {}", markdownPath, e)
             }
+        } else {
+            handler(markdownFile)
         }
 
-        return markdownFile
+
     }
 
-    private fun createMarkdownFile(path: String, fileName: String): VirtualFile? {
+    private fun createMarkdownFile(path: String, fileName: String, handler: (VirtualFile) -> Unit) {
         val basePath: String = module.getBasePath()
         val filePath = "$basePath/$path"
-        return R.Write.compute {
-            File(filePath).mkdirs()
-            val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(filePath)
-            Objects.requireNonNull<VirtualFile?>(virtualFile).createChildData(project, fileName)
+        File(filePath).mkdirs()
+        val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(filePath)
+        R.dispatch {
+
+            val file = R.computeInWrite { Objects.requireNonNull<VirtualFile?>(virtualFile).createChildData(project, fileName) }
+            handler.invoke(file!!)
         }
     }
 }

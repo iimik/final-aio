@@ -37,9 +37,9 @@ class ElementEnvironment : StandardEnvironment(), ElementPropertySourcesLoader {
     override fun load(classLoader: ClassLoader, element: PsiElement) {
         val propertySources = propertySources
 
-        val basePath: String = R.Read.compute { element.project.basePath }!!
+        val basePath: String = R.computeInRead{ element.project.basePath }!!
         // load .final config file
-        val configPaths: List<String> = R.Read.compute { DefaultConfigService().getConfigPaths(element) }!!
+        val configPaths: List<String> = R.computeInRead{ DefaultConfigService().getConfigPaths(element) }!!
         Collections.sort(configPaths)
 
         val propertySourceLoaders = SpringFactoriesLoader.loadFactories(

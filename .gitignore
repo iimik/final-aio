@@ -3,3 +3,6 @@
 .intellijPlatform
 .qodana
 build
+
+## Local
+.env.local

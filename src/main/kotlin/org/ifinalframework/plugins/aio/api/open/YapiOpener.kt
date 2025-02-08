@@ -6,9 +6,6 @@ import org.ifinalframework.plugins.aio.api.yapi.YapiService
 import org.ifinalframework.plugins.aio.service.BrowserService
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component
-import java.util.Objects
-import java.util.stream.Collectors
-import java.util.stream.Stream
 
 
 /**
@@ -28,10 +25,10 @@ class YapiOpener(
 
     override fun open(apiMarker: ApiMarker) {
 
-        val contextPath = apiProperties.contextPath?.trimEnd('/')
+        val contextPath = apiProperties.contextPath?.trimEnd('/') ?: ""
         val methodPath = apiMarker.paths.first()?.trimStart('/')
 
-        val path = Stream.of(contextPath, methodPath).filter(Objects::nonNull).collect(Collectors.joining("/"))
+        val path = "$contextPath/$methodPath"
         val api = yapiService.getApi(apiMarker.category, apiMarker.methods.first(), path) ?: return
 
         val url = "${apiProperties.yapi!!.serverUrl}/project/${api.projectId}/interface/api/${api.id}"

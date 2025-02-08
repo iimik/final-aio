@@ -40,7 +40,7 @@ class ElementApplicationBeanFactoryPostProcessor : BeanDefinitionRegistryPostPro
                             val classes: Array<out KClass<*>> = languageSpi.value
                             classes.forEach { reader.register(it.java) }
                         } else if (Objects.nonNull(implementedBy)) {
-                            implementedBy.value.forEach {
+                            implementedBy!!.value.forEach {
                                 if (registry is AnnotationConfigRegistry) {
                                     registry.register(it.java)
                                 } else {

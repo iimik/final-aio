@@ -51,7 +51,7 @@ class KotlinDocService : DocService {
 
         val kTag = KDocKnownTag.findByTagName(tag)
         if (kTag != null) {
-            val content = R.Read.compute {
+            val content = R.computeInRead{
                 kDoc.findSectionByTag(kTag)?.getContent()
             }
             if (content != null) {
@@ -59,7 +59,7 @@ class KotlinDocService : DocService {
             }
         }
 
-        return R.Read.compute {
+        return R.computeInRead{
             kDoc.children
                 .filterIsInstance<KDocSection>()
                 .flatMap { it.findTagsByName(tag) }

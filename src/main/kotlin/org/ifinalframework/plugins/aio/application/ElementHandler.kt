@@ -11,6 +11,6 @@ import org.ifinalframework.plugins.aio.application.annotation.EDT
  * @since 0.0.1
  **/
 interface ElementHandler {
-    @EDT
+//    @EDT
     fun handle(element: PsiElement)
 }

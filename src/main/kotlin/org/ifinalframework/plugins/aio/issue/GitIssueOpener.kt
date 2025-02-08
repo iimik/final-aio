@@ -30,6 +30,7 @@ class GitIssueOpener(
      */
     private val browserService: BrowserService
 ) : IssueOpener {
+
     @Autowired
     constructor(gitService: GitService) : this(gitService, GitVendorIssueUrlFormatter(), DefaultBrowserService())
 

@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RestController
  * @author iimik
  * @since 0.0.1
  **/
-@RequestMapping("/kotlin")
+@RequestMapping(value = ["/kotlin1","/kotlin2"])
 @RestController
 class KotlinMarkdownLineMarkerController {
 
     /**
      * 注释
      */
-    @GetMapping
+    @GetMapping(value = ["/a","/b"])
     fun docs() {
 
     }

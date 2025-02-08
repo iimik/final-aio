@@ -8,6 +8,6 @@ package org.ifinalframework.plugins.aio.application.annotation
  * @since 0.0.1
  **/
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.FUNCTION,AnnotationTarget.CLASS)
 annotation class ReadAction
 

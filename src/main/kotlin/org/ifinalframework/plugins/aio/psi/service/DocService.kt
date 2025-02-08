@@ -1,6 +1,7 @@
 package org.ifinalframework.plugins.aio.psi.service
 
 import com.intellij.psi.PsiElement
+import org.ifinalframework.plugins.aio.application.annotation.ReadAction
 import org.ifinalframework.plugins.aio.psi.service.java.JavaDocService
 import org.ifinalframework.plugins.aio.psi.service.kotlin.KotlinDocService
 import org.ifinalframework.plugins.aio.spi.annotation.LanguageSpi
@@ -16,6 +17,7 @@ import org.ifinalframework.plugins.aio.spi.annotation.LanguageSpi
     JavaDocService::class,
     KotlinDocService::class
 )
+@ReadAction
 interface DocService {
 
     fun getSummary(element: PsiElement): String?

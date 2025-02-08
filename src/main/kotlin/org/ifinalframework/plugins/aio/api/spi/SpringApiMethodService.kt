@@ -1,16 +1,14 @@
 package org.ifinalframework.plugins.aio.api.spi;
 
 import com.intellij.psi.PsiElement
+import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.constans.SpringAnnotations
 import org.ifinalframework.plugins.aio.api.model.ApiMarker
+import org.ifinalframework.plugins.aio.jvm.AnnotationResolver
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.util.SpiUtil
 import org.jetbrains.uast.*
-import org.jetbrains.uast.java.JavaAnnotationArrayInitializerUCallExpression
-import org.jetbrains.uast.java.JavaULiteralExpression
-import org.jetbrains.uast.kotlin.KotlinStringULiteralExpression
 import org.jetbrains.uast.kotlin.KotlinUCollectionLiteralExpression
-import org.jetbrains.uast.kotlin.KotlinUVarargExpression
 import java.util.stream.Stream
 
 
@@ -21,25 +19,25 @@ import java.util.stream.Stream
  * @since 0.0.2
  **/
 class SpringApiMethodService : ApiMethodService {
-
+    private val annotationResolver = SpiUtil.languageSpi<AnnotationResolver<PsiElement>>()
     private val docService = SpiUtil.languageSpi<DocService>()
 
     override fun getApiMarker(element: PsiElement): ApiMarker? {
-        val uElement = element.toUElement() ?: return null
+
+        val uElement = R.computeInRead{ element.toUElement()} ?: return null
         if (uElement !is UIdentifier) return null
 
-        val uParent = uElement.uastParent ?: return null
+        val uParent = R.computeInRead{ uElement.uastParent } ?: return null
 
         return when (uParent) {
             is UMethod -> {
-                val uClass = uParent.getContainingUClass() ?: return null
+                val uClass = R.computeInRead{ uParent.getContainingUClass()} ?: return null
                 val category = docService.getSummary(uClass.sourcePsi!!) ?: uClass.name ?: return null
                 val name = docService.getSummary(uParent.sourcePsi!!) ?: uParent.name
 
-                val clazzRequestAnnotation = uClass.findAnnotation(SpringAnnotations.REQUEST_MAPPING)
+                val clazzRequestAnnotation = R.computeInRead{ uClass.findAnnotation(SpringAnnotations.REQUEST_MAPPING) }
                 val methodRequestMappingAnn =
-                    SpringAnnotations.REQUEST_MAPPINGS.firstNotNullOfOrNull { uParent.findAnnotation(it) }
-                        ?: return null
+                    SpringAnnotations.REQUEST_MAPPINGS.firstNotNullOfOrNull { R.computeInRead{uParent.findAnnotation(it)} } ?: return null
 
                 val qualifiedName = methodRequestMappingAnn.qualifiedName
 
@@ -62,7 +60,9 @@ class SpringApiMethodService : ApiMethodService {
                 }
 
 
-                val paths = getApiPaths(clazzRequestAnnotation, methodRequestMappingAnn)
+                val classRequestAnnotationMap = clazzRequestAnnotation?.let { annotationResolver.resolve(it.sourcePsi!!) }
+                val methodRequestAnnotationMap = annotationResolver.resolve(methodRequestMappingAnn.sourcePsi!!)
+                val paths = getApiPaths(classRequestAnnotationMap, methodRequestAnnotationMap)
                 return ApiMarker(ApiMarker.Type.METHOD, category, name, methods, paths)
             }
 
@@ -72,7 +72,7 @@ class SpringApiMethodService : ApiMethodService {
 
     }
 
-    private fun getApiPaths(classAnnotation: UAnnotation?, methodAnnotation: UAnnotation): List<String> {
+    private fun getApiPaths(classAnnotation: Map<String, Any?>?, methodAnnotation: Map<String, Any?>): List<String> {
         val classPaths = classAnnotation?.let { getRequestMappingPath(classAnnotation) } ?: emptyList()
         val methodPaths = getRequestMappingPath(methodAnnotation)
 
@@ -87,36 +87,16 @@ class SpringApiMethodService : ApiMethodService {
 
     }
 
-    private fun getRequestMappingPath(annotation: UAnnotation): List<String> {
-
-        val it = Stream.of("value", "path")
-            .map { annotation.findAttributeValue(it) }
+    private fun getRequestMappingPath(annotation: Map<String, Any?>): List<String> {
+        val paths =  Stream.of("value", "path")
+            .map { annotation[it] }
             .filter { it != null }
             .findFirst().orElse(null) ?: return emptyList()
 
-        return when (it) {
-            is KotlinUCollectionLiteralExpression -> {
-                it.valueArguments.mapNotNull { valueArg -> valueArg.tryResolveNamed()?.name }.toList()
-            }
-
-            is KotlinUVarargExpression -> {
-                it.valueArguments.mapNotNull { valueArg -> (valueArg as KotlinStringULiteralExpression)?.text }.toList()
-            }
-
-            is KotlinStringULiteralExpression -> {
-                listOf(it.text)
-            }
-
-            is JavaAnnotationArrayInitializerUCallExpression -> {
-                it.valueArguments.mapNotNull { valueArg -> (valueArg as JavaULiteralExpression).value.toString() }.toList()
-            }
-
-            is JavaULiteralExpression -> {
-                listOf(it.value.toString())
-            }
-
-            else -> listOf()
+        if(paths is List<*>) {
+            return paths as List<String>
         }
 
+        return listOf(paths as String)
     }
 }

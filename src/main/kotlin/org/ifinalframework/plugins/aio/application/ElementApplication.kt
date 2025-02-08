@@ -41,7 +41,7 @@ internal class ElementApplication(
         val module = ModuleUtil.findModuleForPsiElement(element!!)
         val project = element!!.project
 
-        R.Async.run {
+        R.async {
             try {
                 //fix: 启动报 ClassNotFoundException AopConfigException
                 val classLoader = AopConfigException::class.java.classLoader
@@ -86,7 +86,7 @@ internal class ElementApplication(
                     context.getBeanProvider<ElementHandler>(ElementHandler::class.java).stream().toList()
                 if (elementHandlers.isEmpty()) {
                     logger.warn("not found handlers for application: $primarySource")
-                    return@run
+                    return@async
                 }
 
                 elementHandlers.forEach(Consumer<ElementHandler> { handler: ElementHandler ->

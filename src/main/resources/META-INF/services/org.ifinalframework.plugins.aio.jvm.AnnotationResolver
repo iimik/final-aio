@@ -1,0 +1,2 @@
+org.ifinalframework.plugins.aio.jvm.java.JavaAnnotationResolver
+org.ifinalframework.plugins.aio.jvm.kotlin.KotlinAnnotationResolver

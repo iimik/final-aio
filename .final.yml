@@ -3,3 +3,7 @@ final:
     jira:
       server-url: https://iimik.atlassian.net
       project-code: AIO
+  api:
+    yapi:
+      server-url: ${YAPI_SERVER_URL}
+      token: ${YAPI_TOKEN}
