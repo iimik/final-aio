@@ -111,7 +111,7 @@ class MarkdownOpenApplication(
         R.dispatch {
 
             val file = R.computeInWrite { Objects.requireNonNull<VirtualFile?>(virtualFile).createChildData(project, fileName) }
-            handler.invoke(file!!)
+            handler(file!!)
         }
     }
 }

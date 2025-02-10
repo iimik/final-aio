@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component
 class MarkdownIssueService : IssueService {
 
     override fun getIssue(element: PsiElement): Issue? {
-        if (element is LeafPsiElement && element.elementType.debugName.equals("Markdown:TEXT", true)) {
+        if (element is LeafPsiElement && element.elementType.toString().equals("Markdown:TEXT", true)) {
             val input = element.text
             if (Regex("^#\\d+").matches(input)) {
                 return Issue(IssueType.ISSUE, input.trimStart('#'))

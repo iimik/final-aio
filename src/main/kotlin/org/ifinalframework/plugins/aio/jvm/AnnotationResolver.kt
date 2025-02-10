@@ -2,6 +2,7 @@ package org.ifinalframework.plugins.aio.jvm
 
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.application.annotation.ReadAction
+import org.ifinalframework.plugins.aio.core.annotation.AnnotationAttributes
 import org.ifinalframework.plugins.aio.jvm.java.JavaAnnotationResolver
 import org.ifinalframework.plugins.aio.jvm.kotlin.KotlinAnnotationResolver
 import org.ifinalframework.plugins.aio.spi.annotation.LanguageSpi
@@ -19,5 +20,5 @@ import org.ifinalframework.plugins.aio.spi.annotation.LanguageSpi
 )
 @ReadAction
 interface AnnotationResolver<A : PsiElement> {
-    fun resolve(annotation: A): Map<String, Any?>
+    fun resolve(annotation: A): AnnotationAttributes
 }

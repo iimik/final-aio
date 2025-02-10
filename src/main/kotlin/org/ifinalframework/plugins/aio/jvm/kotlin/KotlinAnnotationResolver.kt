@@ -1,6 +1,7 @@
 package org.ifinalframework.plugins.aio.jvm.kotlin;
 
 import org.ifinalframework.plugins.aio.application.condition.ConditionOnKotlin
+import org.ifinalframework.plugins.aio.core.annotation.AnnotationAttributes
 import org.ifinalframework.plugins.aio.jvm.AnnotationResolver
 import org.ifinalframework.plugins.aio.jvm.ExpressionResolver
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Component
 class KotlinAnnotationResolver(
     private val expressionResolver: ExpressionResolver<KtExpression> = KotlinExpressionResolver()
 ) : AnnotationResolver<KtAnnotationEntry> {
-    override fun resolve(annotation: KtAnnotationEntry): Map<String, Any?> {
+    override fun resolve(annotation: KtAnnotationEntry): AnnotationAttributes {
         val result = mutableMapOf<String, Any?>()
 
         annotation.valueArguments.forEach { valueArgument ->
@@ -28,6 +29,6 @@ class KotlinAnnotationResolver(
             result[name] = value
         }
 
-        return result
+        return AnnotationAttributes.fromMap(result)
     }
 }
