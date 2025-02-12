@@ -3,6 +3,7 @@ import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ChangelogSectionUrlBuilder
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import java.util.stream.Collectors
 
 plugins {
     id("java") // Java support
@@ -81,8 +82,23 @@ intellijPlatform {
         // Get the latest available change notes from the changelog file
         changeNotes = providers.gradleProperty("pluginVersion").map { pluginVersion ->
             with(changelog) {
+                val item = getOrNull(pluginVersion) ?: getUnreleased()
+                val sections = item.sections.entries.stream()
+                    .collect(Collectors.toMap({ it.key }, {
+                        val values = it.value
+                        val regex = Regex("""(#\d+)""")
+                        values.map { value -> val foundMatches = regex.findAll(value)
+                            var formatIssues: String = value
+                            foundMatches.forEach { result ->
+                                formatIssues = formatIssues.replace("(${result.value})", "([${result.value}](https://github.com/iimik/final-aio/issues/${result.value.trimStart('#')}))")
+                            }
+                            formatIssues }.toSet()
+                         }))
+                val newItem = Changelog.Item(item.version, item.header, item.summary, item.isUnreleased, sections)
+
+
                 renderItem(
-                    (getOrNull(pluginVersion) ?: getUnreleased())
+                    newItem
                         .withHeader(false)
                         .withEmptySections(false),
                     Changelog.OutputType.HTML,
