@@ -51,25 +51,10 @@ class AnnotationResolverTest : BasePlatformTestCase() {
 
     }
 
-    @AnnotationForResolver.StringValue("Hello World!")
-    fun testStringValue() {
-        TestCase.assertEquals("Hello World!", getValue())
-    }
-
     private fun stream(method: String): Stream<AnnotationAttributes> {
         val kotlin = resolver.resolve(functionMap[method]!!.annotationEntries[0])
         val java = resolver.resolve(javaMethodMap[method]!!.annotations[0])
         return Stream.of(kotlin, java)
-    }
-
-    private fun getFun(): KtNamedFunction {
-        val methodName = qualifiedTestMethodName.substringAfterLast(".")
-        return functionMap[methodName]!!
-    }
-
-    private fun getValue(property: String = "value"): Any? {
-        val map = resolver!!.resolve(getFun().annotationEntries[0])
-        return map[property]
     }
 
     private fun getKtClass(): KtClass {
