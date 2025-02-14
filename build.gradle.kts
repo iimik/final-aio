@@ -1,6 +1,4 @@
-import org.gradle.internal.impldep.org.joda.time.format.ISODateTimeFormat.date
 import org.jetbrains.changelog.Changelog
-import org.jetbrains.changelog.ChangelogSectionUrlBuilder
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import java.util.stream.Collectors
@@ -73,7 +71,10 @@ intellijPlatform {
             val foundMatches = regex.findAll(it)
             var formatIssues: String = it
             foundMatches.forEach { result ->
-                formatIssues = formatIssues.replace("(${result.value})", "([${result.value}](https://github.com/iimik/final-aio/issues/${result.value.trimStart('#')}))")
+                formatIssues = formatIssues.replace(
+                    "(${result.value})",
+                    "([${result.value}](https://github.com/iimik/final-aio/issues/${result.value.trimStart('#')}))"
+                )
             }
             formatIssues
         }.get().let(::markdownToHTML)
@@ -87,13 +88,18 @@ intellijPlatform {
                     .collect(Collectors.toMap({ it.key }, {
                         val values = it.value
                         val regex = Regex("""(#\d+)""")
-                        values.map { value -> val foundMatches = regex.findAll(value)
+                        values.map { value ->
+                            val foundMatches = regex.findAll(value)
                             var formatIssues: String = value
                             foundMatches.forEach { result ->
-                                formatIssues = formatIssues.replace("(${result.value})", "([${result.value}](https://github.com/iimik/final-aio/issues/${result.value.trimStart('#')}))")
+                                formatIssues = formatIssues.replace(
+                                    "(${result.value})",
+                                    "([${result.value}](https://github.com/iimik/final-aio/issues/${result.value.trimStart('#')}))"
+                                )
                             }
-                            formatIssues }.toSet()
-                         }))
+                            formatIssues
+                        }.toSet()
+                    }))
                 val newItem = Changelog.Item(item.version, item.header, item.summary, item.isUnreleased, sections)
 
 
@@ -123,7 +129,8 @@ intellijPlatform {
         // The pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
         // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
-        channels = providers.gradleProperty("pluginVersion").map { listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" }) }
+        channels =
+            providers.gradleProperty("pluginVersion").map { listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" }) }
     }
 
     pluginVerification {
