@@ -161,6 +161,12 @@ tasks {
         dependsOn(patchChangelog)
     }
 
+    test {
+        jvmArgumentProviders += CommandLineArgumentProvider {
+            listOf("-Didea.kotlin.plugin.use.k2=true")
+        }
+    }
+
 }
 
 intellijPlatformTesting {
@@ -173,7 +179,8 @@ intellijPlatformTesting {
                         "-Dide.mac.message.dialogs.as.sheets=false",
                         "-Djb.privacy.policy.text=<!--999.999-->",
                         "-Djb.consents.confirmation.enabled=false",
-                        "-Xmx4096m"
+                        "-Xmx4096m",
+                        "-Didea.kotlin.plugin.use.k2=true"
                     )
                 }
             }
