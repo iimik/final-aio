@@ -6,6 +6,7 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.util.SpiUtil
+import org.jetbrains.kotlin.idea.base.util.module
 import java.awt.event.MouseEvent
 
 
@@ -30,6 +31,7 @@ class MybatisLineMarkerProvider : LineMarkerProvider {
         return builder.createLineMarkerInfo(
             element
         ) { mouseEvent: MouseEvent?, element: PsiElement? ->
+            DefaultMapperOpener(element!!.project, element!!.module!!).open(mybatisMarker)
         }
     }
 
