@@ -22,14 +22,10 @@
         <codeInsight.lineMarkerProvider
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
-        <!-- Api Markdown -->
+        <!-- Api -->
         <codeInsight.lineMarkerProvider
                 language="UAST"
-                implementationClass="org.ifinalframework.plugins.aio.api.markdown.ApiMarkdownLineMarkerProvider"/>
-        <!-- Api View -->
-        <codeInsight.lineMarkerProvider
-                language="UAST"
-                implementationClass="org.ifinalframework.plugins.aio.api.open.OpenApiLineMarkerProvider"/>
+                implementationClass="org.ifinalframework.plugins.aio.api.ApiLineMarkerProvider"/>
     </extensions>
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
         <supportsKotlinPluginMode supportsK2="true" />

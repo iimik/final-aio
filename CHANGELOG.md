@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### 优化
+
+- 优化ApiLineMarkerProvider。
+
 ## [0.0.2] - 2025-02-06
 
 ### 新增
