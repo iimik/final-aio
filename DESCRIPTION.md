@@ -1,4 +1,17 @@
-Final AIO(All In One)旨在打造一个为开发者提供快速开发的一站式插件。
+# English
+
+## Issue Management
+
+- 🔥Add issue line marker, open it in browser when click it. support git and jira. [See Detail](https://github.com/iimik/final-aio/blob/main/docs/issue.md)
+
+## Api Management
+
+- 🔥Add api method markdown line marker, open the markdown file when click it, auto create when file is not exists.
+- 🔥Add api method view line marker, open api doc in browser when click it.
+
+---
+
+## 中文 
 
 ## Issue 管理
 
