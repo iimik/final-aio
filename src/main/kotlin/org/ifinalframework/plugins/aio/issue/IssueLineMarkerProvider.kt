@@ -7,7 +7,6 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.application.ElementApplication
-import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.util.SpiUtil
 import java.awt.event.MouseEvent
 
