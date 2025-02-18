@@ -1,5 +1,6 @@
 package org.ifinalframework.plugins.aio.issue;
 
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.ifinalframework.plugins.aio.application.condition.ConditionOnMarkdown
@@ -21,8 +22,9 @@ import org.springframework.stereotype.Component
 class MarkdownIssueService : IssueService {
 
     override fun getIssue(element: PsiElement): Issue? {
-        if (element is LeafPsiElement && element.elementType.toString().equals("Markdown:TEXT", true)) {
+        if (element is LeafPsiElement && element.elementType.toString().equals("Markdown:Markdown:TEXT", true)) {
             val input = element.text
+            logger<MarkdownIssueService>().info("input: $input")
             if (Regex("^#\\d+").matches(input)) {
                 return Issue(IssueType.ISSUE, input.trimStart('#'))
             }
