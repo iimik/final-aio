@@ -25,6 +25,12 @@ class AllIcons {
         }
     }
 
+    class Mybatis {
+        companion object {
+            val RED  = load("assets/icons/mybatis-red.svg")
+        }
+    }
+
     companion object {
         fun load(path: String): Icon {
             return IconLoader.getIcon(path, AllIcons::class.java)
