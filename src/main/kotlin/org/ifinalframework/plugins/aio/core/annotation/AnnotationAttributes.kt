@@ -13,6 +13,7 @@ class AnnotationAttributes : LinkedHashMap<String, Any?> {
         putAll(map)
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <T> getList(attributeName: String): List<T>? {
         val value = get(attributeName) ?: return null
         return if (value is List<*>) {
