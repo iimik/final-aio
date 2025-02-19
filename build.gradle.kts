@@ -41,6 +41,9 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.2.0")
     testImplementation("org.springframework.boot:spring-boot-starter-web:${properties["spring.boot.version"]}")
     testImplementation("org.springframework.boot:spring-boot-starter-test:${properties["spring.boot.version"]}")
+    // https://mvnrepository.com/artifact/org.mybatis/mybatis
+    testImplementation("org.mybatis:mybatis:3.5.19")
+
 
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {

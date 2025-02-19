@@ -1,6 +1,9 @@
 package org.ifinalframework.plugins.aio.mybatis;
 
 
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.InsertProvider;
+
 /**
  * JavaMapper
  *
@@ -13,6 +16,12 @@ public interface JavaMapper {
     default int defaultInsert() {
         return insert();
     }
+
+    @Insert("")
+    int insertWithInsert();
+
+    @InsertProvider
+    int insertWithProvider();
 
     int update();
 

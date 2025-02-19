@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component
  *
  * - 接口
  * - 非`default`方法
+ * - 未被特定注解标记，如`@Insert`、`@InsertProvider`等。
  *
  * @author iimik
  * @since 0.0.4
@@ -33,9 +34,15 @@ class JvmMybatisLineMarkerService : MybatisLineMarkerService {
 
         val parent = uElement.uastParent ?: return null
 
-        // 排除默认方法
-        if (parent is UMethod && parent.hasModifierProperty(PsiModifier.DEFAULT)) {
-            return null
+        if (parent is UMethod) {
+
+            // 排除默认方法
+            if (parent.hasModifierProperty(PsiModifier.DEFAULT)) {
+                return null
+            }
+            // 含有特定注解
+            MybatisAnnotations.ALL_STATEMENTS.map { parent.hasAnnotation(it) }.firstOrNull { it }?.let { return null }
+
         }
 
         return when (parent) {
