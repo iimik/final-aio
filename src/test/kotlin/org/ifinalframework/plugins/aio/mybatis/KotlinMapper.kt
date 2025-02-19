@@ -15,4 +15,10 @@ interface KotlinMapper {
         return insert()
     }
 
+    fun delete(): Int
+
+    fun update(): Int
+
+    fun select(): Int
+
 }
