@@ -13,8 +13,9 @@ import org.ifinalframework.plugins.aio.spi.annotation.LanguageSpi
  * @since 0.0.4
  **/
 @LanguageSpi<MybatisLineMarkerService>(
-    JavaMybatisLineMarkerService::class,
-    KotlinMybatisLineMarkerService::class
+//    JavaMybatisLineMarkerService::class,
+//    KotlinMybatisLineMarkerService::class,
+    JvmMybatisLineMarkerService::class
 )
 @FunctionalInterface
 interface MybatisLineMarkerService {
