@@ -27,7 +27,8 @@ class AllIcons {
 
     class Mybatis {
         companion object {
-            val RED  = load("assets/icons/mybatis-red.svg")
+            val JVM  = load("assets/icons/mybatis-jvm.svg")
+            val XML  = load("assets/icons/mybatis-xml.svg")
         }
     }
 

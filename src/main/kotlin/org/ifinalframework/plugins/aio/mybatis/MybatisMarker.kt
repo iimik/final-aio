@@ -10,5 +10,5 @@ import com.intellij.psi.PsiElement
  * @since 0.0.4
  **/
 data class MybatisMarker(
-    val element: PsiElement,
+    val element: PsiElement?,
 )

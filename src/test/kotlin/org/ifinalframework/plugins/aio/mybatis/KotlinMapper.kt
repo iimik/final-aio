@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.InsertProvider
 interface KotlinMapper {
 
     fun insert(): Int
-
+    
     fun defaultInsert(): Int {
         return insert()
     }
