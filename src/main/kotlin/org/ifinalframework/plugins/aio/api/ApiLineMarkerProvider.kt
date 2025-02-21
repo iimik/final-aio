@@ -1,6 +1,5 @@
 package org.ifinalframework.plugins.aio.api;
 
-import com.github.iimik.finalaio.I18NBundle
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
@@ -10,6 +9,7 @@ import org.ifinalframework.plugins.aio.api.open.OpenApiApplication
 import org.ifinalframework.plugins.aio.api.spi.SpringApiMethodService
 import org.ifinalframework.plugins.aio.application.ElementApplication
 import org.ifinalframework.plugins.aio.resource.AllIcons
+import org.ifinalframework.plugins.aio.resource.I18N
 
 
 /**
@@ -54,7 +54,7 @@ class ApiLineMarkerProvider: LineMarkerProvider {
         val builder: NavigationGutterIconBuilder<PsiElement> =
             NavigationGutterIconBuilder.create(AllIcons.Api.MARKDOWN)
         builder.setTargets(element)
-        builder.setTooltipText(I18NBundle.message("ApiMarkdownLineMarkerProvider.tooltip"))
+        builder.setTooltipText(I18N.message("ApiMarkdownLineMarkerProvider.tooltip"))
         return builder.createLineMarkerInfo(
             element
         ) { mouseEvent, psiElement ->

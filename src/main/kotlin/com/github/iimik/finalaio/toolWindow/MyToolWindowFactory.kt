@@ -8,8 +8,8 @@ import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
 import com.intellij.ui.content.ContentFactory
-import com.github.iimik.finalaio.I18NBundle
 import com.github.iimik.finalaio.services.MyProjectService
+import org.ifinalframework.plugins.aio.resource.I18N
 import javax.swing.JButton
 
 
@@ -32,12 +32,12 @@ class MyToolWindowFactory : ToolWindowFactory {
         private val service = toolWindow.project.service<MyProjectService>()
 
         fun getContent() = JBPanel<JBPanel<*>>().apply {
-            val label = JBLabel(I18NBundle.message("randomLabel", "?"))
+            val label = JBLabel(I18N.message("randomLabel", "?"))
 
             add(label)
-            add(JButton(I18NBundle.message("shuffle")).apply {
+            add(JButton(I18N.message("shuffle")).apply {
                 addActionListener {
-                    label.text = I18NBundle.message("randomLabel", service.getRandomNumber())
+                    label.text = I18N.message("randomLabel", service.getRandomNumber())
                 }
             })
         }
