@@ -20,11 +20,12 @@ class MapperLineMarkerProvider : RelatedItemLineMarkerProvider() {
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         val service = element.project.getService(JvmMapperLineMarkerService::class.java)
         service.apply(element)?.let {
-            val icon = if (element.language.id.equals("xml", ignoreCase = true)) AllIcons.Mybatis.XML else AllIcons.Mybatis.JVM
+            if(it.targets == null) return@let
+            val icon = AllIcons.Mybatis.JVM
             val navigationGutterIconBuilder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(icon)
             navigationGutterIconBuilder.setTooltipText("跳转到Mapper")
             navigationGutterIconBuilder.setAlignment(GutterIconRenderer.Alignment.CENTER)
-            navigationGutterIconBuilder.setTargets(Optional.ofNullable(it.element).orElse(element))
+            navigationGutterIconBuilder.setTargets(it.targets!!)
             result.add(navigationGutterIconBuilder.createLineMarkerInfo(element))
         }
     }

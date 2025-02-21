@@ -10,5 +10,11 @@ import com.intellij.psi.PsiElement
  * @since 0.0.4
  **/
 data class MybatisMarker(
-    val element: PsiElement?,
-)
+    val targets: List<PsiElement>?
+) {
+    companion object {
+
+        val NOT_EXISTS = MybatisMarker(null)
+
+    }
+}

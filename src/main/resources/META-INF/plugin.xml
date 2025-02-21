@@ -31,6 +31,10 @@
         <codeInsight.lineMarkerProvider
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.MapperLineMarkerProvider"/>
+        <localInspection language="UAST"
+                         displayName="Mapper Inspection"
+                         groupName="Mybatis" enabledByDefault="true" level="ERROR"
+                         implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.MapperInspection"/>
         <!-- End Mybatis -->
     </extensions>
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
