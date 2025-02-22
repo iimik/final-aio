@@ -10,7 +10,7 @@ import com.intellij.psi.PsiElement
  * @since 0.0.4
  **/
 data class MybatisMarker(
-    val targets: List<PsiElement>?
+    val targets: Collection<PsiElement>?
 ) {
     companion object {
 

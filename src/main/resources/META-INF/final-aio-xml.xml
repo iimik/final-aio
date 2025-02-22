@@ -4,6 +4,5 @@
     </extensionPoints>
     <extensions defaultExtensionNs="com.intellij">
         <!-- Mybatis       -->
-        <dom.fileMetaData rootTagName="mapper" implementation="org.ifinalframework.plugins.aio.mybatis.xml.MapperDescription"/>
     </extensions>
 </idea-plugin>

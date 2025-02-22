@@ -41,6 +41,13 @@ interface IdDomElement : DomElement {
     fun setValue(content: String)
 }
 
+interface ResultMap : IdDomElement {
+    @Required
+    @NameValue
+    @Attribute("type")
+    fun getType(): GenericAttributeValue<String>
+}
+
 interface Statement : IdDomElement {
 }
 
