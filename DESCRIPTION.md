@@ -2,7 +2,7 @@
 
 ## Issue Management
 
-- 🔥Add issue line marker, open it in browser when click it. support git and jira. [See Detail](https://github.com/iimik/final-aio/blob/main/docs/issue.md)
+- 🔥Add issue line marker, open it in browser when click it. support git and jira. [See Detail](/docs/issue.md)
 
 ## Api Management
 

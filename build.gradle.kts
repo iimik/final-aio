@@ -67,18 +67,28 @@ dependencies {
 intellijPlatform {
     pluginConfiguration {
         version = providers.gradleProperty("pluginVersion")
+        val pluginRepositoryUrl = providers.gradleProperty("pluginRepositoryUrl")
 
         // Extract the <!-- Plugin description --> section from DESCRIPTION.md and provide for the plugin's manifest
         description = providers.fileContents(layout.projectDirectory.file("DESCRIPTION.md")).asText.map {
             val regex = Regex("""(#\d+)""")
-            val foundMatches = regex.findAll(it)
+            var foundMatches = regex.findAll(it)
             var formatIssues: String = it
             foundMatches.forEach { result ->
                 formatIssues = formatIssues.replace(
                     "(${result.value})",
-                    "([${result.value}](https://github.com/iimik/final-aio/issues/${result.value.trimStart('#')}))"
+                    "([${result.value}](${pluginRepositoryUrl}/issues/${result.value.trimStart('#')}))"
                 )
             }
+
+            val mdRegex = Regex("""((/\w+)+\.md)""")
+            foundMatches = mdRegex.findAll(it)
+            foundMatches.forEach { result ->
+                val value = "(${result.value})"
+                val newValue = "(${pluginRepositoryUrl}/blob/main${result.value})"
+                formatIssues = formatIssues.replace(value, newValue)
+            }
+
             formatIssues
         }.get().let(::markdownToHTML)
 
@@ -97,7 +107,7 @@ intellijPlatform {
                             foundMatches.forEach { result ->
                                 formatIssues = formatIssues.replace(
                                     "(${result.value})",
-                                    "([${result.value}](https://github.com/iimik/final-aio/issues/${result.value.trimStart('#')}))"
+                                    "([${result.value}](${pluginRepositoryUrl}/issues/${result.value.trimStart('#')}))"
                                 )
                             }
                             formatIssues
