@@ -1,0 +1,24 @@
+<idea-plugin>
+    <extensionPoints>
+
+    </extensionPoints>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Start Mybatis -->
+        <codeInsight.lineMarkerProvider
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.MapperLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.ResultMapLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider
+                language="XML"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.StatementLineMarkerProvider"/>
+        <!--        <localInspection-->
+        <!--                language="UAST"-->
+        <!--                displayName="Mapper Inspection"-->
+        <!--                groupName="Mybatis" enabledByDefault="true" level="ERROR"-->
+        <!--                implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.MapperInspection"/>-->
+        <dom.fileMetaData rootTagName="mapper" implementation="org.ifinalframework.plugins.aio.mybatis.xml.MapperDescription"/>
+        <!-- End Mybatis -->
+    </extensions>
+</idea-plugin>

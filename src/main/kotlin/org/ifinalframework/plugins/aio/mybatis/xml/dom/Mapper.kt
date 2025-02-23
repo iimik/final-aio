@@ -15,6 +15,9 @@ interface Mapper : DomElement {
     @Attribute("namespace")
     fun getNamespace(): GenericAttributeValue<String>
 
+    @SubTagList("resultMap")
+    fun getResultMaps(): List<ResultMap>
+
     @SubTagsList("insert", "delete", "update", "select")
     fun getStatements(): List<Statement>
 
