@@ -1,8 +1,0 @@
-<idea-plugin>
-    <extensionPoints>
-
-    </extensionPoints>
-    <extensions defaultExtensionNs="com.intellij">
-        <!-- Mybatis       -->
-    </extensions>
-</idea-plugin>

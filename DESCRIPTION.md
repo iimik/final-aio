@@ -9,13 +9,18 @@
 - 🔥Add api method markdown line marker, open the markdown file when click it, auto create when file is not exists.
 - 🔥Add api method view line marker, open api doc in browser when click it.
 
+
+## MyBatis
+
+- 🔥Add MyBatis line marker, quick skip between java and xml.
+
 ---
 
 ## 中文 
 
 ## Issue 管理
 
-- 🔥添加Issue行标记，点击行标记可在浏览器中打开对应的URL，支持Git Issue和Jira。[详情](https://github.com/iimik/final-aio/blob/main/docs/issue.md)
+- 🔥添加Issue行标记，点击行标记可在浏览器中打开对应的URL，支持Git Issue和Jira。[详情](/docs/issue.md)
     - 支持以下格式：
         ```java
         /**
@@ -43,3 +48,7 @@
 
 - 🔥添加Api Method Markdown行标记，点击行标记可快速打开Markdown文件，不存在时自动创建。
 - 🔥添加Api Method View行标记，点击行标记可快速在浏览器中打开对应在线文档。 
+
+## MyBatis
+
+- 🔥添加 MyBatis 行标记，在Java/Kotlin和Xml文件中快速跳转。

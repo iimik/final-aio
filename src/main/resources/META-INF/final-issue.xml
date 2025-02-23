@@ -1,0 +1,14 @@
+<idea-plugin>
+    <extensionPoints>
+
+    </extensionPoints>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Issue -->
+        <codeInsight.lineMarkerProvider
+                language="Markdown"
+                implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
+    </extensions>
+</idea-plugin>

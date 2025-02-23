@@ -8,27 +8,15 @@
 
     <resource-bundle>messages.i18n</resource-bundle>
 
-    <depends config-file="final-api-java.xml">com.intellij.modules.java</depends>
-    <depends config-file="final-aio-mybatis.xml">com.intellij.modules.java</depends>
+    <depends config-file="final-issue.xml">com.intellij.modules.java</depends>
+    <depends config-file="final-api.xml">com.intellij.modules.java</depends>
+    <depends config-file="final-mybatis.xml">com.intellij.modules.java</depends>
     <depends config-file="final-api-kotlin.xml">org.jetbrains.kotlin</depends>
-    <depends config-file="final-aio-xml.xml">com.intellij.modules.xml</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="FINAL_AIO_BALLOON"/>
         <notificationGroup displayType="TOOL_WINDOW" id="FINAL_AIO_TOOL_WINDOW"/>
         <notificationGroup displayType="STICKY_BALLOON" id="FINAL_AIO_STICKY_BALLOON"/>
-        <!-- Issue -->
-        <codeInsight.lineMarkerProvider
-                language="Markdown"
-                implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider
-                language="UAST"
-                implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
-        <!-- Api -->
-        <codeInsight.lineMarkerProvider
-                language="UAST"
-                implementationClass="org.ifinalframework.plugins.aio.api.ApiLineMarkerProvider"/>
-
     </extensions>
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
         <supportsKotlinPluginMode supportsK2="true"/>
