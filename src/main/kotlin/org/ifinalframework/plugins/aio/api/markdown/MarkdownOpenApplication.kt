@@ -59,7 +59,6 @@ class MarkdownOpenApplication(
     @Resource
     private lateinit var apiMethodService: ApiMethodService
 
-
     override fun handle(element: PsiElement) {
 
         val apiMarker = apiMethodService.getApiMarker(element) ?: return

@@ -1,15 +1,17 @@
 package org.ifinalframework.plugins.aio.api;
 
-import com.intellij.codeInsight.daemon.LineMarkerInfo
-import com.intellij.codeInsight.daemon.LineMarkerProvider
+import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.api.markdown.MarkdownOpenApplication
 import org.ifinalframework.plugins.aio.api.open.OpenApiApplication
-import org.ifinalframework.plugins.aio.api.spi.SpringApiMethodService
+import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
 import org.ifinalframework.plugins.aio.application.ElementApplication
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
+import org.jetbrains.uast.UIdentifier
+import org.jetbrains.uast.toUElement
 
 
 /**
@@ -18,17 +20,13 @@ import org.ifinalframework.plugins.aio.resource.I18N
  * @author iimik
  * @since 0.0.2
  **/
-class ApiLineMarkerProvider: LineMarkerProvider {
+class ApiLineMarkerProvider: RelatedItemLineMarkerProvider() {
 
-    private val apiMethodService = SpringApiMethodService()
-
-    override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
-        return null
-    }
-
-    override fun collectSlowLineMarkers(elements: MutableList<out PsiElement>, result: MutableCollection<in LineMarkerInfo<*>>) {
-        elements.forEach { element ->
-            apiMethodService.getApiMarker(element)?.apply {
+    override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
+        val uElement = element.toUElement() ?: return
+        if(uElement is UIdentifier){
+            val apiMethodService = element.project.getService(ApiMethodService::class.java)
+            apiMethodService.getApiMarker(element.parent)?.let {
                 result.add(buildOpenApiLineMarkerInfo(element))
                 result.add(buildOpenMarkdownLineMarkerInfo(element))
             }
@@ -38,19 +36,19 @@ class ApiLineMarkerProvider: LineMarkerProvider {
     /**
      * @issue 16
      */
-    private fun buildOpenApiLineMarkerInfo(element: PsiElement): LineMarkerInfo<*> {
+    private fun buildOpenApiLineMarkerInfo(element: PsiElement): RelatedItemLineMarkerInfo<*> {
         val builder = NavigationGutterIconBuilder.create(AllIcons.Api.VIEW)
         builder.setTargets(element)
         builder.setTooltipText("Open API")
         return builder.createLineMarkerInfo(element) { e, elt ->
-            ElementApplication.run(OpenApiApplication::class, element)
+            ElementApplication.run(OpenApiApplication::class, element.parent)
         }
     }
 
     /**
      * @issue 14
      */
-    private fun buildOpenMarkdownLineMarkerInfo(element: PsiElement): LineMarkerInfo<*> {
+    private fun buildOpenMarkdownLineMarkerInfo(element: PsiElement): RelatedItemLineMarkerInfo<*> {
         val builder: NavigationGutterIconBuilder<PsiElement> =
             NavigationGutterIconBuilder.create(AllIcons.Api.MARKDOWN)
         builder.setTargets(element)
@@ -59,7 +57,7 @@ class ApiLineMarkerProvider: LineMarkerProvider {
             element
         ) { mouseEvent, psiElement ->
             // #15 open markdown
-            ElementApplication.run(MarkdownOpenApplication::class, psiElement)
+            ElementApplication.run(MarkdownOpenApplication::class, element.parent)
         }
     }
 }

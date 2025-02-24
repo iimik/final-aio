@@ -8,7 +8,6 @@ import org.ifinalframework.plugins.aio.core.annotation.AnnotationAttributes
 import org.ifinalframework.plugins.aio.jvm.AnnotationResolver
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.util.SpiUtil
-import org.jetbrains.uast.UIdentifier
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.getContainingUClass
 import org.jetbrains.uast.toUElement
@@ -28,19 +27,16 @@ class SpringApiMethodService : ApiMethodService {
     override fun getApiMarker(element: PsiElement): ApiMarker? {
 
         val uElement = R.computeInRead { element.toUElement() } ?: return null
-        if (uElement !is UIdentifier) return null
 
-        val uParent = R.computeInRead { uElement.uastParent } ?: return null
-
-        return when (uParent) {
+        return when (uElement) {
             is UMethod -> {
-                val uClass = R.computeInRead { uParent.getContainingUClass() } ?: return null
+                val uClass = R.computeInRead { uElement.getContainingUClass() } ?: return null
                 val category = docService.getSummary(uClass.sourcePsi!!) ?: uClass.name ?: return null
-                val name = docService.getSummary(uParent.sourcePsi!!) ?: uParent.name
+                val name = docService.getSummary(uElement.sourcePsi!!) ?: uElement.name
 
                 val clazzRequestAnnotation = R.computeInRead { uClass.findAnnotation(SpringAnnotations.REQUEST_MAPPING) }
                 val methodRequestMappingAnn =
-                    SpringAnnotations.REQUEST_MAPPINGS.firstNotNullOfOrNull { R.computeInRead { uParent.findAnnotation(it) } }
+                    SpringAnnotations.REQUEST_MAPPINGS.firstNotNullOfOrNull { R.computeInRead { uElement.findAnnotation(it) } }
                         ?: return null
 
                 val qualifiedName = methodRequestMappingAnn.qualifiedName
