@@ -8,15 +8,42 @@
 
     <resource-bundle>messages.i18n</resource-bundle>
 
-    <depends config-file="final-issue.xml">com.intellij.modules.java</depends>
-    <depends config-file="final-api.xml">com.intellij.modules.java</depends>
-    <depends config-file="final-mybatis.xml">com.intellij.modules.java</depends>
-    <depends config-file="final-api-kotlin.xml">org.jetbrains.kotlin</depends>
+    <depends config-file="final-java.xml">com.intellij.modules.java</depends>
+    <depends config-file="final-kotlin.xml">org.jetbrains.kotlin</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="FINAL_AIO_BALLOON"/>
         <notificationGroup displayType="TOOL_WINDOW" id="FINAL_AIO_TOOL_WINDOW"/>
         <notificationGroup displayType="STICKY_BALLOON" id="FINAL_AIO_STICKY_BALLOON"/>
+        <!-- Api -->
+        <codeInsight.lineMarkerProvider
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.api.ApiLineMarkerProvider"/>
+
+        <!-- Issue -->
+        <codeInsight.lineMarkerProvider
+                language="Markdown"
+                implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
+        <!-- Start Mybatis -->
+        <codeInsight.lineMarkerProvider
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.MapperLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.ResultMapLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider
+                language="XML"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.StatementLineMarkerProvider"/>
+        <!--        <localInspection-->
+        <!--                language="UAST"-->
+        <!--                displayName="Mapper Inspection"-->
+        <!--                groupName="Mybatis" enabledByDefault="true" level="ERROR"-->
+        <!--                implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.MapperInspection"/>-->
+        <dom.fileMetaData rootTagName="mapper" implementation="org.ifinalframework.plugins.aio.mybatis.xml.MapperDescription"/>
+        <!-- End Mybatis -->
     </extensions>
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
         <supportsKotlinPluginMode supportsK2="true"/>

@@ -4,7 +4,6 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 
 
@@ -17,7 +16,6 @@ import com.intellij.psi.search.GlobalSearchScope
 @Service(Service.Level.PROJECT)
 class PsiService(val project: Project) {
     private val javaPsiFacade = JavaPsiFacade.getInstance(project)
-    private val psiManager: PsiManager = PsiManager.getInstance(project)
 
     /**
      */
