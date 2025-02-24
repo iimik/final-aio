@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### 新增
+
+- Spring
+  - 🔥添加Spring Cloud Feign 行标记，在Controller和FeignClient之间快速跳转。(#28)
+
 ## [0.0.4] - 2025-02-23
 
 ### 新增

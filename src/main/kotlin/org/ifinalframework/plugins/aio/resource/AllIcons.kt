@@ -32,6 +32,13 @@ class AllIcons {
         }
     }
 
+    class Spring {
+        companion object {
+            val FEIGN = load("assets/icons/spring-cloud.svg")
+            val MVC = load("assets/icons/spring.svg")
+        }
+    }
+
     companion object {
         fun load(path: String): Icon {
             return IconLoader.getIcon(path, AllIcons::class.java)

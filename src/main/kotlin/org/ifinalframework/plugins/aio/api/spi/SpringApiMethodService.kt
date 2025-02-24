@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.constans.SpringAnnotations
 import org.ifinalframework.plugins.aio.api.model.ApiMarker
+import org.ifinalframework.plugins.aio.common.util.UAnnotatedKt.findAnyAnnotation
 import org.ifinalframework.plugins.aio.core.annotation.AnnotationAttributes
 import org.ifinalframework.plugins.aio.jvm.AnnotationResolver
 import org.ifinalframework.plugins.aio.psi.service.DocService
@@ -34,7 +35,8 @@ class SpringApiMethodService : ApiMethodService {
                 val category = docService.getSummary(uClass.sourcePsi!!) ?: uClass.name ?: return null
                 val name = docService.getSummary(uElement.sourcePsi!!) ?: uElement.name
 
-                val clazzRequestAnnotation = R.computeInRead { uClass.findAnnotation(SpringAnnotations.REQUEST_MAPPING) }
+                val clazzRequestAnnotation =
+                    R.computeInRead { uClass.findAnyAnnotation(SpringAnnotations.REQUEST_MAPPING, SpringAnnotations.FEIGN_CLIENT) }
                 val methodRequestMappingAnn =
                     SpringAnnotations.REQUEST_MAPPINGS.firstNotNullOfOrNull { R.computeInRead { uElement.findAnnotation(it) } }
                         ?: return null

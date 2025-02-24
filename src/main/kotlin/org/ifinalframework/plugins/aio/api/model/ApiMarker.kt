@@ -32,4 +32,8 @@ data class ApiMarker(
     enum class Type {
         CONTROLLER, METHOD
     }
+
+    fun contains(marker: ApiMarker): Boolean {
+        return marker.methods.any { methods.contains(it) } && marker.paths.any { paths.contains(it) }
+    }
 }

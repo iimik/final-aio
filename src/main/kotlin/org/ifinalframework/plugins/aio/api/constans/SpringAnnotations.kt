@@ -16,6 +16,8 @@ class SpringAnnotations {
         const val DELETE_MAPPING = "org.springframework.web.bind.annotation.DeleteMapping"
         const val PATCH_MAPPING = "org.springframework.web.bind.annotation.PatchMapping"
 
+        const val FEIGN_CLIENT = "org.springframework.cloud.openfeign.FeignClient"
+
         val REQUEST_MAPPINGS =
             setOf(REQUEST_MAPPING, GET_MAPPING, POST_MAPPING, PUT_MAPPING, PATCH_MAPPING, DELETE_MAPPING)
     }

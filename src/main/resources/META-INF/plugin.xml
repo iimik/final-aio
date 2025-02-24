@@ -18,11 +18,15 @@
 
         <projectService serviceImplementation="org.ifinalframework.plugins.aio.api.spi.SpringApiMethodService"
                         serviceInterface="org.ifinalframework.plugins.aio.api.spi.ApiMethodService"/>
-
-        <!-- Api -->
+<!--===================================================================================================================-->
+<!--==================================================      Api      ==================================================-->
+<!--===================================================================================================================-->
         <codeInsight.lineMarkerProvider
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.api.ApiLineMarkerProvider"/>
+<!--===================================================================================================================-->
+<!--==================================================     Issue     ==================================================-->
+<!--===================================================================================================================-->
 
         <!-- Issue -->
         <codeInsight.lineMarkerProvider
@@ -31,7 +35,9 @@
         <codeInsight.lineMarkerProvider
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
-        <!-- Start Mybatis -->
+<!--===================================================================================================================-->
+<!--==================================================    MyBatis    ==================================================-->
+<!--===================================================================================================================-->
         <codeInsight.lineMarkerProvider
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.MapperLineMarkerProvider"/>
@@ -47,12 +53,12 @@
         <!--                groupName="Mybatis" enabledByDefault="true" level="ERROR"-->
         <!--                implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.MapperInspection"/>-->
         <dom.fileMetaData rootTagName="mapper" implementation="org.ifinalframework.plugins.aio.mybatis.xml.MapperDescription"/>
-        <!-- End Mybatis -->
-        <!-- Start Spring -->
+<!--===================================================================================================================-->
+<!--==================================================    Spring     ==================================================-->
+<!--===================================================================================================================-->
         <codeInsight.lineMarkerProvider
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.spring.provider.SpringCloudFeignLineMarkerProvider"/>
-        <!-- End Spring -->
 
     </extensions>
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
