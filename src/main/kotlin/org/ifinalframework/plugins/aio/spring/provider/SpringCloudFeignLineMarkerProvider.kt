@@ -13,6 +13,7 @@ import com.intellij.util.containers.stream
 import org.ifinalframework.plugins.aio.api.constans.SpringAnnotations
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
 import org.ifinalframework.plugins.aio.resource.AllIcons
+import org.ifinalframework.plugins.aio.resource.I18N
 import org.ifinalframework.plugins.aio.service.PsiService
 import org.jetbrains.kotlin.idea.base.psi.kotlinFqName
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
@@ -30,6 +31,9 @@ import org.jetbrains.uast.*
 class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
     private val jvmFileExtensions = listOf("java", "kt")
+
+    private val mvcTooltip = I18N.message("Spring.SpringCloudFeignLineMarkerProvider.mvc.tooltip")
+    private val feignTooltip = I18N.message("Spring.SpringCloudFeignLineMarkerProvider.feign.tooltip")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         val u = element.toUElement() ?: return
@@ -59,8 +63,7 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
                                 .filter { clazz ->
                                     val toUElement = clazz.toUElement()
                                     return@filter if (toUElement is UClass) {
-                                        return@filter toUElement != null
-                                                && !toUElement.hasModifierProperty(PsiModifier.ABSTRACT)
+                                        return@filter !toUElement.hasModifierProperty(PsiModifier.ABSTRACT)
                                                 && toUElement.hasAnnotation(SpringAnnotations.REQUEST_MAPPING)
                                                 && toUElement.name != null && toUElement.name!!.endsWith("Controller")
                                     } else false
@@ -80,7 +83,7 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
                 if (methods.isNotEmpty()) {
                     val icon = AllIcons.Spring.MVC
                     val navigationGutterIconBuilder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(icon)
-                    navigationGutterIconBuilder.setTooltipText("跳转到Controller")
+                    navigationGutterIconBuilder.setTooltipText(feignTooltip)
                     navigationGutterIconBuilder.setAlignment(GutterIconRenderer.Alignment.CENTER)
                     navigationGutterIconBuilder.setTargets(methods)
                     result.add(navigationGutterIconBuilder.createLineMarkerInfo(element))
@@ -98,8 +101,7 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
                                 .filter { clazz ->
                                     val toUElement = clazz.toUElement()
                                     return@filter if (toUElement is UClass) {
-                                        return@filter toUElement != null
-                                                && toUElement.isInterface
+                                        return@filter toUElement.isInterface
                                                 && toUElement.hasAnnotation(SpringAnnotations.FEIGN_CLIENT)
                                                 && toUElement.name != null && toUElement.name!!.endsWith("Client")
                                     } else false
@@ -119,7 +121,7 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
                 if (methods.isNotEmpty()) {
                     val icon = AllIcons.Spring.FEIGN
                     val navigationGutterIconBuilder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(icon)
-                    navigationGutterIconBuilder.setTooltipText("跳转到Controller")
+                    navigationGutterIconBuilder.setTooltipText(mvcTooltip)
                     navigationGutterIconBuilder.setAlignment(GutterIconRenderer.Alignment.CENTER)
                     navigationGutterIconBuilder.setTargets(methods)
                     result.add(navigationGutterIconBuilder.createLineMarkerInfo(element))

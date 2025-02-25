@@ -11,6 +11,7 @@ import org.ifinalframework.plugins.aio.application.ElementApplication
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
 import org.jetbrains.uast.UIdentifier
+import org.jetbrains.uast.getContainingUClass
 import org.jetbrains.uast.toUElement
 
 
@@ -20,15 +21,19 @@ import org.jetbrains.uast.toUElement
  * @author iimik
  * @since 0.0.2
  **/
-class ApiLineMarkerProvider: RelatedItemLineMarkerProvider() {
+class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         val uElement = element.toUElement() ?: return
-        if(uElement is UIdentifier){
+        if (uElement is UIdentifier) {
+            val uClass = uElement.getContainingUClass()
             val apiMethodService = element.project.getService(ApiMethodService::class.java)
             apiMethodService.getApiMarker(element.parent)?.let {
                 result.add(buildOpenApiLineMarkerInfo(element))
-                result.add(buildOpenMarkdownLineMarkerInfo(element))
+                // 忽略接口
+                if(uClass != null && !uClass.isInterface){
+                    result.add(buildOpenMarkdownLineMarkerInfo(element))
+                }
             }
         }
     }

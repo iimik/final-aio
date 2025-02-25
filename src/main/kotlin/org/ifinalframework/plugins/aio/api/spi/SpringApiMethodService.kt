@@ -41,7 +41,7 @@ class SpringApiMethodService : ApiMethodService {
                     SpringAnnotations.REQUEST_MAPPINGS.firstNotNullOfOrNull { R.computeInRead { uElement.findAnnotation(it) } }
                         ?: return null
 
-                val qualifiedName = methodRequestMappingAnn.qualifiedName
+                val qualifiedName = R.computeInRead { methodRequestMappingAnn.qualifiedName }
                 val methodRequestAnnotationMap = annotationResolver.resolve(methodRequestMappingAnn.sourcePsi!!)
 
                 val methods = when (qualifiedName) {
