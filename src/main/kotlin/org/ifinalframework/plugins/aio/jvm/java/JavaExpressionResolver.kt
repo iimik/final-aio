@@ -15,6 +15,7 @@ class JavaExpressionResolver : ExpressionResolver<PsiElement> {
         return when (expression) {
             is PsiLiteralExpression -> expression.value
             is PsiReferenceExpression -> doResolveReferenceExpression(expression)
+            is PsiParenthesizedExpression -> expression.expression?.let { doResolve(it) }
             is PsiArrayInitializerMemberValue -> expression.initializers.map { resolve(it) }.toList()
             else -> expression
         }
