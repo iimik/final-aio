@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.api.spi;
+package org.ifinalframework.plugins.aio.api.spi
 
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.R

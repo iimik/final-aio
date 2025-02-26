@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.api;
+package org.ifinalframework.plugins.aio.api
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
@@ -31,7 +31,7 @@ class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
             apiMethodService.getApiMarker(element.parent)?.let {
                 result.add(buildOpenApiLineMarkerInfo(element))
                 // 忽略接口
-                if(uClass != null && !uClass.isInterface){
+                if (uClass != null && !uClass.isInterface) {
                     result.add(buildOpenMarkdownLineMarkerInfo(element))
                 }
             }
@@ -45,7 +45,7 @@ class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
         val builder = NavigationGutterIconBuilder.create(AllIcons.Api.VIEW)
         builder.setTargets(element)
         builder.setTooltipText("Open API")
-        return builder.createLineMarkerInfo(element) { e, elt ->
+        return builder.createLineMarkerInfo(element) { _, _ ->
             ElementApplication.run(OpenApiApplication::class, element.parent)
         }
     }
@@ -60,7 +60,7 @@ class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
         builder.setTooltipText(I18N.message("ApiMarkdownLineMarkerProvider.tooltip"))
         return builder.createLineMarkerInfo(
             element
-        ) { mouseEvent, psiElement ->
+        ) { _, _ ->
             // #15 open markdown
             ElementApplication.run(MarkdownOpenApplication::class, element.parent)
         }

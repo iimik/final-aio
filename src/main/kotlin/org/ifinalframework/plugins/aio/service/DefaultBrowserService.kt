@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.service;
+package org.ifinalframework.plugins.aio.service
 
 import org.springframework.stereotype.Service
 import java.awt.Desktop

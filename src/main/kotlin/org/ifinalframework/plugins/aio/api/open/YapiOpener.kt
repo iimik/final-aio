@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.api.open;
+package org.ifinalframework.plugins.aio.api.open
 
 import org.ifinalframework.plugins.aio.api.ApiProperties
 import org.ifinalframework.plugins.aio.api.model.ApiMarker
@@ -26,7 +26,7 @@ class YapiOpener(
     override fun open(apiMarker: ApiMarker) {
 
         val contextPath = apiProperties.contextPath?.trimEnd('/') ?: ""
-        val methodPath = apiMarker.paths.first()?.trimStart('/')
+        val methodPath = apiMarker.paths.first().trimStart('/')
 
         val path = "$contextPath/$methodPath"
         val api = yapiService.getApi(apiMarker.category, apiMarker.methods.first(), path) ?: return

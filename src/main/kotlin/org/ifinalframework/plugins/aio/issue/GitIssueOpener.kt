@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.issue;
+package org.ifinalframework.plugins.aio.issue
 
 import com.intellij.openapi.diagnostic.logger
 import org.ifinalframework.plugins.aio.git.GitService
