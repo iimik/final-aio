@@ -2,8 +2,6 @@ package org.ifinalframework.plugins.aio.git;
 
 import com.intellij.openapi.project.Project
 import org.eclipse.jgit.api.Git
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 import java.io.File
 import java.util.stream.Collectors
@@ -15,13 +13,9 @@ import java.util.stream.Collectors
  * @author iimik
  * @since 0.0.1
  **/
-@Component
 class DefaultGitService(
-    private val gitDir: String
+    val project: Project
 ) : GitService {
-
-    @Autowired
-    constructor(project: Project) : this(project.basePath!!)
 
     override fun getRemotes(): List<GitRemote> {
         val git = getGit()
@@ -60,7 +54,7 @@ class DefaultGitService(
     }
 
     private fun getGit(): Git {
-        return Git.open(File(gitDir))
+        return Git.open(File(project.basePath))
     }
 
 }

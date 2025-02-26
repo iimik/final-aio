@@ -3,7 +3,6 @@ package org.ifinalframework.plugins.aio.issue;
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.application.ElementHandler
 import org.ifinalframework.plugins.aio.application.annotation.ElementApplication
-import org.ifinalframework.plugins.aio.git.DefaultGitService
 import org.ifinalframework.plugins.aio.psi.service.DocService
 
 
@@ -17,7 +16,6 @@ import org.ifinalframework.plugins.aio.psi.service.DocService
     value = [
         IssueService::class,
         DocService::class,
-        DefaultGitService::class,
         GitIssueOpener::class,
         JiraIssueOpener::class
     ]

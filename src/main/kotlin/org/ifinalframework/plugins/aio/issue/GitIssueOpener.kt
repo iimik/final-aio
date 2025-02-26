@@ -5,7 +5,6 @@ import com.intellij.openapi.project.Project
 import org.ifinalframework.plugins.aio.common.util.getService
 import org.ifinalframework.plugins.aio.git.GitService
 import org.ifinalframework.plugins.aio.service.BrowserService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 
@@ -19,29 +18,19 @@ import org.springframework.stereotype.Component
 @Component
 class GitIssueOpener(
     private val project: Project,
-    /**
-     * Git Service
-     */
-    private val gitService: GitService,
-    /**
-     * Git issue url formatter
-     */
-    private val gitIssueUrlFormatter: GitIssueUrlFormatter,
 ) : IssueOpener {
 
-
-    @Autowired
-    constructor(project: Project, gitService: GitService) : this(project, gitService, GitVendorIssueUrlFormatter())
-
+    private val gitIssueUrlFormatter: GitIssueUrlFormatter = GitVendorIssueUrlFormatter()
 
     private val logger = logger<GitIssueOpener>()
+
     override fun open(issue: Issue) {
 
         if (IssueType.ISSUE != issue.type) {
             return
         }
 
-        val remote = gitService.getDefaultRemote()
+        val remote = project.getService<GitService>().getDefaultRemote()
         val url = gitIssueUrlFormatter.format(remote, issue)
         logger.info("Opening git issue: $url")
         project.getService<BrowserService>().open(url)
