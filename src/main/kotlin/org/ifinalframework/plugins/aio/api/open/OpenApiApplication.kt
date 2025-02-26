@@ -10,7 +10,6 @@ import org.ifinalframework.plugins.aio.api.yapi.YapiClient
 import org.ifinalframework.plugins.aio.api.yapi.YapiProperties
 import org.ifinalframework.plugins.aio.application.ElementHandler
 import org.ifinalframework.plugins.aio.application.annotation.ElementApplication
-import org.ifinalframework.plugins.aio.service.BrowserService
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.openfeign.EnableFeignClients
 
@@ -24,7 +23,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients
 @ElementApplication(
     [
         SpringApiMethodService::class,
-        BrowserService::class,
         DefaultYapiService::class,
         ApiOpener::class
     ]

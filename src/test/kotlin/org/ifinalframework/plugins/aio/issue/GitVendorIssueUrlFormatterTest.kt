@@ -17,7 +17,7 @@ class GitVendorIssueUrlFormatterTest : LightPlatformTestCase() {
 
     @Test
     fun testFormat() {
-        // github.com
+        // #11 github.com
         Assertions.assertEquals(
             "https://github.com/iimik/final-aio/issues/11",
             formatter.format(GitRemote("github", "https", "github.com", "iimik/final-aio"), Issue(IssueType.ISSUE, "11"))

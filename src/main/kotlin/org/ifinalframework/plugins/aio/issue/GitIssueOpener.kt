@@ -1,9 +1,10 @@
 package org.ifinalframework.plugins.aio.issue
 
 import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.project.Project
+import org.ifinalframework.plugins.aio.common.util.getService
 import org.ifinalframework.plugins.aio.git.GitService
 import org.ifinalframework.plugins.aio.service.BrowserService
-import org.ifinalframework.plugins.aio.service.DefaultBrowserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component
  **/
 @Component
 class GitIssueOpener(
+    private val project: Project,
     /**
      * Git Service
      */
@@ -25,14 +27,12 @@ class GitIssueOpener(
      * Git issue url formatter
      */
     private val gitIssueUrlFormatter: GitIssueUrlFormatter,
-    /**
-     * Browser service
-     */
-    private val browserService: BrowserService
 ) : IssueOpener {
 
+
     @Autowired
-    constructor(gitService: GitService) : this(gitService, GitVendorIssueUrlFormatter(), DefaultBrowserService())
+    constructor(project: Project, gitService: GitService) : this(project, gitService, GitVendorIssueUrlFormatter())
+
 
     private val logger = logger<GitIssueOpener>()
     override fun open(issue: Issue) {
@@ -44,6 +44,6 @@ class GitIssueOpener(
         val remote = gitService.getDefaultRemote()
         val url = gitIssueUrlFormatter.format(remote, issue)
         logger.info("Opening git issue: $url")
-        browserService.open(url)
+        project.getService<BrowserService>().open(url)
     }
 }

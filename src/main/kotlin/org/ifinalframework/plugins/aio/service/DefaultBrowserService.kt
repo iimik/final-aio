@@ -1,6 +1,5 @@
 package org.ifinalframework.plugins.aio.service
 
-import org.springframework.stereotype.Service
 import java.awt.Desktop
 import java.net.URI
 
@@ -11,7 +10,6 @@ import java.net.URI
  * @author iimik
  * @since 0.0.1
  **/
-@Service
 class DefaultBrowserService : BrowserService {
     override fun open(url: String) {
         try {

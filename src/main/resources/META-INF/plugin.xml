@@ -26,6 +26,10 @@
                 serviceInterface="org.ifinalframework.plugins.aio.api.spi.ApiMethodService"
                 serviceImplementation="org.ifinalframework.plugins.aio.api.spi.SpringApiMethodService"
         />
+        <projectService
+                serviceInterface="org.ifinalframework.plugins.aio.service.BrowserService"
+                serviceImplementation="org.ifinalframework.plugins.aio.service.DefaultBrowserService"
+        />
         <!--=============================================================================================================================-->
         <!--=======================================================      Api     ========================================================-->
         <!--=============================================================================================================================-->
