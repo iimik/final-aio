@@ -29,4 +29,6 @@ interface KotlinMapper {
 
     fun select(): Int
 
+    fun selectResultMaps(): List<ResultMap>
+
 }

@@ -1,6 +1,6 @@
 package org.ifinalframework.plugins.aio.application
 
-import com.intellij.psi.PsiElement
+import com.intellij.openapi.module.Module
 
 
 /**
@@ -10,5 +10,5 @@ import com.intellij.psi.PsiElement
  * @since 0.0.1
  **/
 interface ElementPropertySourcesLoader {
-    fun load(classLoader: ClassLoader, element: PsiElement)
+    fun load(classLoader: ClassLoader, module: Module)
 }

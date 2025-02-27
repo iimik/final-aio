@@ -1,10 +1,10 @@
-package org.ifinalframework.plugins.aio.api.open;
+package org.ifinalframework.plugins.aio.api.open
 
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import jakarta.annotation.Resource
 import org.ifinalframework.plugins.aio.api.ApiProperties
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
-import org.ifinalframework.plugins.aio.api.spi.SpringApiMethodService
 import org.ifinalframework.plugins.aio.api.yapi.DefaultYapiService
 import org.ifinalframework.plugins.aio.api.yapi.YapiClient
 import org.ifinalframework.plugins.aio.api.yapi.YapiProperties
@@ -22,7 +22,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients
  **/
 @ElementApplication(
     [
-        SpringApiMethodService::class,
         DefaultYapiService::class,
         ApiOpener::class
     ]
@@ -32,13 +31,10 @@ import org.springframework.cloud.openfeign.EnableFeignClients
 class OpenApiApplication : ElementHandler {
 
     @Resource
-    private lateinit var apiMethodService: ApiMethodService
-
-    @Resource
     private lateinit var apiOpeners: List<ApiOpener>
 
     override fun handle(element: PsiElement) {
-        val apiMarker = apiMethodService.getApiMarker(element) ?: return
+        val apiMarker = service<ApiMethodService>().getApiMarker(element) ?: return
         apiOpeners.forEach { it.open(apiMarker) }
 
     }

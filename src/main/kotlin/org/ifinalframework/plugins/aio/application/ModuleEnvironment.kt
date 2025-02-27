@@ -1,6 +1,6 @@
-package org.ifinalframework.plugins.aio.application;
+package org.ifinalframework.plugins.aio.application
 
-import com.intellij.psi.PsiElement
+import com.intellij.openapi.module.Module
 import org.ifinalframework.plugins.aio.R
 import org.springframework.boot.env.PropertiesPropertySourceLoader
 import org.springframework.boot.env.PropertySourceLoader
@@ -29,21 +29,20 @@ import java.util.*
  * @author iimik
  * @since 0.0.1
  **/
-class ElementEnvironment : StandardEnvironment(), ElementPropertySourcesLoader {
+class ModuleEnvironment : StandardEnvironment(), ElementPropertySourcesLoader {
 
     private val configFileNames = arrayOf(".final", ".final.local")
     private val envConfigFileName = arrayOf(".env", ".env.local")
 
-    override fun load(classLoader: ClassLoader, element: PsiElement) {
+    override fun load(classLoader: ClassLoader, module: Module) {
         val propertySources = propertySources
-
-        val basePath: String = R.computeInRead{ element.project.basePath }!!
+        val basePath: String = R.computeInRead { module.project.basePath }!!
         // load .final config file
-        val configPaths: List<String> = R.computeInRead{ DefaultConfigService().getConfigPaths(element) }!!
+        val configPaths: List<String> = R.computeInRead { DefaultConfigService().getConfigPaths(module) }!!
         Collections.sort(configPaths)
 
         val propertySourceLoaders = SpringFactoriesLoader.loadFactories(
-            PropertySourceLoader::class.java, classLoader
+            PropertySourceLoader::class.java, javaClass.classLoader
         )
 
         for (configPath in configPaths) {

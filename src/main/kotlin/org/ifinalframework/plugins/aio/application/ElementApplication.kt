@@ -51,8 +51,8 @@ internal class ElementApplication(
                 context.beanFactory.beanClassLoader = classLoader
                 System.setProperty("final.language", lang)
                 System.setProperty("final.jvm", (lang == "java" || lang == "kotlin").toString())
-                val environment = ElementEnvironment()
-                environment.load(classLoader, element!!)
+                val environment = ModuleEnvironment()
+                environment.load(classLoader, module!!)
                 context.environment = environment
                 // bean factory post processor
                 context.addBeanFactoryPostProcessor(ElementApplicationBeanFactoryPostProcessor())

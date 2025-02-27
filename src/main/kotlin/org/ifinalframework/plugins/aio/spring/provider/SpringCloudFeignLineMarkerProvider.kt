@@ -3,6 +3,7 @@ package org.ifinalframework.plugins.aio.spring.provider;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -10,6 +11,7 @@ import com.intellij.psi.PsiModifier
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.containers.stream
+import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.constans.SpringAnnotations
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
 import org.ifinalframework.plugins.aio.resource.AllIcons
@@ -43,7 +45,7 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
             val project = element.project
             val psiService = project.getService(PsiService::class.java)
-            val apiMethodService = project.getService(ApiMethodService::class.java)
+            val apiMethodService = service<ApiMethodService>()
 
             if (uClass.isInterface && uClass.hasAnnotation(SpringAnnotations.FEIGN_CLIENT)) {
                 // @FeignClient

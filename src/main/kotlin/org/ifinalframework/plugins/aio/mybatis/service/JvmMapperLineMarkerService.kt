@@ -1,10 +1,10 @@
-package org.ifinalframework.plugins.aio.mybatis.service;
+package org.ifinalframework.plugins.aio.mybatis.service
 
 import com.intellij.grazie.utils.orFalse
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiModifier
+import org.ifinalframework.plugins.aio.common.util.getService
 import org.ifinalframework.plugins.aio.mybatis.MybatisConstants
 import org.ifinalframework.plugins.aio.mybatis.MybatisMarker
 import org.jetbrains.uast.*
@@ -15,13 +15,10 @@ import org.jetbrains.uast.*
  *
  * @author iimik
  * @since 0.0.4
+ * @see [StatementLineMarkerService]
  **/
-@Service(Service.Level.PROJECT)
-class JvmMapperLineMarkerService(
-    project: Project
-) : MapperLineMarkerService<Any> {
-
-    private val mapperService: MapperService = project.getService(MapperService::class.java)
+@Service
+class JvmMapperLineMarkerService : MapperLineMarkerService<Any> {
 
     override fun apply(element: Any): MybatisMarker? {
         val uElement = when (element) {
@@ -50,13 +47,13 @@ class JvmMapperLineMarkerService(
     }
 
     private fun processClass(clazz: UClass): MybatisMarker? {
-        val mappers = mapperService.findMappers()
+        val mappers = clazz.project.getService<MapperService>().findMappers()
         if (mappers.isEmpty()) return null
 
         val qualifiedName = clazz.qualifiedName
         val mapper = mappers.firstOrNull { qualifiedName == it.getNamespace().stringValue } ?: return MybatisMarker(null)
 
-        return MybatisMarker(listOf(mapper?.xmlTag!!))
+        return MybatisMarker(listOf(mapper.xmlTag!!))
     }
 
     private fun processMethod(method: UMethod): MybatisMarker? {
@@ -72,8 +69,7 @@ class JvmMapperLineMarkerService(
         }
 
         // 以下都不应该返回 null
-
-        val mappers = mapperService.findMappers()
+        val mappers = method.project.getService<MapperService>().findMappers()
         if (mappers.isEmpty()) return null
 
         val qualifiedName = method.getContainingUClass()!!.qualifiedName

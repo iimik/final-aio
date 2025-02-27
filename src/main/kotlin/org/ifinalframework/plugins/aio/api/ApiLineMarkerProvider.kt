@@ -3,13 +3,18 @@ package org.ifinalframework.plugins.aio.api
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
+import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.markdown.MarkdownOpenApplication
 import org.ifinalframework.plugins.aio.api.open.OpenApiApplication
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
 import org.ifinalframework.plugins.aio.application.ElementApplication
+import org.ifinalframework.plugins.aio.common.util.getService
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
+import org.ifinalframework.plugins.aio.service.EnvironmentService
+import org.jetbrains.kotlin.idea.base.util.module
 import org.jetbrains.uast.UIdentifier
 import org.jetbrains.uast.getContainingUClass
 import org.jetbrains.uast.toUElement
@@ -27,7 +32,9 @@ class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
         val uElement = element.toUElement() ?: return
         if (uElement is UIdentifier) {
             val uClass = uElement.getContainingUClass()
-            val apiMethodService = element.project.getService(ApiMethodService::class.java)
+            val environmentService = element.module!!.getService(EnvironmentService::class.java)
+            val enable = environmentService.getProperty("final.api.yapi.enable")
+            val apiMethodService = service<ApiMethodService>()
             apiMethodService.getApiMarker(element.parent)?.let {
                 result.add(buildOpenApiLineMarkerInfo(element))
                 // 忽略接口

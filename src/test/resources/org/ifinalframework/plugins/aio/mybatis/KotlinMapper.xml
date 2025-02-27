@@ -20,6 +20,8 @@
         
     </delete>
     <update id="update"></update>
-    <select id="select1"></select>
-    
+    <select id="select"></select>
+    <select id="selectResultMaps"></select>
+
+
 </mapper>

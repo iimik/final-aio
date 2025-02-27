@@ -18,17 +18,21 @@
         <!--=============================================================================================================================-->
         <!--=======================================================    Service   ========================================================-->
         <!--=============================================================================================================================-->
+        <applicationService
+                serviceInterface="org.ifinalframework.plugins.aio.api.spi.ApiMethodService"
+                serviceImplementation="org.ifinalframework.plugins.aio.api.spi.SpringApiMethodService"
+        />
+        <applicationService
+                serviceInterface="org.ifinalframework.plugins.aio.service.BrowserService"
+                serviceImplementation="org.ifinalframework.plugins.aio.service.DefaultBrowserService"
+        />
         <projectService
                 serviceInterface="org.ifinalframework.plugins.aio.git.GitService"
                 serviceImplementation="org.ifinalframework.plugins.aio.git.DefaultGitService"
         />
-        <projectService
-                serviceInterface="org.ifinalframework.plugins.aio.api.spi.ApiMethodService"
-                serviceImplementation="org.ifinalframework.plugins.aio.api.spi.SpringApiMethodService"
-        />
-        <projectService
-                serviceInterface="org.ifinalframework.plugins.aio.service.BrowserService"
-                serviceImplementation="org.ifinalframework.plugins.aio.service.DefaultBrowserService"
+        <moduleService
+                serviceInterface="org.ifinalframework.plugins.aio.service.EnvironmentService"
+                serviceImplementation="org.ifinalframework.plugins.aio.service.SpringModuleEnvironmentService"
         />
         <!--=============================================================================================================================-->
         <!--=======================================================      Api     ========================================================-->

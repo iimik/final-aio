@@ -1,5 +1,6 @@
 package org.ifinalframework.plugins.aio.api.spi
 
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.api.model.ApiMarker
 
@@ -12,4 +13,10 @@ import org.ifinalframework.plugins.aio.api.model.ApiMarker
  **/
 interface ApiMethodService {
     fun getApiMarker(element: PsiElement): ApiMarker?
+
+    companion object {
+        fun getInstance(): ApiMethodService {
+            return service<ApiMethodService>()
+        }
+    }
 }

@@ -28,6 +28,7 @@ class PsiService(val project: Project) {
     private val jvmFileExtensions = listOf("java", "kt")
 
     /**
+     * 查找类
      */
     fun findClass(className: String): PsiClass? {
         return javaPsiFacade.findClass(className, GlobalSearchScope.allScope(project)) ?: return null

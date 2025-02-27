@@ -3,8 +3,6 @@ package org.ifinalframework.plugins.aio
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.application.WriteAction
-import com.intellij.openapi.util.ThrowableComputable
-import com.intellij.util.ThrowableRunnable
 
 
 /**
@@ -38,7 +36,7 @@ object R {
 
     fun <T> computeInWrite(action: () -> T): T? {
         try {
-            return WriteAction.compute<T,Throwable>(action)
+            return WriteAction.compute<T, Throwable>(action)
         } catch (e: Exception) {
             throw RuntimeException(e)
         }

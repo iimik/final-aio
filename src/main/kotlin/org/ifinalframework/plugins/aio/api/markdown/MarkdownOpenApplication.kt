@@ -2,6 +2,7 @@ package org.ifinalframework.plugins.aio.api.markdown;
 
 import com.intellij.notification.NotificationDisplayType
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
@@ -14,7 +15,6 @@ import org.apache.commons.lang3.StringUtils
 import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.model.ApiMarker
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
-import org.ifinalframework.plugins.aio.api.spi.SpringApiMethodService
 import org.ifinalframework.plugins.aio.application.ElementHandler
 import org.ifinalframework.plugins.aio.application.annotation.ElementApplication
 import org.ifinalframework.plugins.aio.common.util.getBasePath
@@ -38,7 +38,6 @@ import javax.annotation.Resource
 @ElementApplication(
     [
         DocService::class,
-        SpringApiMethodService::class,
         DefaultApiMarkdownPathFormatter::class,
         DefaultNotificationService::class,
     ]
@@ -56,12 +55,9 @@ class MarkdownOpenApplication(
     @Resource
     private lateinit var module: Module
 
-    @Resource
-    private lateinit var apiMethodService: ApiMethodService
-
     override fun handle(element: PsiElement) {
 
-        val apiMarker = apiMethodService.getApiMarker(element) ?: return
+        val apiMarker = service<ApiMethodService>().getApiMarker(element) ?: return
 
         getMarkdownFile(apiMarker) {
             it?.let {
