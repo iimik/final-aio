@@ -42,7 +42,7 @@ class AllIcons {
 
     class Spring {
         companion object {
-            val FEIGN = load("assets/icons/spring-cloud.svg")
+            val CLOUD = load("assets/icons/spring-cloud.svg")
             val MVC = load("assets/icons/spring.svg")
         }
     }

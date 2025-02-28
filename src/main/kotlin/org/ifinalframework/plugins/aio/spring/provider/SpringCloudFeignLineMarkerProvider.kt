@@ -11,7 +11,6 @@ import com.intellij.psi.PsiModifier
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.containers.stream
-import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.constans.SpringAnnotations
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
 import org.ifinalframework.plugins.aio.resource.AllIcons
@@ -121,7 +120,7 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
                     .toList()
 
                 if (methods.isNotEmpty()) {
-                    val icon = AllIcons.Spring.FEIGN
+                    val icon = AllIcons.Spring.CLOUD
                     val navigationGutterIconBuilder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(icon)
                     navigationGutterIconBuilder.setTooltipText(mvcTooltip)
                     navigationGutterIconBuilder.setAlignment(GutterIconRenderer.Alignment.CENTER)
