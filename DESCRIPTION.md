@@ -14,6 +14,10 @@
 
 - 🔥Add MyBatis line marker, quick skip between java and xml.
 
+## Spring
+
+- 🔥Add Spring line marker, quick skip between in controller and feign client.
+
 ---
 
 ## 中文 
@@ -52,3 +56,7 @@
 ## MyBatis
 
 - 🔥添加 MyBatis 行标记，在Java/Kotlin和Xml文件中快速跳转。
+
+## Spring
+
+- 🔥添加 Spring 行标记，在Controller和Feign Client之间快速跳转。
