@@ -1,10 +1,12 @@
-package org.ifinalframework.plugins.aio.service;
+package org.ifinalframework.plugins.aio.service
 
+import com.intellij.ide.impl.ProjectUtil
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationDisplayType
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
-import org.springframework.stereotype.Component
+import org.ifinalframework.plugins.aio.R
+import org.ifinalframework.plugins.aio.resource.AllIcons
 
 
 /**
@@ -13,14 +15,14 @@ import org.springframework.stereotype.Component
  * @author iimik
  * @since 0.0.2
  **/
-@Component
 class DefaultNotificationService : NotificationService {
     override fun notify(displayType: NotificationDisplayType, content: String, notificationType: NotificationType) {
         val notification = Notification(NOTIFICATION_GROUP_PREFIX + displayType, content, notificationType)
-        Notifications.Bus.notify(notification)
+        notification.icon = AllIcons.Plugin.LOGO
+        R.dispatch { Notifications.Bus.notify(notification, ProjectUtil.getActiveProject()) }
     }
 
     companion object {
-        const val NOTIFICATION_GROUP_PREFIX = "FINAL_AIO_";
+        const val NOTIFICATION_GROUP_PREFIX = "FINAL_AIO_"
     }
 }

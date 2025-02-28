@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.api.markdown;
+package org.ifinalframework.plugins.aio.api.markdown
 
 import com.intellij.notification.NotificationDisplayType
 import com.intellij.notification.NotificationType
@@ -19,7 +19,6 @@ import org.ifinalframework.plugins.aio.application.ElementHandler
 import org.ifinalframework.plugins.aio.application.annotation.ElementApplication
 import org.ifinalframework.plugins.aio.common.util.getBasePath
 import org.ifinalframework.plugins.aio.psi.service.DocService
-import org.ifinalframework.plugins.aio.service.DefaultNotificationService
 import org.ifinalframework.plugins.aio.service.NotificationService
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -39,12 +38,10 @@ import javax.annotation.Resource
     [
         DocService::class,
         DefaultApiMarkdownPathFormatter::class,
-        DefaultNotificationService::class,
     ]
 )
 class MarkdownOpenApplication(
     private val apiMarkdownPathFormatter: ApiMarkdownPathFormatter,
-    private val notificationService: NotificationService,
 ) : ElementHandler {
 
     private val logger = LoggerFactory.getLogger(MarkdownOpenApplication::class.java)
@@ -60,7 +57,7 @@ class MarkdownOpenApplication(
         val apiMarker = service<ApiMethodService>().getApiMarker(element) ?: return
 
         getMarkdownFile(apiMarker) {
-            it?.let {
+            it.let {
                 val editorManager = FileEditorManager.getInstance(project)
                 R.dispatch {
                     editorManager.openFile(it, true)
@@ -77,7 +74,7 @@ class MarkdownOpenApplication(
         val files = R.computeInRead {
             FilenameIndex.getVirtualFilesByName("${apiMarker.name}.md", GlobalSearchScope.everythingScope(project))
         } ?: return
-        var markdownFile = files.stream().filter { it: VirtualFile? -> it!!.path.endsWith(markdownPath) }.findFirst().orElse(null)
+        val markdownFile = files.stream().filter { it: VirtualFile? -> it!!.path.endsWith(markdownPath) }.findFirst().orElse(null)
 
 
         if (markdownFile == null) {
@@ -85,7 +82,7 @@ class MarkdownOpenApplication(
             val fileName = StringUtils.substringAfterLast(markdownPath, "/")
             try {
                 createMarkdownFile(path, fileName, handler)
-                notificationService!!.notify(
+                service<NotificationService>().notify(
                     NotificationDisplayType.TOOL_WINDOW, "创建Markdown文件：$fileName", NotificationType.INFORMATION
                 )
             } catch (e: IOException) {

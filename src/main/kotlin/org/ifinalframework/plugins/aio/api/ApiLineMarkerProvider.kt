@@ -4,13 +4,13 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.psi.PsiElement
-import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.markdown.MarkdownOpenApplication
 import org.ifinalframework.plugins.aio.api.open.OpenApiApplication
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
 import org.ifinalframework.plugins.aio.application.ElementApplication
-import org.ifinalframework.plugins.aio.common.util.getService
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
 import org.ifinalframework.plugins.aio.service.EnvironmentService
@@ -28,20 +28,30 @@ import org.jetbrains.uast.toUElement
  **/
 class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
+    private val logger = logger<ApiLineMarkerProvider>()
+
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-        val uElement = element.toUElement() ?: return
-        if (uElement is UIdentifier) {
-            val uClass = uElement.getContainingUClass()
-            val environmentService = element.module!!.getService(EnvironmentService::class.java)
-            val enable = environmentService.getProperty("final.api.yapi.enable")
-            val apiMethodService = service<ApiMethodService>()
-            apiMethodService.getApiMarker(element.parent)?.let {
-                result.add(buildOpenApiLineMarkerInfo(element))
-                // 忽略接口
-                if (uClass != null && !uClass.isInterface) {
-                    result.add(buildOpenMarkdownLineMarkerInfo(element))
+        try {
+            val uElement = element.toUElement() ?: return
+            if (uElement is UIdentifier) {
+                val uClass = uElement.getContainingUClass()
+                val environmentService = element.project.service<EnvironmentService>()
+                val enable = environmentService.getProperty(element.module!!, "final.api.yapi.enable", Boolean::class, false)
+                val apiMethodService = service<ApiMethodService>()
+                apiMethodService.getApiMarker(element.parent)?.let {
+                    logger.info("final.api.yapi.enable=$enable")
+                    if (enable) {
+                        // 仅当启用时才添加
+                        result.add(buildOpenApiLineMarkerInfo(element))
+                    }
+                    // 忽略接口
+                    if (uClass != null && !uClass.isInterface) {
+                        result.add(buildOpenMarkdownLineMarkerInfo(element))
+                    }
                 }
             }
+        } catch (ex: ProcessCanceledException) {
+            // ignore
         }
     }
 

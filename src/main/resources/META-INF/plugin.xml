@@ -11,6 +11,11 @@
     <depends config-file="final-java.xml">com.intellij.modules.java</depends>
     <depends config-file="final-kotlin.xml">org.jetbrains.kotlin</depends>
 
+    <projectListeners>
+        <listener class="org.ifinalframework.plugins.aio.listener.ConfigFileChangeListener"
+                  topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
+    </projectListeners>
+
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="FINAL_AIO_BALLOON"/>
         <notificationGroup displayType="TOOL_WINDOW" id="FINAL_AIO_TOOL_WINDOW"/>
@@ -26,13 +31,16 @@
                 serviceInterface="org.ifinalframework.plugins.aio.service.BrowserService"
                 serviceImplementation="org.ifinalframework.plugins.aio.service.DefaultBrowserService"
         />
+        <applicationService
+                serviceInterface="org.ifinalframework.plugins.aio.service.NotificationService"
+                serviceImplementation="org.ifinalframework.plugins.aio.service.DefaultNotificationService"/>
+        <projectService
+                serviceInterface="org.ifinalframework.plugins.aio.service.EnvironmentService"
+                serviceImplementation="org.ifinalframework.plugins.aio.service.SpringModuleEnvironmentService"
+        />
         <projectService
                 serviceInterface="org.ifinalframework.plugins.aio.git.GitService"
                 serviceImplementation="org.ifinalframework.plugins.aio.git.DefaultGitService"
-        />
-        <moduleService
-                serviceInterface="org.ifinalframework.plugins.aio.service.EnvironmentService"
-                serviceImplementation="org.ifinalframework.plugins.aio.service.SpringModuleEnvironmentService"
         />
         <!--=============================================================================================================================-->
         <!--=======================================================      Api     ========================================================-->

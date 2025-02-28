@@ -11,6 +11,14 @@ import javax.swing.Icon
  * @since 0.0.1
  **/
 class AllIcons {
+
+    class Plugin {
+        companion object {
+            val LOGO = load("assets/icons/plugin.svg")
+        }
+    }
+
+
     class Issues {
         companion object {
             val ISSUE = load("assets/icons/git.svg")
