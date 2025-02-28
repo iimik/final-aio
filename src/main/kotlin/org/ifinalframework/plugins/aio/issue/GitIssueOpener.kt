@@ -1,5 +1,6 @@
 package org.ifinalframework.plugins.aio.issue
 
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import org.ifinalframework.plugins.aio.common.util.getService
@@ -33,6 +34,6 @@ class GitIssueOpener(
         val remote = project.getService<GitService>().getDefaultRemote()
         val url = gitIssueUrlFormatter.format(remote, issue)
         logger.info("Opening git issue: $url")
-        project.getService<BrowserService>().open(url)
+        service<BrowserService>().open(url)
     }
 }

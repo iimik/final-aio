@@ -1,7 +1,6 @@
-package org.ifinalframework.plugins.aio.issue;
+package org.ifinalframework.plugins.aio.issue
 
-import com.intellij.openapi.project.Project
-import org.ifinalframework.plugins.aio.common.util.getService
+import com.intellij.openapi.components.service
 import org.ifinalframework.plugins.aio.service.BrowserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -18,19 +17,18 @@ import org.springframework.stereotype.Component
 @Component
 @EnableConfigurationProperties(JiraIssueProperties::class)
 class JiraIssueOpener(
-    private val project: Project,
     private val jiraIssueProperties: JiraIssueProperties,
     private val issueUrlFormatter: IssueUrlFormatter<JiraIssueProperties>,
 
     ) : IssueOpener {
     @Autowired
-    constructor(project: Project, properties: JiraIssueProperties) : this(project, properties, JiraIssueUrlFormatter())
+    constructor(properties: JiraIssueProperties) : this(properties, JiraIssueUrlFormatter())
 
     override fun open(issue: Issue) {
         if (IssueType.JIRA != issue.type) {
             return
         }
         val url = issueUrlFormatter.format(issue, jiraIssueProperties) ?: return
-        project.getService<BrowserService>().open(url)
+        service<BrowserService>().open(url)
     }
 }
