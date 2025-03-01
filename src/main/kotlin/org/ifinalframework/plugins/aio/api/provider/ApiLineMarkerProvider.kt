@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.api
+package org.ifinalframework.plugins.aio.api.provider
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
@@ -7,8 +7,9 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.psi.PsiElement
-import org.ifinalframework.plugins.aio.api.markdown.MarkdownOpenApplication
+import org.ifinalframework.plugins.aio.api.model.ApiMarker
 import org.ifinalframework.plugins.aio.api.open.OpenApiApplication
+import org.ifinalframework.plugins.aio.api.service.MarkdownService
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
 import org.ifinalframework.plugins.aio.application.ElementApplication
 import org.ifinalframework.plugins.aio.resource.AllIcons
@@ -46,7 +47,7 @@ class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
                     }
                     // 忽略接口
                     if (uClass != null && !uClass.isInterface) {
-                        result.add(buildOpenMarkdownLineMarkerInfo(element))
+                        collectMarkdownNavigationMarker(element, it, result)
                     }
                 }
             }
@@ -70,16 +71,15 @@ class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
     /**
      * @issue 14
      */
-    private fun buildOpenMarkdownLineMarkerInfo(element: PsiElement): RelatedItemLineMarkerInfo<*> {
-        val builder: NavigationGutterIconBuilder<PsiElement> =
-            NavigationGutterIconBuilder.create(AllIcons.Api.MARKDOWN)
-        builder.setTargets(element)
-        builder.setTooltipText(I18N.message("ApiMarkdownLineMarkerProvider.tooltip"))
-        return builder.createLineMarkerInfo(
-            element
-        ) { _, _ ->
-            // #15 open markdown
-            ElementApplication.run(MarkdownOpenApplication::class, element.parent)
+    private fun collectMarkdownNavigationMarker(element: PsiElement, apiMarker: ApiMarker, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>){
+        service<MarkdownService>().findMarkdownFile(element.module!!, apiMarker)?.let {
+            val builder: NavigationGutterIconBuilder<PsiElement> =
+                NavigationGutterIconBuilder.create(AllIcons.Api.MARKDOWN)
+            builder.setTargets(it)
+            builder.setTooltipText(I18N.message("ApiMarkdownLineMarkerProvider.tooltip"))
+            val lineMarkerInfo = builder.createLineMarkerInfo(element)
+            result.add(lineMarkerInfo)
         }
     }
+
 }

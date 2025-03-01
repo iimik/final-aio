@@ -45,9 +45,21 @@
         <!--=============================================================================================================================-->
         <!--=======================================================      Api     ========================================================-->
         <!--=============================================================================================================================-->
+        <applicationService
+                serviceInterface="org.ifinalframework.plugins.aio.api.service.MarkdownService"
+                serviceImplementation="org.ifinalframework.plugins.aio.api.service.DefaultMarkdownService"
+        />
         <codeInsight.lineMarkerProvider
                 language="UAST"
-                implementationClass="org.ifinalframework.plugins.aio.api.ApiLineMarkerProvider"/>
+                implementationClass="org.ifinalframework.plugins.aio.api.provider.ApiLineMarkerProvider"/>
+        <localInspection
+                language="UAST"
+                displayName="Markdown Inspection"
+                groupName="Api"
+                enabledByDefault="true"
+                level="INFO"
+                implementationClass="org.ifinalframework.plugins.aio.api.inspection.MarkdownInspection"
+        />
         <!--=============================================================================================================================-->
         <!--=======================================================     Issue     =======================================================-->
         <!--=============================================================================================================================-->

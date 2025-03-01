@@ -26,6 +26,10 @@ class SpringModuleEnvironmentService : EnvironmentService {
         return getEnvironment(module).getProperty(key)
     }
 
+    override fun <T : Any> getProperty(module: Module, key: String, type: KClass<T>): T? {
+        return getEnvironment(module).getProperty(key, type.java)
+    }
+
     override fun <T : Any> getProperty(module: Module, key: String, clazz: KClass<T>, value: T): T {
         logger.info("getProperty: ${module.name}: $key -> $value")
         return getEnvironment(module).getProperty(key, clazz.java, value) as T

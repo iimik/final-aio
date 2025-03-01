@@ -21,7 +21,7 @@ public class JavaYapiController {
      * @return
      */
     @GetMapping
-    public String index() {
+    public String index  () {
         // # 17
         return "index";
     }
