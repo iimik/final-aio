@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  * @author iimik
  * @issue 17
- * @jira
+ * @jira 1
  * @since 0.0.2
  **/
 @RequestMapping({"/java"})
@@ -21,7 +21,7 @@ public class JavaYapiController {
      * @return
      */
     @GetMapping
-    public String index  () {
+    public String index() {
         // # 17
         return "index";
     }

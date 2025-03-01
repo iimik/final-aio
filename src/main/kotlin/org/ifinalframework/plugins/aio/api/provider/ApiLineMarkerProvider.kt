@@ -76,7 +76,7 @@ class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
             val builder: NavigationGutterIconBuilder<PsiElement> =
                 NavigationGutterIconBuilder.create(AllIcons.Api.MARKDOWN)
             builder.setTargets(it)
-            builder.setTooltipText(I18N.message("ApiMarkdownLineMarkerProvider.tooltip"))
+            builder.setTooltipText(I18N.message("Api.ApiMarkdownLineMarkerProvider.tooltip"))
             val lineMarkerInfo = builder.createLineMarkerInfo(element)
             result.add(lineMarkerInfo)
         }

@@ -16,6 +16,7 @@
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </projectListeners>
 
+
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="FINAL_AIO_BALLOON"/>
         <notificationGroup displayType="TOOL_WINDOW" id="FINAL_AIO_TOOL_WINDOW"/>
@@ -54,11 +55,16 @@
                 implementationClass="org.ifinalframework.plugins.aio.api.provider.ApiLineMarkerProvider"/>
         <localInspection
                 language="UAST"
-                displayName="Markdown Inspection"
+                displayName="Markdown inspection"
                 groupName="Api"
                 enabledByDefault="true"
                 level="INFO"
                 implementationClass="org.ifinalframework.plugins.aio.api.inspection.MarkdownInspection"
+        />
+        <lang.documentationProvider
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.api.provider.MarkdownDocumentationProvider"
+                order="first"
         />
         <!--=============================================================================================================================-->
         <!--=======================================================     Issue     =======================================================-->

@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.api.inspection;
+package org.ifinalframework.plugins.aio.api.inspection
 
 import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.ProblemDescriptor
@@ -7,6 +7,7 @@ import com.intellij.openapi.components.service
 import org.ifinalframework.plugins.aio.api.service.MarkdownService
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
 import org.ifinalframework.plugins.aio.psi.AbstractUastLocalInspectionTool
+import org.ifinalframework.plugins.aio.resource.I18N
 import org.jetbrains.kotlin.idea.base.util.module
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UIdentifier
@@ -27,16 +28,15 @@ class MarkdownInspection : AbstractUastLocalInspectionTool() {
             val uastParent = element.uastParent
             if (uastParent is UMethod) {
                 val psiElement = element.sourcePsi ?: return null
-
                 val apiMarker = service<ApiMethodService>().getApiMarker(uastParent) ?: return null
-
-                val markdownFile = service<MarkdownService>().findMarkdownFile(uastParent.module!!, apiMarker)
+                val module = uastParent.module ?: return null
+                val markdownFile = service<MarkdownService>().findMarkdownFile(module, apiMarker)
 
                 if (markdownFile == null) {
                     val problemDescriptor = manager.createProblemDescriptor(
-                        psiElement!!,
-                        "Api Markdown for \"#ref\" not exists",
-                        MarkdownNotExistsQuickFix(uastParent, apiMarker),
+                        psiElement,
+                        I18N.message("Api.MarkdownInspection.descriptionTemplate"),
+                        MarkdownNotExistsQuickFix(module, apiMarker),
                         ProblemHighlightType.WEAK_WARNING,
                         isOnTheFly
                     )
