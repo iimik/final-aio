@@ -2,6 +2,7 @@ package org.ifinalframework.plugins.aio.mybatis.inspection;
 
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.openapi.project.Project
+import org.ifinalframework.plugins.aio.intellij.GenericQuickFix
 import org.ifinalframework.plugins.aio.resource.I18N
 import org.jetbrains.uast.UMethod
 

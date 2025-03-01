@@ -13,4 +13,6 @@ import org.intellij.plugins.markdown.lang.psi.MarkdownPsiElement
  **/
 interface MarkdownService {
     fun findMarkdownFile(module: Module, marker: ApiMarker): MarkdownPsiElement?
+
+    fun createMarkdownFile(module: Module, marker: ApiMarker)
 }

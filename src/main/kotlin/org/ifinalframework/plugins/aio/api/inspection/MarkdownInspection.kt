@@ -6,7 +6,6 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.openapi.components.service
 import org.ifinalframework.plugins.aio.api.service.MarkdownService
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
-import org.ifinalframework.plugins.aio.mybatis.inspection.StatementNotExistsQuickFix
 import org.ifinalframework.plugins.aio.psi.AbstractUastLocalInspectionTool
 import org.jetbrains.kotlin.idea.base.util.module
 import org.jetbrains.uast.UElement
@@ -15,7 +14,7 @@ import org.jetbrains.uast.UMethod
 
 
 /**
- * MarkdownInspection
+ * 检查Api Method是否有对应的Markdown文件，并提供快速生成Markdown的方式[MarkdownNotExistsQuickFix]。
  *
  * @author iimik
  * @since 0.0.6
@@ -37,7 +36,7 @@ class MarkdownInspection : AbstractUastLocalInspectionTool() {
                     val problemDescriptor = manager.createProblemDescriptor(
                         psiElement!!,
                         "Api Markdown for \"#ref\" not exists",
-                        StatementNotExistsQuickFix(uastParent),
+                        MarkdownNotExistsQuickFix(uastParent, apiMarker),
                         ProblemHighlightType.WEAK_WARNING,
                         isOnTheFly
                     )

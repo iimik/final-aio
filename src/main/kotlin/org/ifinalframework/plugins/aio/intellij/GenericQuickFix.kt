@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.mybatis.inspection;
+package org.ifinalframework.plugins.aio.intellij;
 
 import com.intellij.codeInspection.LocalQuickFix
 
