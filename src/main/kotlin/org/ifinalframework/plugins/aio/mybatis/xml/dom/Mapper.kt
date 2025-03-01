@@ -1,6 +1,7 @@
 package org.ifinalframework.plugins.aio.mybatis.xml.dom;
 
 import com.intellij.util.xml.*
+import org.ifinalframework.plugins.aio.mybatis.xml.converter.StatementMethodResolvingConverter
 
 
 /**
@@ -52,6 +53,11 @@ interface ResultMap : IdDomElement {
 }
 
 interface Statement : IdDomElement {
+    @Required
+    @NameValue
+    @Attribute("id")
+    @Convert(StatementMethodResolvingConverter::class)
+    override fun getId(): GenericAttributeValue<String>
 }
 
 interface Insert : Statement {}

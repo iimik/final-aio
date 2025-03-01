@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.mybatis;
+package org.ifinalframework.plugins.aio.mybatis
 
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.InsertProvider
@@ -12,11 +12,11 @@ import org.apache.ibatis.annotations.InsertProvider
  **/
 interface KotlinMapper {
 
-    fun insert(): Int
-    
-    fun defaultInsert(): Int {
+    fun insert(any:Any): Int {
         return insert()
     }
+
+    fun insert(): Int
 
     @Insert("")
     fun insertWithInsert(): Int
