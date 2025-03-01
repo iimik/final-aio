@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.spring.provider;
+package org.ifinalframework.plugins.aio.spring.provider
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
