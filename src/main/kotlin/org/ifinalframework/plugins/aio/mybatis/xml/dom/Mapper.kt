@@ -1,7 +1,7 @@
 package org.ifinalframework.plugins.aio.mybatis.xml.dom;
 
 import com.intellij.util.xml.*
-import org.ifinalframework.plugins.aio.mybatis.xml.converter.StatementMethodResolvingConverter
+import org.ifinalframework.plugins.aio.mybatis.xml.converter.ClassResolvingConverter
 
 
 /**
@@ -14,6 +14,7 @@ interface Mapper : DomElement {
     @Required
     @NameValue
     @Attribute("namespace")
+    @Convert(ClassResolvingConverter::class)
     fun getNamespace(): GenericAttributeValue<String>
 
     @SubTagList("resultMap")
@@ -35,32 +36,3 @@ interface Mapper : DomElement {
     fun getSelects(): List<Select>
 
 }
-
-interface IdDomElement : DomElement {
-    @Required
-    @NameValue
-    @Attribute("id")
-    fun getId(): GenericAttributeValue<String>
-
-    fun setValue(content: String)
-}
-
-interface ResultMap : IdDomElement {
-    @Required
-    @NameValue
-    @Attribute("type")
-    fun getType(): GenericAttributeValue<String>
-}
-
-interface Statement : IdDomElement {
-    @Required
-    @NameValue
-    @Attribute("id")
-    @Convert(StatementMethodResolvingConverter::class)
-    override fun getId(): GenericAttributeValue<String>
-}
-
-interface Insert : Statement {}
-interface Delete : Statement {}
-interface Update : Statement {}
-interface Select : Statement {}

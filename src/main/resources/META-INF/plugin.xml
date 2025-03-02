@@ -92,6 +92,13 @@
         <!--                displayName="Mapper Inspection"-->
         <!--                groupName="Mybatis" enabledByDefault="true" level="ERROR"-->
         <!--                implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.MapperInspection"/>-->
+        <localInspection
+                language="XML"
+                shortName="MybatisMapperXmlInspection"
+                displayName="Mapper xml inspection"
+                groupName="Mybatis" enabledByDefault="true" level="ERROR"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.MapperXmlInspection"
+        />
         <dom.fileMetaData rootTagName="mapper" implementation="org.ifinalframework.plugins.aio.mybatis.xml.MapperDescription"/>
         <!--=============================================================================================================================-->
         <!--=======================================================    Spring     =======================================================-->

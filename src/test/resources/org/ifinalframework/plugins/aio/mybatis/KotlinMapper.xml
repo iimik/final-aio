@@ -19,9 +19,12 @@
     <delete id="delete">
         
     </delete>
+    <delete id="delete2">
+
+    </delete>
     <update id="update"></update>
     <select id="select"></select>
-    <select id="selectResultMaps"></select>
+    <select id="selectResultMaps" resultMap="resultMap"></select>
 
 
 </mapper>
