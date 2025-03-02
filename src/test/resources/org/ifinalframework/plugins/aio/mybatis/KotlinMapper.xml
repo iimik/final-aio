@@ -23,7 +23,7 @@
 
     </delete>
     <update id="update"></update>
-    <select id="select"></select>
+    <select id="select" resultType="java.lang.String"></select>
     <select id="selectResultMaps" resultMap="resultMap"></select>
 
 

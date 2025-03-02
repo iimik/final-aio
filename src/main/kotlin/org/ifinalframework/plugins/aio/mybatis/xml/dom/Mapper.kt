@@ -20,6 +20,9 @@ interface Mapper : DomElement {
     @SubTagList("resultMap")
     fun getResultMaps(): List<ResultMap>
 
+    @SubTagList("sql")
+    fun getSqls(): List<Sql>
+
     @SubTagsList("insert", "delete", "update", "select")
     fun getStatements(): List<Statement>
 
