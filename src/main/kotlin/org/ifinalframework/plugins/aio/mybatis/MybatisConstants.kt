@@ -1,5 +1,6 @@
 package org.ifinalframework.plugins.aio.mybatis
 
+import com.intellij.psi.util.ReferenceSetBase
 import com.intellij.psi.xml.XmlTag
 
 
@@ -30,6 +31,8 @@ object MybatisConstants {
     val XML_TAG_SELECT = "select"
 
     private val XML_STATEMENTS = setOf(XML_TAG_INSERT, XML_TAG_DELETE, XML_TAG_UPDATE, XML_TAG_SELECT)
+
+    const val DOT_SEPARATOR: String = ReferenceSetBase.DOT_SEPARATOR.toString()
 
     fun isMapper(xmlTag: XmlTag): Boolean {
         return XML_TAG_MAPPER == xmlTag.name

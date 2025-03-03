@@ -2,18 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.ifinalframework.plugins.aio.mybatis.KotlinMapper">
 
-    <resultMap id="resultMap" type="org.ifinalframework.plugins.aio.mybatis.ResultMap">
+    <resultMap id="baseMap" type="org.ifinalframework.plugins.aio.mybatis.ResultMap">
+
+    </resultMap>
+
+    <resultMap id="resultMap" type="org.ifinalframework.plugins.aio.mybatis.ResultMap" extends="baseMap">
         <id column="id" property="id"/>
         <result column="id" property="id"/>
     </resultMap>
 
-    <resultMap id="resultMap2" type="org.ifinalframework.plugins.aio.mybatis.ResultMap">
+    <resultMap id="resultMap2" type="org.ifinalframework.plugins.aio.mybatis.ResultMap" extends="baseMap">
         <id column="id" property="id"/>
         <result column="id" property="id"/>
     </resultMap>
+
+    <sql id="table">
+
+    </sql>
 
     <insert id="insert">
         INSERT INTO
+        <include refid="table"/>
         
     </insert>
     <delete id="delete">
@@ -23,8 +32,10 @@
 
     </delete>
     <update id="update"></update>
-    <select id="select" resultType="java.lang.String"></select>
-    <select id="selectResultMaps" resultMap="resultMap"></select>
+    <select id="select" resultType="java.lang.String" resultMap="resultMap2">
+
+    </select>
+    <select id="selectResultMaps" resultMap="resultMap2"></select>
 
 
 </mapper>

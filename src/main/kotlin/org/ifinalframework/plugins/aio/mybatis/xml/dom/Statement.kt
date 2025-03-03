@@ -1,8 +1,8 @@
 package org.ifinalframework.plugins.aio.mybatis.xml.dom
 
 import com.intellij.util.xml.*
+import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapConverter
 import org.ifinalframework.plugins.aio.mybatis.xml.converter.StatementMethodResolvingConverter
-import org.ifinalframework.plugins.aio.mybatis.xml.converter.ClassResolvingConverter
 
 
 /**
@@ -18,12 +18,15 @@ interface Statement : IdDomElement {
     @Convert(StatementMethodResolvingConverter::class)
     override fun getId(): GenericAttributeValue<String>
 
+    /**
+     * @see [ResultMap.getId]
+     */
     @NameValue
     @Attribute("resultMap")
+    @Convert(ResultMapConverter::class)
     fun getResultMap(): GenericAttributeValue<String>
 
     @NameValue
     @Attribute("resultType")
-    @Convert(ClassResolvingConverter::class)
     fun getResultType(): GenericAttributeValue<String>
 }

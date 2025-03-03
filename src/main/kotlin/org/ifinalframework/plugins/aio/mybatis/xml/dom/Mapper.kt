@@ -1,7 +1,6 @@
 package org.ifinalframework.plugins.aio.mybatis.xml.dom;
 
 import com.intellij.util.xml.*
-import org.ifinalframework.plugins.aio.mybatis.xml.converter.ClassResolvingConverter
 
 
 /**
@@ -14,7 +13,6 @@ interface Mapper : DomElement {
     @Required
     @NameValue
     @Attribute("namespace")
-    @Convert(ClassResolvingConverter::class)
     fun getNamespace(): GenericAttributeValue<String>
 
     @SubTagList("resultMap")
