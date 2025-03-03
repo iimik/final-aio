@@ -13,6 +13,7 @@
 ## MyBatis
 
 - 🔥Add MyBatis line marker, quick skip between java and xml.
+- 🔥Add quick skip in xml define and reference.
 
 ## Spring
 
@@ -56,6 +57,7 @@
 ## MyBatis
 
 - 🔥添加 MyBatis 行标记，在Java/Kotlin和Xml文件中快速跳转。
+- 🔥Mapper xml 文件中定义和引用之间跳转。
 
 ## Spring
 
