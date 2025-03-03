@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.0.6] - 2025-03-03
+
 ### 新增
 
 - MyBatis
@@ -54,3 +56,11 @@
 
 - Issue 管理
   - 🔥添加Issue行标记，并可在浏览器中快速打开，支持Git Issue和Jira。(#10)
+
+[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.6...HEAD
+[0.0.6]: https://github.com/iimik/final-aio/compare/v0.0.5...v0.0.6
+[0.0.5]: https://github.com/iimik/final-aio/compare/v0.0.4...v0.0.5
+[0.0.4]: https://github.com/iimik/final-aio/compare/v0.0.3...v0.0.4
+[0.0.3]: https://github.com/iimik/final-aio/compare/v0.0.2...v0.0.3
+[0.0.2]: https://github.com/iimik/final-aio/compare/v0.0.1...v0.0.2
+[0.0.1]: https://github.com/iimik/final-aio/commits/v0.0.1
