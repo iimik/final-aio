@@ -2,7 +2,7 @@
 <idea-plugin>
     <id>org.ifinalframework.plugins.aio</id>
     <name>Final AIO</name>
-    <vendor email="iimik@qq.com" url="https://github.com/iimik">米克¹²³</vendor>
+    <vendor email="iimik@qq.com" url="https://github.com/iimik">iimik</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
