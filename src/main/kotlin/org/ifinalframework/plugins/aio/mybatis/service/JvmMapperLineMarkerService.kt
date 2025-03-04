@@ -5,6 +5,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiModifier
 import org.ifinalframework.plugins.aio.common.util.getService
+import org.ifinalframework.plugins.aio.mybatis.MapperUtils
 import org.ifinalframework.plugins.aio.mybatis.MybatisConstants
 import org.ifinalframework.plugins.aio.mybatis.MybatisMarker
 import org.jetbrains.uast.*
@@ -58,15 +59,7 @@ class JvmMapperLineMarkerService : MapperLineMarkerService<Any> {
 
     private fun processMethod(method: UMethod): MybatisMarker? {
 
-        // 排除默认方法
-        if (method.hasModifierProperty(PsiModifier.DEFAULT)) {
-            return null
-        }
-        // 含有特定注解
-        val hasAnnotation = MybatisConstants.ALL_STATEMENTS.map { method.hasAnnotation(it) }.firstOrNull { it }.orFalse()
-        if (hasAnnotation) {
-            return null
-        }
+        if(!MapperUtils.isStatementMethod(method)) return null
 
         // 以下都不应该返回 null
         val mappers = method.project.getService<MapperService>().findMappers()

@@ -13,10 +13,10 @@ import org.apache.ibatis.annotations.InsertProvider
 interface KotlinMapper {
 
     fun insert(any:Any): Int {
-        return insert()
+        return insert("")
     }
 
-    fun insert(): Int
+    fun insert(name: String, age: Int): Int
 
     @Insert("")
     fun insertWithInsert(): Int

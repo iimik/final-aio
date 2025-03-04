@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### 新增
+
+- MyBatis
+  - xml支持`resultMap`子标签中的`property`属性
+
 ### 修复
 
 - Api

@@ -33,7 +33,7 @@ object MybatisConstants {
     private val XML_STATEMENTS = setOf(XML_TAG_INSERT, XML_TAG_DELETE, XML_TAG_UPDATE, XML_TAG_SELECT)
 
     const val DOT_SEPARATOR: String = ReferenceSetBase.DOT_SEPARATOR.toString()
-
+    const val PRIORITY: Double = 400.0
     fun isMapper(xmlTag: XmlTag): Boolean {
         return XML_TAG_MAPPER == xmlTag.name
     }

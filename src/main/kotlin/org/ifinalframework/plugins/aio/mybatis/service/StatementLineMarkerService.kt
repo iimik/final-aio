@@ -1,6 +1,7 @@
 package org.ifinalframework.plugins.aio.mybatis.service
 
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.xml.XmlFile
@@ -75,13 +76,6 @@ class StatementLineMarkerService : MapperLineMarkerService<XmlToken> {
     }
 
     private fun process(project: Project, statement: Statement): MybatisMarker {
-        val mapper = DomUtil.getParentOfType(statement, Mapper::class.java, true) ?: return MybatisMarker.NOT_EXISTS
-        val namespace = mapper.getNamespace().stringValue ?: return MybatisMarker.NOT_EXISTS
-        val clazz = project.getService<PsiService>().findClass(namespace) ?: return MybatisMarker.NOT_EXISTS
-        val id = statement.getId().stringValue!!
-        val methods = clazz.findMethodsByName(id, false)
-        if (methods.isEmpty()) return MybatisMarker.NOT_EXISTS
-
-        return MybatisMarker(methods.toList())
+        return MybatisMarker(project.service<MapperService>().findMethods(statement))
     }
 }

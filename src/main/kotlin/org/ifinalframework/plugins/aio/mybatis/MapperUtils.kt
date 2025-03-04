@@ -1,5 +1,11 @@
 package org.ifinalframework.plugins.aio.mybatis
 
+import com.intellij.grazie.utils.orFalse
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiMethod
+import com.intellij.psi.PsiModifier
+import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomUtil
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.IdDomElement
@@ -13,6 +19,14 @@ import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
  * @since 0.0.6
  **/
 object MapperUtils {
+
+    fun isMybatisFile(file: PsiFile?): Boolean {
+        if (file !is XmlFile) {
+            return false
+        }
+        val rootTag = file.rootTag
+        return null != rootTag && rootTag.name == "mapper"
+    }
 
     fun getNamespace(mapper: Mapper): String {
         val ns = mapper.getNamespace().stringValue
@@ -51,5 +65,23 @@ object MapperUtils {
 
     fun isMapperWithSameNamespace(mapper: Mapper?, target: Mapper?): Boolean {
         return null != mapper && null != target && getNamespace(mapper) == getNamespace(target)
+    }
+
+    fun findParentIdDomElement(element: PsiElement?): IdDomElement? {
+        val domElement = DomUtil.getDomElement(element) ?: return null
+        if (domElement is IdDomElement) {
+            return domElement
+        }
+        return DomUtil.getParentOfType(domElement, IdDomElement::class.java, true)
+    }
+
+    fun isStatementMethod(method: PsiMethod): Boolean {
+        // 排除默认方法
+        if (method.hasModifierProperty(PsiModifier.DEFAULT)) {
+            return false
+        }
+        // 含有特定注解
+        val hasAnnotation = MybatisConstants.ALL_STATEMENTS.map { method.hasAnnotation(it) }.firstOrNull { it }.orFalse()
+        return !hasAnnotation
     }
 }

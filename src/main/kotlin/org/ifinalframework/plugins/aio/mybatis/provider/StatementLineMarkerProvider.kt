@@ -3,6 +3,7 @@ package org.ifinalframework.plugins.aio.mybatis.provider;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiElement
@@ -30,7 +31,7 @@ class StatementLineMarkerProvider : RelatedItemLineMarkerProvider() {
     private val logger = this.thisLogger();
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-        val statementLineMarkerService = element.project.getService(StatementLineMarkerService::class.java)
+        val statementLineMarkerService = service<StatementLineMarkerService>()
         if (element is XmlToken) {
             statementLineMarkerService.apply(element)?.let {
                 logger.info(it.toString())
