@@ -6,7 +6,7 @@
 
     </resultMap>
 
-    <resultMap id="resultMap" type="org.ifinalframework.plugins.aio.mybatis.ResultMap" extends="baseMap">
+    <resultMap id="resultMap" type="org.ifinalframework.plugins.aio.mybatis.ResultMap" extends="resultMap">
         <id column="id" property="id"/>
         <result column="id" property="id"/>
     </resultMap>

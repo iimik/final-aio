@@ -33,11 +33,12 @@ class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         try {
+            val module = element.module ?: return
             val uElement = element.toUElement() ?: return
             if (uElement is UIdentifier) {
                 val uClass = uElement.getContainingUClass()
                 val environmentService = element.project.service<EnvironmentService>()
-                val enable = environmentService.getProperty(element.module!!, "final.api.yapi.enable", Boolean::class, false)
+                val enable = environmentService.getProperty(module, "final.api.yapi.enable", Boolean::class, false)
                 val apiMethodService = service<ApiMethodService>()
                 apiMethodService.getApiMarker(element.parent)?.let {
                     logger.info("final.api.yapi.enable=$enable")
@@ -71,7 +72,11 @@ class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
     /**
      * @issue 14
      */
-    private fun collectMarkdownNavigationMarker(element: PsiElement, apiMarker: ApiMarker, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>){
+    private fun collectMarkdownNavigationMarker(
+        element: PsiElement,
+        apiMarker: ApiMarker,
+        result: MutableCollection<in RelatedItemLineMarkerInfo<*>>
+    ) {
         service<MarkdownService>().findMarkdownFile(element.module!!, apiMarker)?.let {
             val builder: NavigationGutterIconBuilder<PsiElement> =
                 NavigationGutterIconBuilder.create(AllIcons.Api.MARKDOWN)

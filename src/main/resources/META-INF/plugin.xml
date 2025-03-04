@@ -105,8 +105,13 @@
         />
         <dom.fileMetaData rootTagName="mapper" implementation="org.ifinalframework.plugins.aio.mybatis.xml.MapperDescription"/>
         <completion.contributor
+                language="XML"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperXmlCompletionContributor"
+        />
+        <completion.contributor
                 language="SQL"
-                implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperSqlParamCompletionContributor"/>
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperSqlParamCompletionContributor"
+        />
         <!--=============================================================================================================================-->
         <!--=======================================================    Spring     =======================================================-->
         <!--=============================================================================================================================-->

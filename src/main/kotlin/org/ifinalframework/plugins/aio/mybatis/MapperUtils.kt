@@ -20,6 +20,7 @@ import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
  **/
 object MapperUtils {
 
+
     fun isMybatisFile(file: PsiFile?): Boolean {
         if (file !is XmlFile) {
             return false
@@ -80,6 +81,11 @@ object MapperUtils {
         if (method.hasModifierProperty(PsiModifier.DEFAULT)) {
             return false
         }
+
+        val clazz = method.containingClass ?: return false
+        val qualifiedName = clazz.qualifiedName
+        if("java.lang.Object" == qualifiedName || Any::class.qualifiedName == qualifiedName) return false
+
         // 含有特定注解
         val hasAnnotation = MybatisConstants.ALL_STATEMENTS.map { method.hasAnnotation(it) }.firstOrNull { it }.orFalse()
         return !hasAnnotation

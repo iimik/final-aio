@@ -66,4 +66,9 @@ class MapperService(
         return methods.filter { MapperUtils.isStatementMethod(it) }
     }
 
+    fun findStatements(className: String): List<PsiMethod> {
+        val clazz = project.service<PsiService>().findClass(className) ?: return emptyList()
+        return clazz.allMethods.filter { MapperUtils.isStatementMethod(it) }
+    }
+
 }
