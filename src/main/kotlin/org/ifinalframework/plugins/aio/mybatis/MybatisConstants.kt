@@ -30,6 +30,8 @@ object MybatisConstants {
     val XML_TAG_UPDATE = "update"
     val XML_TAG_SELECT = "select"
 
+    const val PARAM = "org.apache.ibatis.annotations.Param"
+
     private val XML_STATEMENTS = setOf(XML_TAG_INSERT, XML_TAG_DELETE, XML_TAG_UPDATE, XML_TAG_SELECT)
 
     const val DOT_SEPARATOR: String = ReferenceSetBase.DOT_SEPARATOR.toString()

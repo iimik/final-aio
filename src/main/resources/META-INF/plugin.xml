@@ -25,6 +25,10 @@
         <!--=======================================================    Service   ========================================================-->
         <!--=============================================================================================================================-->
         <applicationService
+                serviceInterface="org.ifinalframework.plugins.aio.jvm.AnnotationService"
+                serviceImplementation="org.ifinalframework.plugins.aio.jvm.DefaultAnnotationService"
+        />
+        <applicationService
                 serviceInterface="org.ifinalframework.plugins.aio.api.spi.ApiMethodService"
                 serviceImplementation="org.ifinalframework.plugins.aio.api.spi.SpringApiMethodService"
         />
@@ -102,7 +106,7 @@
         <dom.fileMetaData rootTagName="mapper" implementation="org.ifinalframework.plugins.aio.mybatis.xml.MapperDescription"/>
         <completion.contributor
                 language="SQL"
-                implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.SqlParamCompletionContributor"/>
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperSqlParamCompletionContributor"/>
         <!--=============================================================================================================================-->
         <!--=======================================================    Spring     =======================================================-->
         <!--=============================================================================================================================-->

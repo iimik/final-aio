@@ -2,6 +2,7 @@ package org.ifinalframework.plugins.aio.mybatis
 
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.InsertProvider
+import org.apache.ibatis.annotations.Param
 
 
 /**
@@ -16,7 +17,7 @@ interface KotlinMapper {
         return insert("")
     }
 
-    fun insert(name: String, age: Int): Int
+    fun insert(@Param("p1")name: String, age: Int): Int
 
     @Insert("")
     fun insertWithInsert(): Int

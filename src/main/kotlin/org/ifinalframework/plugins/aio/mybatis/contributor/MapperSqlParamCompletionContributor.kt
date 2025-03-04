@@ -1,6 +1,5 @@
 package org.ifinalframework.plugins.aio.mybatis.contributor
 
-import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionType
@@ -15,7 +14,7 @@ import org.ifinalframework.plugins.aio.mybatis.MapperUtils
  * @author iimik
  * @since 0.0.7
  */
-class SqlParamCompletionContributor : CompletionContributor() {
+class MapperSqlParamCompletionContributor : AbsMapperCompletionContributor() {
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         if (parameters.completionType != CompletionType.BASIC) {
@@ -36,18 +35,9 @@ class SqlParamCompletionContributor : CompletionContributor() {
         val psiFile = position.containingFile
         val context = position.containingFile.context ?: return
         val idDomElement = MapperUtils.findParentIdDomElement(context) ?: return
-        TestParamContributor.addElementForPsiParameter(position.project, result, idDomElement)
+        addElementForPsiParameter(position.project, result, idDomElement)
         result.stopHere()
 
-//        val injectedLanguageManager = InjectedLanguageManager.getInstance(position.project)
-//        val documentWindows = injectedLanguageManager.getCachedInjectedDocumentsInRange(psiFile, position.textRange)
-//        val documentWindow = if (documentWindows.isEmpty()) null else documentWindows[0]
-//        if (null != documentWindow) {
-//            val offset = documentWindow.injectedToHost(position.textOffset)
-//            val idDomElement: IdDomElement = MapperUtils.findParentIdDomElement(xmlFile.findElementAt(offset)) ?: return
-//            TestParamContributor.addElementForPsiParameter(position.project, result, idDomElement)
-//            result.stopHere()
-//        }
     }
 
 

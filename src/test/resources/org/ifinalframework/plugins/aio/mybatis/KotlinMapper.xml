@@ -24,7 +24,7 @@
         INSERT INTO
         <include refid="table"/>
         (name)
-        VALUE (#{age})
+        VALUE (#{})
     </insert>
     <delete id="delete">
         

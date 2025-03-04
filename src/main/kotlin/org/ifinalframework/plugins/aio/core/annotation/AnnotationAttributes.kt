@@ -21,6 +21,15 @@ class AnnotationAttributes : LinkedHashMap<String, Any?> {
         } else listOf(value as T);
     }
 
+    fun getString(attributeName: String): String? {
+        val value = get(attributeName) ?: return null
+        return if (value is String) {
+            value
+        } else {
+            value.toString()
+        }
+    }
+
     companion object {
         fun fromMap(map: Map<String, Any?>): AnnotationAttributes {
             return if (map is AnnotationAttributes) {
