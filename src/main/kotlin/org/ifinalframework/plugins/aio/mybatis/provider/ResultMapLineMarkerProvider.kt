@@ -33,7 +33,8 @@ class ResultMapLineMarkerProvider : RelatedItemLineMarkerProvider() {
             val uClass = uElement.uastParent as UClass
             if (!uClass.hasModifierProperty(PsiModifier.ABSTRACT)) {
                 // 非抽象类
-                val resultMaps = element.project.getService(MapperService::class.java).findResultMaps(uClass.qualifiedName!!)
+                val qualifiedName = uClass.qualifiedName ?: return
+                val resultMaps = element.project.getService(MapperService::class.java).findResultMaps(qualifiedName)
                 if (resultMaps.isNotEmpty()) {
                     val targets = resultMaps.stream().map { it.xmlTag }.toList()
                     val icon = AllIcons.Mybatis.JVM
