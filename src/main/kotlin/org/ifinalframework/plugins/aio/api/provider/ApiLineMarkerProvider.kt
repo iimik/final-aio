@@ -61,7 +61,7 @@ class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
      * @issue 16
      */
     private fun buildOpenApiLineMarkerInfo(element: PsiElement): RelatedItemLineMarkerInfo<*> {
-        val builder = NavigationGutterIconBuilder.create(AllIcons.Api.VIEW)
+        val builder = NavigationGutterIconBuilder.create(AllIcons.Api.YAPI)
         builder.setTargets(element)
         builder.setTooltipText("Open API")
         return builder.createLineMarkerInfo(element) { _, _ ->
