@@ -1,9 +1,6 @@
 package org.ifinalframework.plugins.aio.mybatis.contributor
 
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
-import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.completion.CompletionType
+import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -35,6 +32,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
         resultMapCompletion()
         resultMapPropertyCompletion()
     }
+
 
     /**
      * 自动补全`statement`的`id`属性

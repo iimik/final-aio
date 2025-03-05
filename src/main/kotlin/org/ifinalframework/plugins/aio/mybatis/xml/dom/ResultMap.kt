@@ -2,7 +2,6 @@ package org.ifinalframework.plugins.aio.mybatis.xml.dom
 
 import com.intellij.psi.PsiClass
 import com.intellij.util.xml.*
-import org.ifinalframework.plugins.aio.mybatis.xml.converter.ClassConverter
 import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapConverter
 import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapIdReferenceConverter
 import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapPropertyConverter
