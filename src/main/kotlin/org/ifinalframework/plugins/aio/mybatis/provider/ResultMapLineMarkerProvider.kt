@@ -23,7 +23,7 @@ import org.jetbrains.uast.toUElement
  **/
 class ResultMapLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
-    private val tooltip = I18N.message("Mybatis.ResultMapLineMarkerProvider.tooltip")
+    private val tooltip = I18N.message("MyBatis.ResultMapLineMarkerProvider.tooltip")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
 
