@@ -15,7 +15,10 @@ import com.intellij.util.xml.DomUtil
 import org.ifinalframework.plugins.aio.mybatis.MapperUtils
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.*
+import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.resource.AllIcons
+import org.ifinalframework.plugins.aio.service.PsiService
+import org.ifinalframework.plugins.aio.util.SpiUtil
 import java.util.stream.Stream
 
 /**
@@ -26,9 +29,12 @@ import java.util.stream.Stream
  */
 class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
 
+    val docService = SpiUtil.languageSpi<DocService>()
+
     init {
         statementIdCompletion()
         resultMapCompletion()
+        resultMapPropertyCompletion()
     }
 
     /**
@@ -69,7 +75,13 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
 
                             position.project.service<MapperService>().findStatements(className)
                                 .forEach { method ->
-                                    result.addElement(LookupElementBuilder.create(method.name).withIcon(PlatformIcons.METHOD_ICON))
+                                    var summary = docService.getSummary(method)
+
+                                    result.addElement(
+                                        LookupElementBuilder.create(method.name)
+                                            .withIcon(PlatformIcons.METHOD_ICON)
+                                            .withTypeText(summary)
+                                    )
                                 }
 
                             result.stopHere()
@@ -86,8 +98,8 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
      */
     private fun resultMapCompletion() {
         val selectResultMap = XmlPatterns.psiElement().inside(
-                XmlPatterns.xmlAttribute().withName("resultMap").inside(XmlPatterns.xmlTag().withName("select"))
-            )
+            XmlPatterns.xmlAttribute().withName("resultMap").inside(XmlPatterns.xmlTag().withName("select"))
+        )
 
         val resultMapExtends = XmlPatterns.psiElement().inside(
             XmlPatterns.xmlAttribute().withName("extends").inside(XmlPatterns.xmlTag().withName("resultMap"))
@@ -114,13 +126,75 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
 
                             mapper.getResultMaps()
                                 .forEach { resultMap ->
-                                    result.addElement(LookupElementBuilder.create(resultMap.getId().rawText!!).withIcon(AllIcons.Mybatis.XML))
+                                    result.addElement(
+                                        LookupElementBuilder.create(resultMap.getId().rawText!!).withIcon(AllIcons.Mybatis.XML)
+                                    )
                                 }
                             result.stopHere()
                         }
                     })
             }
 
+    }
+
+    /**
+     * ```xml
+     * <id property=""/>
+     * <result property=""/>
+     * ```
+     */
+    private fun resultMapPropertyCompletion() {
+        val idProperty = XmlPatterns.psiElement().inside(
+            XmlPatterns.xmlAttribute().withName("property").inside(XmlPatterns.xmlTag().withName("id"))
+        )
+        val resultProperty = XmlPatterns.psiElement().inside(
+            XmlPatterns.xmlAttribute().withName("property").inside(XmlPatterns.xmlTag().withName("result"))
+        )
+
+        Stream.of(idProperty, resultProperty)
+            .forEach { place ->
+
+                thisLogger().info("resultMapPropertyCompletion: $place")
+
+                extend(
+                    CompletionType.BASIC,
+                    place,
+                    object : CompletionProvider<CompletionParameters>() {
+                        override fun addCompletions(
+                            parameters: CompletionParameters,
+                            context: ProcessingContext,
+                            result: CompletionResultSet
+                        ) {
+                            val position = parameters.position
+                            if (position !is XmlToken) return
+                            val domElement = DomUtil.getDomElement(position) ?: return
+                            val property = DomUtil.getParentOfType(domElement, ResultMap.Property::class.java, true) ?: return
+                            val parent = property.parent ?: return
+
+                            val className = when (parent) {
+                                is ResultMap -> parent.getType().rawText
+                                else -> null
+                            } ?: return
+
+                            val clazz = position.project.service<PsiService>().findClass(className) ?: return
+
+                            clazz.allFields
+                                .forEach { field ->
+
+                                    var typeText = field.type.presentableText
+
+                                    docService.getSummary(field)?.let { typeText = "$it ($typeText)" }
+
+                                    result.addElement(
+                                        LookupElementBuilder.create(field.name)
+                                            .withIcon(PlatformIcons.PROPERTY_ICON)
+                                            .withTypeText(typeText)
+                                    )
+                                }
+                            result.stopHere()
+                        }
+                    })
+            }
     }
 
 

@@ -8,7 +8,7 @@
 
     <resultMap id="resultMap" type="org.ifinalframework.plugins.aio.mybatis.ResultMap" extends="resultMap">
         <id column="id" property="id"/>
-        <result column="id" property="id"/>
+        <result column="id" property="age"/>
     </resultMap>
 
     <resultMap id="resultMap2" type="org.ifinalframework.plugins.aio.mybatis.ResultMap" extends="baseMap">

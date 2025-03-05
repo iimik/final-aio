@@ -13,10 +13,16 @@ import org.apache.ibatis.annotations.Param
  **/
 interface KotlinMapper {
 
+    /**
+     * insert
+     */
     fun insert(any:Any): Int {
         return insert("")
     }
 
+    /**
+     * 插入
+     */
     fun insert(@Param("p1")name: String, age: Int): Int
 
     @Insert("")

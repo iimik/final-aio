@@ -1,17 +1,23 @@
 package org.ifinalframework.plugins.aio.psi.service.kotlin
 
 import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiDocCommentOwner
 import com.intellij.psi.PsiElement
+import com.intellij.util.containers.stream
 import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.application.condition.ConditionOnKotlin
 import org.ifinalframework.plugins.aio.psi.service.DocService
+import org.jetbrains.kotlin.asJava.elements.KtLightElement
+import org.jetbrains.kotlin.asJava.elements.KtLightField
 import org.jetbrains.kotlin.kdoc.parser.KDocKnownTag
 import org.jetbrains.kotlin.kdoc.psi.api.KDoc
 import org.jetbrains.kotlin.kdoc.psi.api.KDocElement
 import org.jetbrains.kotlin.kdoc.psi.impl.KDocSection
 import org.jetbrains.kotlin.kdoc.psi.impl.KDocTag
 import org.jetbrains.kotlin.psi.KtDeclaration
+import org.jetbrains.kotlin.psi.KtElement
 import org.springframework.stereotype.Component
+import java.util.*
 
 
 /**
@@ -28,6 +34,10 @@ class KotlinDocService : DocService {
             is KtDeclaration -> {
                 val content = element.docComment?.getDefaultSection()?.getContent()?.trimEnd('\n')
                 return if (content.isNullOrBlank()) element.name else content
+            }
+
+            is KtLightElement<out KtElement, *> -> {
+                return element.kotlinOrigin?.let { getSummary(it) }
             }
 
             else -> null
@@ -51,7 +61,7 @@ class KotlinDocService : DocService {
 
         val kTag = KDocKnownTag.findByTagName(tag)
         if (kTag != null) {
-            val content = R.computeInRead{
+            val content = R.computeInRead {
                 kDoc.findSectionByTag(kTag)?.getContent()
             }
             if (content != null) {
@@ -59,7 +69,7 @@ class KotlinDocService : DocService {
             }
         }
 
-        return R.computeInRead{
+        return R.computeInRead {
             kDoc.children
                 .filterIsInstance<KDocSection>()
                 .flatMap { it.findTagsByName(tag) }

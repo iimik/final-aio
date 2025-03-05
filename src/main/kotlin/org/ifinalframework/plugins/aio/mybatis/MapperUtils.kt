@@ -90,4 +90,5 @@ object MapperUtils {
         val hasAnnotation = MybatisConstants.ALL_STATEMENTS.map { method.hasAnnotation(it) }.firstOrNull { it }.orFalse()
         return !hasAnnotation
     }
+
 }
