@@ -1,10 +1,7 @@
 package org.ifinalframework.plugins.aio.mybatis
 
 import com.intellij.grazie.utils.orFalse
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiMethod
-import com.intellij.psi.PsiModifier
+import com.intellij.psi.*
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomUtil
@@ -19,7 +16,6 @@ import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
  * @since 0.0.6
  **/
 object MapperUtils {
-
 
     fun isMybatisFile(file: PsiFile?): Boolean {
         if (file !is XmlFile) {
@@ -84,7 +80,7 @@ object MapperUtils {
 
         val clazz = method.containingClass ?: return false
         val qualifiedName = clazz.qualifiedName
-        if("java.lang.Object" == qualifiedName || Any::class.qualifiedName == qualifiedName) return false
+        if ("java.lang.Object" == qualifiedName || Any::class.qualifiedName == qualifiedName) return false
 
         // 含有特定注解
         val hasAnnotation = MybatisConstants.ALL_STATEMENTS.map { method.hasAnnotation(it) }.firstOrNull { it }.orFalse()

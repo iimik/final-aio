@@ -5,6 +5,7 @@ import com.intellij.util.xml.*
 import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapConverter
 import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapIdReferenceConverter
 import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapPropertyConverter
+import org.ifinalframework.plugins.aio.mybatis.xml.converter.TypeHandlerConverter
 
 
 /**
@@ -69,6 +70,11 @@ interface ResultMap : IdDomElement {
         @Attribute("property")
         @Convert(ResultMapPropertyConverter::class)
         fun getProperty(): GenericAttributeValue<String>
+
+        @NameValue
+        @Attribute("typeHandler")
+        @Convert(TypeHandlerConverter::class)
+        fun getTypeHandler(): GenericAttributeValue<PsiClass>
     }
 
     /**
