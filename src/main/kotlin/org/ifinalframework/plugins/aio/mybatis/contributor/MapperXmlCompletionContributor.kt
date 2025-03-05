@@ -17,7 +17,6 @@ import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.*
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.resource.AllIcons
-import org.ifinalframework.plugins.aio.service.PsiService
 import org.ifinalframework.plugins.aio.util.SpiUtil
 import java.util.stream.Stream
 
@@ -180,12 +179,10 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                             val property = DomUtil.getParentOfType(domElement, ResultMap.Property::class.java, true) ?: return
                             val parent = property.parent ?: return
 
-                            val className = when (parent) {
-                                is ResultMap -> parent.getType().rawText
+                            val clazz = when (parent) {
+                                is ResultMap -> parent.getType().value
                                 else -> null
                             } ?: return
-
-                            val clazz = position.project.service<PsiService>().findClass(className) ?: return
 
                             clazz.allFields
                                 .forEach { field ->
