@@ -7,3 +7,8 @@ Markdown的文件路径格式为：**类注释（首行）/方法注释.md**，�
 
 
 ![Api Markdown Line Marker](images/Api-Markdown-Line-Marker.gif)
+
+
+### 创建接口Markdown文档
+
+![](images/Api-Markdown-Quick-Create.gif)

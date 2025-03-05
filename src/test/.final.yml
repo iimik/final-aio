@@ -9,5 +9,5 @@ final:
       server-url: ${YAPI_SERVER_URL}
       token: ${YAPI_TOKEN}
     markdown:
-      enable: false
+      enable: true
       hah: 1123123123
