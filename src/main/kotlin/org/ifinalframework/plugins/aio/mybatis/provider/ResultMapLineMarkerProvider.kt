@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.mybatis.provider;
+package org.ifinalframework.plugins.aio.mybatis.provider
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
@@ -21,6 +21,7 @@ import org.jetbrains.uast.toUElement
  * @author iimik
  * @since 0.0.4
  **/
+@Suppress("UElementAsPsi")
 class ResultMapLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
     private val tooltip = I18N.message("MyBatis.ResultMapLineMarkerProvider.tooltip")
