@@ -35,7 +35,6 @@ interface ResultMap : IdDomElement {
     @Required
     @NameValue
     @Attribute("type")
-    @Convert(ClassConverter::class)
     fun getType(): GenericAttributeValue<PsiClass>
 
     @NameValue

@@ -66,7 +66,7 @@ class JvmMapperLineMarkerService : MapperLineMarkerService<Any> {
         if (mappers.isEmpty()) return null
 
         val qualifiedName = method.getContainingUClass()!!.qualifiedName
-        val mapper = mappers.firstOrNull { qualifiedName == it.getNamespace()?.value } ?: return MybatisMarker.NOT_EXISTS
+        val mapper = mappers.firstOrNull { qualifiedName == it.getNamespace()?.stringValue } ?: return MybatisMarker.NOT_EXISTS
         val statement = mapper.getStatements().firstOrNull { method.name == it.getId().stringValue } ?: return MybatisMarker.NOT_EXISTS
 
         return MybatisMarker(listOf(statement.xmlTag!!))
