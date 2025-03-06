@@ -7,6 +7,7 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.searches.AllClassesSearch
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.idea.base.psi.kotlinFqName
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
@@ -35,6 +36,8 @@ class PsiService(val project: Project) {
     }
 
     fun findAllClasses(filter: ClassFilter = ClassFilter.ALL): List<PsiClass> {
+
+
         return jvmFileExtensions.flatMap {
             FilenameIndex.getAllFilesByExt(project, it)
                 .mapNotNull { f -> f.toPsiFile(project) }
