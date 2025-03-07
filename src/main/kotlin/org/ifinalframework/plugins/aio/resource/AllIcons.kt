@@ -9,6 +9,7 @@ import javax.swing.Icon
  *
  * @author iimik
  * @since 0.0.1
+ * @see [icons](https://plugins.jetbrains.com/docs/intellij/icons.html)
  **/
 class AllIcons {
 
