@@ -52,6 +52,12 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
                 if (uClass.isInterface && uClass.hasAnnotation(SpringAnnotations.FEIGN_CLIENT)) {
                     // @FeignClient
+
+                    if (element.containingFile.virtualFile.toString().startsWith("jar://")) {
+                        // ignore jar
+                        return
+                    }
+
                     val apiMarker = apiMethodService.getApiMarker(element.parent) ?: return
                     val controllers = AnnotationTargetsSearch.search(restControllerAnnotation)
                         .filterIsInstance<PsiClass>()
