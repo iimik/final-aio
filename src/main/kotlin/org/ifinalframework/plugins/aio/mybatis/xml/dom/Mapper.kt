@@ -1,6 +1,8 @@
 package org.ifinalframework.plugins.aio.mybatis.xml.dom;
 
+import com.intellij.psi.PsiClass
 import com.intellij.util.xml.*
+import org.ifinalframework.plugins.aio.mybatis.xml.converter.MapperConverter
 
 
 /**
@@ -13,7 +15,8 @@ interface Mapper : DomElement {
     @Required
     @NameValue
     @Attribute("namespace")
-    fun getNamespace(): GenericAttributeValue<String>
+    @Convert(MapperConverter::class)
+    fun getNamespace(): GenericAttributeValue<PsiClass>
 
     @SubTagList("resultMap")
     fun getResultMaps(): List<ResultMap>

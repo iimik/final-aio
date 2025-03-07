@@ -18,6 +18,9 @@ class SpringAnnotations {
 
         const val FEIGN_CLIENT = "org.springframework.cloud.openfeign.FeignClient"
 
+        const val REST_CONTROLLER = "org.springframework.web.bind.annotation.RestController"
+        const val RESPONSE_BODY = "org.springframework.web.bind.annotation.ResponseBody"
+
         val REQUEST_MAPPINGS =
             setOf(REQUEST_MAPPING, GET_MAPPING, POST_MAPPING, PUT_MAPPING, PATCH_MAPPING, DELETE_MAPPING)
     }

@@ -1,9 +1,11 @@
 package org.ifinalframework.plugins.aio.mybatis.xml.dom
 
+import com.intellij.psi.PsiClass
 import com.intellij.util.xml.*
 import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapConverter
 import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapIdReferenceConverter
 import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapPropertyConverter
+import org.ifinalframework.plugins.aio.mybatis.xml.converter.TypeHandlerConverter
 
 
 /**
@@ -33,7 +35,7 @@ interface ResultMap : IdDomElement {
     @Required
     @NameValue
     @Attribute("type")
-    fun getType(): GenericAttributeValue<String>
+    fun getType(): GenericAttributeValue<PsiClass>
 
     @NameValue
     @Attribute("extends")
@@ -68,6 +70,11 @@ interface ResultMap : IdDomElement {
         @Attribute("property")
         @Convert(ResultMapPropertyConverter::class)
         fun getProperty(): GenericAttributeValue<String>
+
+        @NameValue
+        @Attribute("typeHandler")
+        @Convert(TypeHandlerConverter::class)
+        fun getTypeHandler(): GenericAttributeValue<PsiClass>
     }
 
     /**

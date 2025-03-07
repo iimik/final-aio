@@ -107,6 +107,7 @@
         <completion.contributor
                 language="XML"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperXmlCompletionContributor"
+                order="first"
         />
         <completion.contributor
                 language="SQL"

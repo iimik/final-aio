@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.mybatis.provider;
+package org.ifinalframework.plugins.aio.mybatis.provider
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
@@ -21,9 +21,10 @@ import org.jetbrains.uast.toUElement
  * @author iimik
  * @since 0.0.4
  **/
+@Suppress("UElementAsPsi")
 class ResultMapLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
-    private val tooltip = I18N.message("Mybatis.ResultMapLineMarkerProvider.tooltip")
+    private val tooltip = I18N.message("MyBatis.ResultMapLineMarkerProvider.tooltip")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
 
@@ -33,7 +34,8 @@ class ResultMapLineMarkerProvider : RelatedItemLineMarkerProvider() {
             val uClass = uElement.uastParent as UClass
             if (!uClass.hasModifierProperty(PsiModifier.ABSTRACT)) {
                 // 非抽象类
-                val resultMaps = element.project.getService(MapperService::class.java).findResultMaps(uClass.qualifiedName!!)
+                val qualifiedName = uClass.qualifiedName ?: return
+                val resultMaps = element.project.getService(MapperService::class.java).findResultMaps(qualifiedName)
                 if (resultMaps.isNotEmpty()) {
                     val targets = resultMaps.stream().map { it.xmlTag }.toList()
                     val icon = AllIcons.Mybatis.JVM

@@ -70,8 +70,7 @@ class StatementLineMarkerService : MapperLineMarkerService<XmlToken> {
     }
 
     private fun process(project: Project, resultMap: ResultMap): MybatisMarker {
-        val type = resultMap.getType().stringValue ?: return MybatisMarker.NOT_EXISTS
-        val clazz = project.getService<PsiService>().findClass(type) ?: return MybatisMarker.NOT_EXISTS
+        val clazz = resultMap.getType().value ?: return MybatisMarker.NOT_EXISTS
         return MybatisMarker(listOf(clazz))
     }
 

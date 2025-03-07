@@ -1,9 +1,6 @@
 package org.ifinalframework.plugins.aio.mybatis.contributor
 
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
-import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.completion.CompletionType
+import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -17,7 +14,6 @@ import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.*
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.resource.AllIcons
-import org.ifinalframework.plugins.aio.service.PsiService
 import org.ifinalframework.plugins.aio.util.SpiUtil
 import java.util.stream.Stream
 
@@ -36,6 +32,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
         resultMapCompletion()
         resultMapPropertyCompletion()
     }
+
 
     /**
      * 自动补全`statement`的`id`属性
@@ -81,6 +78,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                                         LookupElementBuilder.create(method.name)
                                             .withIcon(PlatformIcons.METHOD_ICON)
                                             .withTypeText(summary)
+                                            .withCaseSensitivity(false)
                                     )
                                 }
 
@@ -95,6 +93,8 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
      * <select resultMap=""/>
      * <resultMap extends=""/>
      * ```
+     *
+     * Note: 需要排除自身
      */
     private fun resultMapCompletion() {
         val selectResultMap = XmlPatterns.psiElement().inside(
@@ -124,10 +124,16 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                             val domElement = DomUtil.getDomElement(position) ?: return
                             val mapper = MapperUtils.getMapper(domElement)
 
+                            val self = DomUtil.getParentOfType(domElement, ResultMap::class.java, true)
+
                             mapper.getResultMaps()
+                                // 排除自己
+                                .filter { self == null || self.getId().rawText != it.getId().rawText }
                                 .forEach { resultMap ->
                                     result.addElement(
-                                        LookupElementBuilder.create(resultMap.getId().rawText!!).withIcon(AllIcons.Mybatis.XML)
+                                        LookupElementBuilder.create(resultMap.getId().rawText!!)
+                                            .withIcon(AllIcons.Mybatis.XML)
+                                            .withCaseSensitivity(false)
                                     )
                                 }
                             result.stopHere()
@@ -171,12 +177,10 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                             val property = DomUtil.getParentOfType(domElement, ResultMap.Property::class.java, true) ?: return
                             val parent = property.parent ?: return
 
-                            val className = when (parent) {
-                                is ResultMap -> parent.getType().rawText
+                            val clazz = when (parent) {
+                                is ResultMap -> parent.getType().value
                                 else -> null
                             } ?: return
-
-                            val clazz = position.project.service<PsiService>().findClass(className) ?: return
 
                             clazz.allFields
                                 .forEach { field ->
@@ -189,6 +193,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                                         LookupElementBuilder.create(field.name)
                                             .withIcon(PlatformIcons.PROPERTY_ICON)
                                             .withTypeText(typeText)
+                                            .withCaseSensitivity(false)
                                     )
                                 }
                             result.stopHere()

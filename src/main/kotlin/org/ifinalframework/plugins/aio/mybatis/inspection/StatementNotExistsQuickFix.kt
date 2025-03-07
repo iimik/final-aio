@@ -19,6 +19,6 @@ class StatementNotExistsQuickFix(method: UMethod) : GenericQuickFix() {
     }
 
     override fun getName(): String {
-        return I18N.message("Mybatis.StatementNotExistsQuickFix.name")
+        return I18N.message("MyBatis.StatementNotExistsQuickFix.name")
     }
 }

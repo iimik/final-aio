@@ -1,5 +1,6 @@
 package org.ifinalframework.plugins.aio.mybatis.xml.dom
 
+import com.intellij.psi.PsiMethod
 import com.intellij.util.xml.*
 import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapConverter
 import org.ifinalframework.plugins.aio.mybatis.xml.converter.StatementMethodResolvingConverter
@@ -11,12 +12,12 @@ import org.ifinalframework.plugins.aio.mybatis.xml.converter.StatementMethodReso
  * @author iimik
  * @since 0.0.4
  **/
-interface Statement : IdDomElement {
+interface Statement : DomElement {
     @Required
     @NameValue
     @Attribute("id")
     @Convert(StatementMethodResolvingConverter::class)
-    override fun getId(): GenericAttributeValue<String>
+    fun getId(): GenericAttributeValue<PsiMethod>
 
     /**
      * @see [ResultMap.getId]

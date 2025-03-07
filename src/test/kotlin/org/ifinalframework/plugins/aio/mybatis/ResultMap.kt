@@ -16,5 +16,7 @@ data class ResultMap(
     /**
      * 年龄
      */
-    val age: Int
+    val age: Int,
+
+    val tags: List<String>,
 )
