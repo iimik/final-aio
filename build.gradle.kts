@@ -34,7 +34,7 @@ repositories {
 dependencies {
     testImplementation(libs.junit)
     // https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
-    implementation("org.eclipse.jgit:org.eclipse.jgit:7.1.0.202411261347-r")
+    implementation("org.eclipse.jgit:org.eclipse.jgit:7.2.0.202503040940-r")
     // spring boot
     implementation("org.springframework.boot:spring-boot-starter:${properties["spring.boot.version"]}")
     implementation("org.springframework.boot:spring-boot-starter-aop:${properties["spring.boot.version"]}")
