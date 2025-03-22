@@ -3,6 +3,7 @@ package org.ifinalframework.plugins.aio.api.yapi;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 测试Markdown目录
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @jira 1
  * @since 0.0.2
  **/
+@RestController
 @RequestMapping({"/java"})
 public class JavaYapiController {
 

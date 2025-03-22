@@ -120,6 +120,13 @@
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.spring.provider.SpringCloudFeignLineMarkerProvider"/>
 
+        <projectConfigurable
+            parentId="tools"
+            instance="org.ifinalframework.plugins.aio.api.setting.ApiMarkdownConfigurable"
+            id="org.ifinalframework.plugins.aio.api.setting.ApiMarkdownConfigurable"
+            key="Api.ApiMarkdownConfigurable.name"
+            />
+
     </extensions>
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
         <supportsKotlinPluginMode supportsK2="true"/>
