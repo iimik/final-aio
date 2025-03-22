@@ -39,4 +39,16 @@ interface Mapper : DomElement {
     @SubTagList("select")
     fun getSelects(): List<Select>
 
+    @SubTag("insert")
+    fun addInsert():Insert
+
+    @SubTag("update")
+    fun addUpdate():Update
+
+    @SubTag("delete")
+    fun addDelete():Delete
+
+    @SubTag("select")
+    fun addSelect():Select
+
 }

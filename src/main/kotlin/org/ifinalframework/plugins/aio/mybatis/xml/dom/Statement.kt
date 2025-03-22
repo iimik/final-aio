@@ -30,4 +30,6 @@ interface Statement : DomElement {
     @NameValue
     @Attribute("resultType")
     fun getResultType(): GenericAttributeValue<String>
+
+    fun setValue(content: String)
 }

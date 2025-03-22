@@ -9,7 +9,7 @@ import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.PsiMethod
 import com.intellij.util.PlatformIcons
 import com.intellij.util.ProcessingContext
-import org.ifinalframework.plugins.aio.mybatis.MapperUtils
+import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 import org.ifinalframework.plugins.aio.mybatis.MybatisConstants
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.IdDomElement
@@ -42,7 +42,7 @@ class TestParamContributor : CompletionContributor() {
                     addElementForPsiParameter(
                         position.project,
                         result,
-                        MapperUtils.findParentIdDomElement(position)
+                        MyBatisUtils.findParentIdDomElement(position)
                     )
                 }
             })

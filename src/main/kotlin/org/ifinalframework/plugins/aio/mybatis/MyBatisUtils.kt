@@ -1,12 +1,16 @@
 package org.ifinalframework.plugins.aio.mybatis
 
 import com.intellij.grazie.utils.orFalse
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiMethod
+import com.intellij.psi.PsiModifier
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomUtil
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.IdDomElement
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
+import org.jetbrains.uast.UClass
 
 
 /**
@@ -15,7 +19,23 @@ import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
  * @author iimik
  * @since 0.0.6
  **/
-object MapperUtils {
+object MyBatisUtils {
+
+    private const val MAPPER = "Mapper"
+
+    /**
+     * 判断一个元素是不是Mapper
+     * Mapper需要满足以下条件
+     * - 是接口
+     * - 名称以Mapper结尾
+     * @since 0.0.10
+     */
+    fun isMapper(element: PsiElement): Boolean {
+        return when (element) {
+            is UClass -> element.isInterface && element.name != null && element.name!!.endsWith(MAPPER) && element.name != MAPPER
+            else -> false
+        }
+    }
 
     fun isMybatisFile(file: PsiFile?): Boolean {
         if (file !is XmlFile) {

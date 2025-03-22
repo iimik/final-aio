@@ -9,7 +9,7 @@ import com.intellij.psi.xml.XmlToken
 import com.intellij.util.PlatformIcons
 import com.intellij.util.ProcessingContext
 import com.intellij.util.xml.DomUtil
-import org.ifinalframework.plugins.aio.mybatis.MapperUtils
+import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.*
 import org.ifinalframework.plugins.aio.psi.service.DocService
@@ -67,7 +67,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                             if (position !is XmlToken) return
                             val domElement = DomUtil.getDomElement(position) ?: return
                             val statement = DomUtil.getParentOfType(domElement, Statement::class.java, true) ?: return
-                            val mapper = MapperUtils.getMapper(statement)
+                            val mapper = MyBatisUtils.getMapper(statement)
                             val className = mapper.getNamespace().rawText ?: return
 
                             position.project.service<MapperService>().findStatements(className)
@@ -122,7 +122,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                             val position = parameters.position
                             if (position !is XmlToken) return
                             val domElement = DomUtil.getDomElement(position) ?: return
-                            val mapper = MapperUtils.getMapper(domElement)
+                            val mapper = MyBatisUtils.getMapper(domElement)
 
                             val self = DomUtil.getParentOfType(domElement, ResultMap::class.java, true)
 
