@@ -38,4 +38,8 @@ interface KotlinMapper {
 
     fun selectResultMaps(): List<ResultMap>
 
+    fun insert3():Int
+
+    fun test()
+
 }

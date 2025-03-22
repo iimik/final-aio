@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.xml.DomService
-import org.ifinalframework.plugins.aio.mybatis.MapperUtils
+import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.ResultMap
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Statement
@@ -30,6 +30,10 @@ class MapperService(
             .map { it.rootElement }
     }
 
+    fun findMappers(className: String): Collection<Mapper> {
+        return findMappers().filter { className == it.getNamespace().stringValue }
+    }
+
     fun findResultMaps(className: String): Collection<ResultMap> {
         return findMappers().flatMap { it.getResultMaps() }
             .filter { className == it.getType().stringValue }
@@ -41,7 +45,7 @@ class MapperService(
     }
 
     fun findMethod(statement: Statement): PsiMethod? {
-        val className = MapperUtils.getNamespace(statement)
+        val className = MyBatisUtils.getNamespace(statement)
         val methodName = statement.getId().rawText ?: return null
         return findMethod(className, methodName)
     }
@@ -50,11 +54,11 @@ class MapperService(
         val clazz = project.service<PsiService>().findClass(className) ?: return null
         val methods = clazz.findMethodsByName(methodName, true)
         if (methods.isEmpty()) return null
-        return methods.firstOrNull { MapperUtils.isStatementMethod(it) }
+        return methods.firstOrNull { MyBatisUtils.isStatementMethod(it) }
     }
 
     fun findMethods(statement: Statement): List<PsiMethod> {
-        val className = MapperUtils.getNamespace(statement)
+        val className = MyBatisUtils.getNamespace(statement)
         val methodName = statement.getId().rawText ?: return emptyList()
         return findMethods(className, methodName)
     }
@@ -63,12 +67,12 @@ class MapperService(
         val clazz = project.service<PsiService>().findClass(className) ?: return emptyList()
         val methods = clazz.findMethodsByName(methodName, true)
         if (methods.isEmpty()) return emptyList()
-        return methods.filter { MapperUtils.isStatementMethod(it) }
+        return methods.filter { MyBatisUtils.isStatementMethod(it) }
     }
 
     fun findStatements(className: String): List<PsiMethod> {
         val clazz = project.service<PsiService>().findClass(className) ?: return emptyList()
-        return clazz.allMethods.filter { MapperUtils.isStatementMethod(it) }
+        return clazz.allMethods.filter { MyBatisUtils.isStatementMethod(it) }
     }
 
 }

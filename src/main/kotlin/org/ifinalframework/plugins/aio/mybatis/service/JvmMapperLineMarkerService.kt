@@ -1,12 +1,9 @@
 package org.ifinalframework.plugins.aio.mybatis.service
 
-import com.intellij.grazie.utils.orFalse
 import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiModifier
 import org.ifinalframework.plugins.aio.common.util.getService
-import org.ifinalframework.plugins.aio.mybatis.MapperUtils
-import org.ifinalframework.plugins.aio.mybatis.MybatisConstants
+import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 import org.ifinalframework.plugins.aio.mybatis.MybatisMarker
 import org.jetbrains.uast.*
 
@@ -59,7 +56,7 @@ class JvmMapperLineMarkerService : MapperLineMarkerService<Any> {
 
     private fun processMethod(method: UMethod): MybatisMarker? {
 
-        if(!MapperUtils.isStatementMethod(method)) return null
+        if (!MyBatisUtils.isStatementMethod(method)) return null
 
         // 以下都不应该返回 null
         val mappers = method.project.getService<MapperService>().findMappers()
