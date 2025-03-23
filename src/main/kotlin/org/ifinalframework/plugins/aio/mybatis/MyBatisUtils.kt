@@ -29,6 +29,7 @@ object MyBatisUtils {
      * - 是接口
      * - 名称以Mapper结尾
      * @since 0.0.10
+     * @see [isStatementMethod]
      */
     fun isMapper(element: PsiElement): Boolean {
         return when (element) {
@@ -56,8 +57,7 @@ object MyBatisUtils {
 
     fun getMapper(element: DomElement): Mapper {
         return DomUtil.getParentOfType(
-            element,
-            Mapper::class.java, true
+            element, Mapper::class.java, true
         ) ?: throw IllegalArgumentException("Unknown element")
     }
 
@@ -92,6 +92,12 @@ object MyBatisUtils {
         return DomUtil.getParentOfType(domElement, IdDomElement::class.java, true)
     }
 
+    /**
+     * 判断一个方法是不是Statement方法
+     * - 非默认方法
+     * - 不含有特定的注解
+     * @see [isMapper]
+     */
     fun isStatementMethod(method: PsiMethod): Boolean {
         // 排除默认方法
         if (method.hasModifierProperty(PsiModifier.DEFAULT)) {
