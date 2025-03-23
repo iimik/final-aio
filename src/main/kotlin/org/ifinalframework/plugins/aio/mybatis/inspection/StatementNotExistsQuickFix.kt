@@ -10,6 +10,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.PopupStep
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
+import com.intellij.psi.PsiJavaCodeReferenceElement
+import com.intellij.psi.PsiMethod
+import com.intellij.psi.PsiPrimitiveType
+import com.intellij.psi.PsiType
+import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.xml.XmlTag
 import org.ifinalframework.plugins.aio.intellij.GenericQuickFix
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
@@ -23,8 +28,9 @@ import org.jetbrains.uast.getContainingUClass
 /**
  * StatementNotExistsQuickFix
  *
+ * @issue 43
  * @author iimik
- * @since 0.0.4
+ * @since 0.0.10
  **/
 class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
 
@@ -92,7 +98,7 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
             } else if (mappers.size == 1) {
                 // 只有一个mapper，直接添加
                 val mapper = mappers.iterator().next()
-                val statement = generateStatement(mapper)
+                val statement = generateStatement(mapper, method)
                 statement.getId().stringValue = method.name
                 statement.setValue(" ")
                 val tag: XmlTag = statement.xmlTag!!
@@ -114,7 +120,7 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
             return regex.matches(method.name)
         }
 
-        protected abstract fun generateStatement(mapper: Mapper): T
+        protected abstract fun generateStatement(mapper: Mapper, method: UMethod): T
 
         protected abstract fun getDisplayText(): String
 
@@ -124,7 +130,7 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
     }
 
     class InsertStatementGenerator : AbstractStatementGenerator<Insert>("^(insert|add|create)+\\w*\$") {
-        override fun generateStatement(mapper: Mapper): Insert {
+        override fun generateStatement(mapper: Mapper, method: UMethod): Insert {
             return mapper.addInsert()
         }
 
@@ -134,7 +140,7 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
     }
 
     class UpdateStatementGenerator : AbstractStatementGenerator<Update>("^(update)+\\w*\$") {
-        override fun generateStatement(mapper: Mapper): Update {
+        override fun generateStatement(mapper: Mapper, method: UMethod): Update {
             return mapper.addUpdate()
         }
 
@@ -144,7 +150,7 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
     }
 
     class DeleteStatementGenerator : AbstractStatementGenerator<Delete>("^(delete|remove)+\\w*\$") {
-        override fun generateStatement(mapper: Mapper): Delete {
+        override fun generateStatement(mapper: Mapper, method: UMethod): Delete {
             return mapper.addDelete()
         }
 
@@ -153,9 +159,53 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
         }
     }
 
+    /**
+     * Select Statement 生成器
+     * - 支持自动填写`resultType`和`resultMap`属性
+     *      - 方法的返回类型，如果是参数化类型，用只有一个参数（如List），收使用参数化类型，否则使用直接返回类型
+     *      - 如果返回类型是基础类型（如String，Int等），则直接填写`resultType`属性，否则优化查询是否有定义`resultMap`，有则填写`resultMap`属性。
+     *
+     */
     class SelectStatementGenerator : AbstractStatementGenerator<Select>("^(select|find|get|query)+\\w*\$") {
-        override fun generateStatement(mapper: Mapper): Select {
-            return mapper.addSelect()
+        override fun generateStatement(mapper: Mapper, method: UMethod): Select {
+
+            val returnType = resolveReturnType(method)
+
+            return mapper.addSelect().apply {
+
+                if(returnType is PsiPrimitiveType){
+                    getResultType().stringValue = returnType.boxedTypeName
+                }else if (returnType is PsiClassReferenceType){
+                    val className = returnType.reference.qualifiedName
+
+                    val resultMap = mapper.getResultMaps().firstOrNull { it.getType().stringValue == className }
+                    if(resultMap != null){
+                        getResultMap().stringValue = resultMap.getId().stringValue
+                    }else{
+                        getResultType().stringValue = className
+                    }
+
+                }
+            }
+        }
+
+        private fun resolveReturnType(method: PsiMethod): PsiType?{
+            val psiType = method.returnType ?: return null
+
+            if(psiType is PsiPrimitiveType){
+                return psiType
+            }
+
+            if(psiType is PsiClassReferenceType){
+                val reference = psiType.reference
+                // 如果是参数类型且只有一个参数类型，如List<?>，取第一个元素，
+                if(reference is PsiJavaCodeReferenceElement && reference.typeParameters.size == 1){
+                    return reference.typeParameters[0]
+                }
+            }
+
+            return psiType
+
         }
 
         override fun getDisplayText(): String {

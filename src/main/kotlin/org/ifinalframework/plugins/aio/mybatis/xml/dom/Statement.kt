@@ -19,17 +19,7 @@ interface Statement : DomElement {
     @Convert(StatementMethodResolvingConverter::class)
     fun getId(): GenericAttributeValue<PsiMethod>
 
-    /**
-     * @see [ResultMap.getId]
-     */
-    @NameValue
-    @Attribute("resultMap")
-    @Convert(ResultMapConverter::class)
-    fun getResultMap(): GenericAttributeValue<String>
 
-    @NameValue
-    @Attribute("resultType")
-    fun getResultType(): GenericAttributeValue<String>
 
     fun setValue(content: String)
 }

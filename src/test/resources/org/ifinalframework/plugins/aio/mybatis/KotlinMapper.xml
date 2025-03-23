@@ -38,7 +38,8 @@
     <select id="select" resultType="java.lang.String" resultMap="resultMap2">
 
     </select>
-    <select id="selectResultMaps" resultMap="resultMap2"></select>
+    <select id="selectResultMaps" resultMap="baseMap"></select>
+    <select id="selectSingle" resultMap="baseMap"></select>
 
 
 </mapper>

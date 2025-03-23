@@ -5,12 +5,16 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiModifier
+import com.intellij.psi.PsiPrimitiveType
+import com.intellij.psi.PsiType
+import com.intellij.psi.PsiTypeParameterList
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomUtil
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.IdDomElement
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
 import org.jetbrains.uast.UClass
+import org.jetbrains.uast.UMethod
 
 
 /**
@@ -112,5 +116,7 @@ object MyBatisUtils {
         val hasAnnotation = MybatisConstants.ALL_STATEMENTS.map { method.hasAnnotation(it) }.firstOrNull { it }.orFalse()
         return !hasAnnotation
     }
+
+
 
 }

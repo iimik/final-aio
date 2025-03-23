@@ -19,7 +19,7 @@ import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
  * </select>
  * ```
  *
- * @see [org.ifinalframework.plugins.aio.mybatis.xml.dom.Statement.getResultMap]
+ * @see [org.ifinalframework.plugins.aio.mybatis.xml.dom.Select.getResultMap]
  * @see [org.ifinalframework.plugins.aio.mybatis.xml.dom.ResultMap.getExtends]
  * @author iimik
  * @since 0.0.6

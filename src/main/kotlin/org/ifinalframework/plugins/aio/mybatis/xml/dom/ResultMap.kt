@@ -24,7 +24,7 @@ import org.ifinalframework.plugins.aio.mybatis.xml.converter.TypeHandlerConverte
 interface ResultMap : IdDomElement {
 
     /**
-     * @see [Statement.getResultMap]
+     * @see [Select.getResultMap]
      */
     @Required
     @NameValue

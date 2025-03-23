@@ -36,6 +36,8 @@ interface KotlinMapper {
 
     fun select(): Int
 
+    fun selectSingle(): ResultMap
+
     fun selectResultMaps(): List<ResultMap>
 
     fun insert3():Int
