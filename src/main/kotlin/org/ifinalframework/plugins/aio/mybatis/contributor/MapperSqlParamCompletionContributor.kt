@@ -5,7 +5,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import org.ifinalframework.plugins.aio.mybatis.MapperUtils
+import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 
 /**
  * SQL 参数补全
@@ -23,7 +23,7 @@ class MapperSqlParamCompletionContributor : AbsMapperCompletionContributor() {
 
         val position = parameters.position
         val topLevelFile = position.containingFile.context?.containingFile ?: return
-        if (MapperUtils.isMybatisFile(topLevelFile)) {
+        if (MyBatisUtils.isMybatisFile(topLevelFile)) {
             val shouldAddElement = shouldAddElement(position.containingFile, parameters.offset)
             if (shouldAddElement) {
                 process(topLevelFile, result, position)
@@ -34,7 +34,7 @@ class MapperSqlParamCompletionContributor : AbsMapperCompletionContributor() {
     private fun process(xmlFile: PsiFile, result: CompletionResultSet, position: PsiElement) {
         val psiFile = position.containingFile
         val context = position.containingFile.context ?: return
-        val idDomElement = MapperUtils.findParentIdDomElement(context) ?: return
+        val idDomElement = MyBatisUtils.findParentIdDomElement(context) ?: return
         addElementForPsiParameter(position.project, result, idDomElement)
         result.stopHere()
 

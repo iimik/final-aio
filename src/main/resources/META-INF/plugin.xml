@@ -82,6 +82,7 @@
         <!--=============================================================================================================================-->
         <!--=======================================================    MyBatis    =======================================================-->
         <!--=============================================================================================================================-->
+        <fileTemplateGroup implementation="org.ifinalframework.plugins.aio.mybatis.template.MyBatisFileTemplateGroupDescriptorFactory"/>
         <codeInsight.lineMarkerProvider
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.MapperLineMarkerProvider"/>
@@ -91,11 +92,11 @@
         <codeInsight.lineMarkerProvider
                 language="XML"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.StatementLineMarkerProvider"/>
-        <!--        <localInspection-->
-        <!--                language="UAST"-->
-        <!--                displayName="Mapper Inspection"-->
-        <!--                groupName="Mybatis" enabledByDefault="true" level="ERROR"-->
-        <!--                implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.MapperInspection"/>-->
+        <localInspection
+                language="UAST"
+                displayName="Mapper Inspection"
+                groupName="Mybatis" enabledByDefault="true" level="ERROR"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.MapperInspection"/>
         <localInspection
                 language="XML"
                 shortName="MybatisMapperXmlInspection"
@@ -119,6 +120,22 @@
         <codeInsight.lineMarkerProvider
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.spring.provider.SpringCloudFeignLineMarkerProvider"/>
+        <!--=============================================================================================================================-->
+        <!--=======================================================    Setting    =======================================================-->
+        <!--=============================================================================================================================-->
+        <projectConfigurable
+                parentId="tools"
+                instance="org.ifinalframework.plugins.aio.setting.FinalConfigurable"
+                id="org.ifinalframework.plugins.aio.setting.FinalConfigurable"
+                displayName="Final AIO"
+        >
+            <configurable
+                    instance="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
+                    id="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
+                    displayName="MyBatis"
+                    nonDefaultProject="true"
+            />
+        </projectConfigurable>
 
     </extensions>
     <extensions defaultExtensionNs="org.jetbrains.kotlin">

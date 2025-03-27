@@ -12,6 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
  **/
 @ConfigurationProperties("final.api")
 data class ApiProperties(
-    val contextPath: String?,
-    val yapi: YapiProperties?,
+    val contextPath: String? = null,
+    val yapi: YapiProperties? = null,
+    var markdownBasePath: String = "docs/api"
 )

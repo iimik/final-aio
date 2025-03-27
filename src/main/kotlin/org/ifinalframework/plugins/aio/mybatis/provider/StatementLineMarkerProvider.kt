@@ -35,7 +35,7 @@ class StatementLineMarkerProvider : RelatedItemLineMarkerProvider() {
         if (element is XmlToken) {
             statementLineMarkerService.apply(element)?.let {
                 logger.info(it.toString())
-                if (it.targets == null) return@let
+                if (it.targets.isNullOrEmpty()) return@let
                 val icon = AllIcons.Mybatis.XML
                 val navigationGutterIconBuilder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(icon)
                 navigationGutterIconBuilder.setTooltipText("跳转到Mapper")

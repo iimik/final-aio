@@ -4,6 +4,19 @@
 
 ## [Unreleased]
 
+### 新增
+
+- MyBatis
+  - 🔥检查Mapper是否有对应的XML文件并提供快速生成Mapper.xml的修复方式。
+  - 🔥检查Mapper中的方法是否有定义statement并提供快速生成Statement的修复方式。
+
+### 修复
+
+- MyBatis
+  - 🐛修复Statement行标记找不到方法时也显示问题
+
+## [0.0.9] - 2025-03-07
+
 ### 优化
 
 - 优化图标大小 (#35)

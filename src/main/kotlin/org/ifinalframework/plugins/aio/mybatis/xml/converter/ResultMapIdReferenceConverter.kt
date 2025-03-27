@@ -7,7 +7,7 @@ import com.intellij.util.xml.CustomReferenceConverter
 import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.GenericDomValue
 import com.intellij.util.xml.impl.GenericDomValueReference
-import org.ifinalframework.plugins.aio.mybatis.MapperUtils
+import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 
 
 /**
@@ -26,7 +26,7 @@ class ResultMapIdReferenceConverter : CustomReferenceConverter<GenericAttributeV
         if (value == null || context == null) return emptyArray()
         val resultMapId = value.rawText ?: return emptyArray()
 
-        val mapper = MapperUtils.getMapper(context.invocationElement)
+        val mapper = MyBatisUtils.getMapper(context.invocationElement)
 
         val resultMaps = mapper.getSelects().filter { resultMapId == it.getResultMap().rawText }.map { it.getResultMap() }.toList()
         return resultMaps.map { GenericDomValueReference(it) }.toTypedArray()

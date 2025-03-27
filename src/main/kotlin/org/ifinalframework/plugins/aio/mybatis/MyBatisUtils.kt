@@ -1,12 +1,20 @@
 package org.ifinalframework.plugins.aio.mybatis
 
 import com.intellij.grazie.utils.orFalse
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiMethod
+import com.intellij.psi.PsiModifier
+import com.intellij.psi.PsiPrimitiveType
+import com.intellij.psi.PsiType
+import com.intellij.psi.PsiTypeParameterList
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomUtil
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.IdDomElement
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
+import org.jetbrains.uast.UClass
+import org.jetbrains.uast.UMethod
 
 
 /**
@@ -15,7 +23,24 @@ import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
  * @author iimik
  * @since 0.0.6
  **/
-object MapperUtils {
+object MyBatisUtils {
+
+    private const val MAPPER = "Mapper"
+
+    /**
+     * 判断一个元素是不是Mapper
+     * Mapper需要满足以下条件
+     * - 是接口
+     * - 名称以Mapper结尾
+     * @since 0.0.10
+     * @see [isStatementMethod]
+     */
+    fun isMapper(element: PsiElement): Boolean {
+        return when (element) {
+            is UClass -> element.isInterface && element.name != null && element.name!!.endsWith(MAPPER) && element.name != MAPPER
+            else -> false
+        }
+    }
 
     fun isMybatisFile(file: PsiFile?): Boolean {
         if (file !is XmlFile) {
@@ -36,8 +61,7 @@ object MapperUtils {
 
     fun getMapper(element: DomElement): Mapper {
         return DomUtil.getParentOfType(
-            element,
-            Mapper::class.java, true
+            element, Mapper::class.java, true
         ) ?: throw IllegalArgumentException("Unknown element")
     }
 
@@ -72,6 +96,12 @@ object MapperUtils {
         return DomUtil.getParentOfType(domElement, IdDomElement::class.java, true)
     }
 
+    /**
+     * 判断一个方法是不是Statement方法
+     * - 非默认方法
+     * - 不含有特定的注解
+     * @see [isMapper]
+     */
     fun isStatementMethod(method: PsiMethod): Boolean {
         // 排除默认方法
         if (method.hasModifierProperty(PsiModifier.DEFAULT)) {
@@ -86,5 +116,7 @@ object MapperUtils {
         val hasAnnotation = MybatisConstants.ALL_STATEMENTS.map { method.hasAnnotation(it) }.firstOrNull { it }.orFalse()
         return !hasAnnotation
     }
+
+
 
 }
