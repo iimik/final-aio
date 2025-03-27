@@ -120,13 +120,22 @@
         <codeInsight.lineMarkerProvider
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.spring.provider.SpringCloudFeignLineMarkerProvider"/>
-
+        <!--=============================================================================================================================-->
+        <!--=======================================================    Setting    =======================================================-->
+        <!--=============================================================================================================================-->
         <projectConfigurable
                 parentId="tools"
-                instance="org.ifinalframework.plugins.aio.api.setting.ApiMarkdownConfigurable"
-                id="org.ifinalframework.plugins.aio.api.setting.ApiMarkdownConfigurable"
-                key="Api.ApiMarkdownConfigurable.name"
-        />
+                instance="org.ifinalframework.plugins.aio.setting.FinalConfigurable"
+                id="org.ifinalframework.plugins.aio.setting.FinalConfigurable"
+                displayName="Final AIO"
+        >
+            <configurable
+                    instance="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
+                    id="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
+                    displayName="MyBatis"
+                    nonDefaultProject="true"
+            />
+        </projectConfigurable>
 
     </extensions>
     <extensions defaultExtensionNs="org.jetbrains.kotlin">

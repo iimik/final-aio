@@ -10,9 +10,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.writeText
+import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.common.util.getBasePath
 import org.ifinalframework.plugins.aio.intellij.GenericQuickFix
+import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
 import org.ifinalframework.plugins.aio.resource.I18N
 import org.ifinalframework.plugins.aio.service.NotificationService
 import org.jetbrains.kotlin.idea.base.util.module
@@ -38,12 +40,22 @@ class MapperNotExistsQuickFix(val clazz: UClass) : GenericQuickFix() {
         val element = problem.psiElement
         val module = element.module ?: return
 
-        createInModuleResource(module)
+        val path = getMapperPath(element, module) ?: return
+        createInModuleResource(path, module)
 
     }
 
-    private fun createInModuleResource(module: Module) {
-        val path = "${module.getBasePath()}/resources/${clazz.qualifiedName!!.substringBeforeLast('.').replace('.', '/')}"
+    private fun getMapperPath(element: PsiElement, module: Module): String? {
+        val language = element.language.id.lowercase()
+        val myBatisProperties = module.project.service<MyBatisProperties>()
+        return if (MyBatisProperties.MapperXmlPath.RESOURCE == myBatisProperties.mapperXmlPath) {
+            return "${module.getBasePath()}/resources/${clazz.qualifiedName!!.substringBeforeLast('.').replace('.', '/')}"
+        } else if (MyBatisProperties.MapperXmlPath.SOURCE == myBatisProperties.mapperXmlPath) {
+            "${module.getBasePath()}/${language}/${clazz.qualifiedName!!.substringBeforeLast('.').replace('.', '/')}"
+        } else null
+    }
+
+    private fun createInModuleResource(path: String, module: Module) {
         val fileName = "${clazz.name}.xml"
         File(path).mkdirs()
         val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(path)
@@ -69,6 +81,7 @@ class MapperNotExistsQuickFix(val clazz: UClass) : GenericQuickFix() {
         }
 
     }
+
 
     override fun getName(): String {
         return I18N.message("MyBatis.MapperNotExistsQuickFix.name")
