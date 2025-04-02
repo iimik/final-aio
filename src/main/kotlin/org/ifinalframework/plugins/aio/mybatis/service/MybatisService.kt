@@ -2,11 +2,14 @@ package org.ifinalframework.plugins.aio.mybatis.service
 
 import com.intellij.ide.highlighter.JavaFileType
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiEnumConstant
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.PsiTreeUtil
+import org.ifinalframework.plugins.aio.service.PsiService
 import org.jetbrains.uast.UClass
 import org.jetbrains.uast.toUElement
 
@@ -82,6 +85,17 @@ class MybatisService(
         return if (uElement is UClass) {
             uElement.isInheritor(typeHandler, true)
         } else false
+    }
+
+    fun getJdbcTypes(): List<PsiEnumConstant>{
+        val jdbcTypeClass = project.service<PsiService>().findClass("org.apache.ibatis.type.JdbcType") ?: return emptyList()
+
+        return jdbcTypeClass.allFields
+            .filterIsInstance<PsiEnumConstant>()
+    }
+
+    fun getJdbcType(name: String): PsiEnumConstant?{
+        return getJdbcTypes().find { it.name == name }
     }
 
 }

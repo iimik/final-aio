@@ -8,6 +8,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.patterns.XmlPatterns
+import com.intellij.psi.PsiEnumConstant
 import com.intellij.psi.xml.XmlToken
 import com.intellij.util.PlatformIcons
 import com.intellij.util.ProcessingContext
@@ -17,12 +18,12 @@ import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.*
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.resource.AllIcons
+import org.ifinalframework.plugins.aio.service.PsiService
 import org.ifinalframework.plugins.aio.util.SpiUtil
 import java.util.stream.Stream
 
 /**
  * Mapper Xml 自动补全提示
- *
  *
  * @issue 33
  * @author iimik
@@ -35,6 +36,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
         statementIdCompletion()
         resultMapCompletion()
         resultMapPropertyCompletion()
+        resultMapJdbcTypeCompletion()
         includeRefidCompletion()
     }
 
@@ -153,6 +155,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
      * <id property=""/>
      * <result property=""/>
      * ```
+     * @see [resultMapJdbcTypeCompletion]
      */
     private fun resultMapPropertyCompletion() {
         val idProperty = XmlPatterns.psiElement().inside(
@@ -202,6 +205,59 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                                     )
                                 }
                             result.stopHere()
+                        }
+                    })
+            }
+    }
+
+    /**
+     * 自动补全`jdbcType`
+     *
+     * ```xml
+     * <id jdbcType=""/>
+     * <result jdbcType=""/>
+     * ```
+     * @see [resultMapPropertyCompletion]
+     */
+    private fun resultMapJdbcTypeCompletion() {
+        val idProperty = XmlPatterns.psiElement().inside(
+            XmlPatterns.xmlAttribute().withName("jdbcType").inside(XmlPatterns.xmlTag().withName("id"))
+        )
+        val resultProperty = XmlPatterns.psiElement().inside(
+            XmlPatterns.xmlAttribute().withName("jdbcType").inside(XmlPatterns.xmlTag().withName("result"))
+        )
+
+        Stream.of(idProperty, resultProperty)
+            .forEach { place ->
+
+                thisLogger().info("resultMapJdbcTypeCompletion: $place")
+
+                extend(
+                    CompletionType.BASIC,
+                    place,
+                    object : CompletionProvider<CompletionParameters>() {
+                        override fun addCompletions(
+                            parameters: CompletionParameters,
+                            context: ProcessingContext,
+                            result: CompletionResultSet
+                        ) {
+
+                            val project = parameters.position.project
+                            val jdbcTypeClass = project.service<PsiService>().findClass("org.apache.ibatis.type.JdbcType") ?: return
+
+                            val jdbcTypes = jdbcTypeClass.allFields
+                                .filterIsInstance<PsiEnumConstant>()
+                                .map { it.name }
+
+                            jdbcTypes.forEach { jdbcType ->
+                                result.addElement(
+                                    LookupElementBuilder.create(jdbcType)
+                                        .withIcon(AllIcons.Mybatis.JVM)
+                                        .withCaseSensitivity(false)
+                                )
+                            }
+                            result.stopHere()
+
                         }
                     })
             }
