@@ -1,6 +1,9 @@
 package org.ifinalframework.plugins.aio.mybatis.contributor
 
-import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionProvider
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -18,7 +21,8 @@ import org.ifinalframework.plugins.aio.util.SpiUtil
 import java.util.stream.Stream
 
 /**
- * MapperXmlCompletionContributor
+ * Mapper Xml 自动补全提示
+ *
  *
  * @issue 33
  * @author iimik
@@ -31,6 +35,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
         statementIdCompletion()
         resultMapCompletion()
         resultMapPropertyCompletion()
+        includeRefidCompletion()
     }
 
 
@@ -200,6 +205,50 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                         }
                     })
             }
+    }
+
+    /**
+     * `include`标签`refid`使用`sql.id`补全提示
+     * ```xml
+     * <include refid="{sqlId}"/>
+     * ```
+     */
+    private fun includeRefidCompletion() {
+        val includeRefid = XmlPatterns.psiElement().inside(
+            XmlPatterns.xmlAttribute().withName("refid").inside(XmlPatterns.xmlTag().withName("include"))
+        )
+
+        thisLogger().info("resultMapPropertyCompletion: $includeRefid")
+
+        extend(
+            CompletionType.BASIC,
+            includeRefid,
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(
+                    parameters: CompletionParameters,
+                    context: ProcessingContext,
+                    result: CompletionResultSet
+                ) {
+                    val position = parameters.position
+                    if (position !is XmlToken) return
+                    val domElement = DomUtil.getDomElement(position) ?: return
+                    val mapper = MyBatisUtils.getMapper(domElement)
+
+                    val self = DomUtil.getParentOfType(domElement, Sql::class.java, true)
+
+                    mapper.getSqls()
+                        // 排除自己
+                        .filter { self == null || self.getId().rawText != it.getId().rawText }
+                        .forEach { sql ->
+                            result.addElement(
+                                LookupElementBuilder.create(sql.getId().rawText!!)
+                                    .withIcon(AllIcons.Mybatis.XML)
+                                    .withCaseSensitivity(false)
+                            )
+                        }
+                    result.stopHere()
+                }
+            })
     }
 
 

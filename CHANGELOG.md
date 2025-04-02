@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+## 新增
+
+- MyBatis
+  - Mapper xml 自动补全支持 `include.refid` 属性。
+
 ## [0.0.10] - 2025-03-27
 
 ### 新增

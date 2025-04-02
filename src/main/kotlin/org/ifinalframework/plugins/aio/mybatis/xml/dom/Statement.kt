@@ -12,7 +12,7 @@ import org.ifinalframework.plugins.aio.mybatis.xml.converter.StatementMethodReso
  * @author iimik
  * @since 0.0.4
  **/
-interface Statement : DomElement {
+interface Statement : SqlFragment {
     @Required
     @NameValue
     @Attribute("id")
