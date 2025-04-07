@@ -8,6 +8,7 @@
 
 - MyBatis
   - Mapper xml 自动补全支持 `include.refid` 属性。
+  - Mapper xml 生成支持Table Sql Fragment。
 
 ## [0.0.10] - 2025-03-27
 
