@@ -1,5 +1,6 @@
 package org.ifinalframework.plugins.aio.mybatis.inspection
 
+import com.google.common.base.CaseFormat
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.notification.NotificationDisplayType
 import com.intellij.notification.NotificationType
@@ -15,6 +16,7 @@ import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.common.util.getBasePath
 import org.ifinalframework.plugins.aio.intellij.GenericQuickFix
 import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
+import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.resource.I18N
 import org.ifinalframework.plugins.aio.service.NotificationService
 import org.jetbrains.kotlin.idea.base.util.module
@@ -39,13 +41,13 @@ class MapperNotExistsQuickFix(val clazz: UClass) : GenericQuickFix() {
     override fun applyFix(project: Project, problem: ProblemDescriptor) {
         val element = problem.psiElement
         val module = element.module ?: return
-
-        val path = getMapperPath(element, module) ?: return
-        createInModuleResource(path, module)
+        val myBatisProperties = module.project.service<MyBatisProperties>()
+        val path = getMapperPath(element, module, myBatisProperties) ?: return
+        createInModuleResource(path, module, myBatisProperties)
 
     }
 
-    private fun getMapperPath(element: PsiElement, module: Module): String? {
+    private fun getMapperPath(element: PsiElement, module: Module, myBatisProperties: MyBatisProperties): String? {
         val language = element.language.id.lowercase()
         val myBatisProperties = module.project.service<MyBatisProperties>()
         return if (MyBatisProperties.MapperXmlPath.RESOURCE == myBatisProperties.mapperXmlPath) {
@@ -55,7 +57,7 @@ class MapperNotExistsQuickFix(val clazz: UClass) : GenericQuickFix() {
         } else null
     }
 
-    private fun createInModuleResource(path: String, module: Module) {
+    private fun createInModuleResource(path: String, module: Module, myBatisProperties: MyBatisProperties) {
         val fileName = "${clazz.name}.xml"
         File(path).mkdirs()
         val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(path)
@@ -76,6 +78,22 @@ class MapperNotExistsQuickFix(val clazz: UClass) : GenericQuickFix() {
             service<NotificationService>().notify(
                 NotificationDisplayType.TOOL_WINDOW, "创建Mapper文件：$fileName", NotificationType.INFORMATION
             )
+
+            val mapper = project.service<MapperService>().findMappers(clazz.qualifiedName!!).first()
+
+
+            // table sql fragment
+            val tableSqlFragment = myBatisProperties.tableSqlFragment
+            if (tableSqlFragment.enable) {
+                R.runInWriteAction(project) {
+                    val sql = mapper.addSql()
+                    sql.getId().stringValue = tableSqlFragment.id
+                    val tableName = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, clazz.name!!.substringBeforeLast("Mapper"))
+                    sql.setValue("${tableSqlFragment.prefix}${tableName}")
+                }
+            }
+
+
             val editorManager = FileEditorManager.getInstance(project)
             editorManager.openFile(file!!, true)
         }

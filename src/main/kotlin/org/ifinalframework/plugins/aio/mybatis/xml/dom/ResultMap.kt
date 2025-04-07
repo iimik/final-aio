@@ -1,11 +1,9 @@
 package org.ifinalframework.plugins.aio.mybatis.xml.dom
 
 import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiEnumConstant
 import com.intellij.util.xml.*
-import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapConverter
-import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapIdReferenceConverter
-import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapPropertyConverter
-import org.ifinalframework.plugins.aio.mybatis.xml.converter.TypeHandlerConverter
+import org.ifinalframework.plugins.aio.mybatis.xml.converter.*
 
 
 /**
@@ -75,6 +73,11 @@ interface ResultMap : IdDomElement {
         @Attribute("typeHandler")
         @Convert(TypeHandlerConverter::class)
         fun getTypeHandler(): GenericAttributeValue<PsiClass>
+
+        @NameValue
+        @Attribute("jdbcType")
+        @Convert(JdbcTypeConverter::class)
+        fun getJdbcType(): GenericAttributeValue<PsiEnumConstant>
     }
 
     /**

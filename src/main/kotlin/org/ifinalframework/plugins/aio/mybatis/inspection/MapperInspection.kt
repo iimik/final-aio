@@ -9,6 +9,7 @@ import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 import org.ifinalframework.plugins.aio.mybatis.service.JvmMapperLineMarkerService
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.psi.AbstractUastLocalInspectionTool
+import org.ifinalframework.plugins.aio.service.PsiService
 import org.jetbrains.uast.*
 
 
@@ -16,6 +17,7 @@ import org.jetbrains.uast.*
  * Mapper 检查
  *
  * - 检查Mapper是否有定义xml文件
+ *      - 区分是否存在有Method未定义`statement`
  *
  * - 检查Method是否有定义`statement`，忽略以下场景
  *      - 默认方法：含有`default`标记
@@ -58,14 +60,25 @@ class MapperInspection : AbstractUastLocalInspectionTool() {
         isOnTheFly: Boolean
     ): Array<ProblemDescriptor>? {
         val className = clazz.qualifiedName ?: return null
-        val mappers = manager.project.service<MapperService>().findMappers(className)
+        val project = manager.project
+        val mappers = project.service<MapperService>().findMappers(className)
         if (mappers.isNotEmpty()) return null
+
+        // 检查是否有需要定义Statement的方法
+        val mapperService = service<JvmMapperLineMarkerService>()
+        val mapperClass = project.service<PsiService>().findClass(className)!!
+        val findMethodButNotFoundStatement = mapperClass.methods.firstOrNull { MyBatisUtils.isStatementMethod(it) }
+
+        val problemHighlightType = if (findMethodButNotFoundStatement == null) {
+            ProblemHighlightType.WEAK_WARNING
+        } else ProblemHighlightType.GENERIC_ERROR
+
 
         val problemDescriptor = manager.createProblemDescriptor(
             sourcePsi,
             "Mapper with namespaces=\"#ref\" not defined.",
             MapperNotExistsQuickFix(clazz),
-            ProblemHighlightType.GENERIC_ERROR,
+            problemHighlightType,
             isOnTheFly
         )
         return arrayOf(problemDescriptor)

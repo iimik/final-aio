@@ -40,15 +40,18 @@ interface Mapper : DomElement {
     fun getSelects(): List<Select>
 
     @SubTag("insert")
-    fun addInsert():Insert
+    fun addInsert(): Insert
 
     @SubTag("update")
-    fun addUpdate():Update
+    fun addUpdate(): Update
 
     @SubTag("delete")
-    fun addDelete():Delete
+    fun addDelete(): Delete
 
     @SubTag("select")
-    fun addSelect():Select
+    fun addSelect(): Select
+
+    @SubTag("sql")
+    fun addSql(): Sql
 
 }
