@@ -9,6 +9,8 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.PsiEnumConstant
+import com.intellij.psi.PsiField
+import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.xml.XmlToken
 import com.intellij.util.PlatformIcons
 import com.intellij.util.ProcessingContext
@@ -38,6 +40,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
         resultMapPropertyCompletion()
         resultMapJdbcTypeCompletion()
         includeRefidCompletion()
+        testPropertyCompletion()
     }
 
 
@@ -305,6 +308,94 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                     result.stopHere()
                 }
             })
+    }
+
+    /**
+     * ```xml
+     * <if test=""/>
+     * <when test=""/>
+     * ```
+     */
+    private fun testPropertyCompletion() {
+        val ifTest = XmlPatterns.psiElement().inside(
+            XmlPatterns.xmlAttribute().withName("test").inside(XmlPatterns.xmlTag().withName("if"))
+        )
+
+        val whenTest = XmlPatterns.psiElement().inside(
+            XmlPatterns.xmlAttribute().withName("test").inside(XmlPatterns.xmlTag().withName("when"))
+        )
+
+        Stream.of(ifTest, whenTest)
+            .forEach { place ->
+
+                thisLogger().info("testPropertyCompletion: $place")
+
+                extend(
+                    CompletionType.BASIC,
+                    place,
+                    object : CompletionProvider<CompletionParameters>() {
+                        override fun addCompletions(
+                            parameters: CompletionParameters,
+                            context: ProcessingContext,
+                            result: CompletionResultSet
+                        ) {
+                            val position = parameters.position
+                            if (position !is XmlToken) return
+                            val domElement = DomUtil.getDomElement(position) ?: return
+                            val statement = if (domElement is Statement) domElement else DomUtil.getParentOfType(
+                                domElement,
+                                Statement::class.java,
+                                true
+                            ) ?: return
+
+                            val method = statement.getId().value ?: return
+                            val params = method.parameters
+                            if (params.size == 1) {
+                                val type = params[0].type
+                                if (type is PsiClassReferenceType) {
+                                    val className = type.reference!!.qualifiedName
+                                    val clazz = position.project.service<PsiService>().findClass(className) ?: return
+                                    clazz.allFields
+                                        .forEach { field ->
+
+                                            var typeText = field.type.presentableText
+
+                                            docService.getSummary(field)?.let { typeText = "$it ($typeText)" }
+
+                                            result.addElement(
+                                                LookupElementBuilder.create(buildTest(field))
+                                                    .withIcon(PlatformIcons.PROPERTY_ICON)
+                                                    .withTypeText(typeText)
+                                                    .withCaseSensitivity(false)
+                                            )
+                                        }
+                                }
+                                println()
+                            } else {
+
+                            }
+
+
+                            result.stopHere()
+                        }
+                    })
+            }
+    }
+
+    private fun buildTest(field: PsiField): String {
+        val type = field.type
+        val name = field.name
+        if(type is PsiClassReferenceType) {
+            val className = type.reference!!.qualifiedName
+            if("java.lang.String" == className){
+                return "null != $name and $name != ''"
+            }else if("java.util.List" == className || "java.util.Set" == className){
+                return "null != $name and ${name}.size != 0"
+            }
+        }
+
+
+        return "null != $name"
     }
 
 
