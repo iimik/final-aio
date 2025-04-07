@@ -3,6 +3,8 @@ package org.ifinalframework.plugins.aio
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.project.Project
 
 
 /**
@@ -48,6 +50,10 @@ object R {
         } catch (e: Exception) {
             throw RuntimeException(e)
         }
+    }
+
+    fun runInWriteAction(project: Project, action: () -> Unit) {
+        WriteCommandAction.runWriteCommandAction(project, action)
     }
 
     fun dispatch(action: () -> Unit) {

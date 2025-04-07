@@ -16,19 +16,14 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
 
     val myBatisProperties: MyBatisProperties = project.service<MyBatisProperties>()
 
-
     val panel = panel {
 
         group("通用") {
+            // Mapper Xml 路径
             buttonsGroup("Mapper XML 生成路径", indent = true) {
                 row {
-                    radioButton("ASK", MyBatisProperties.MapperXmlPath.ASK)
-                        .enabled(false)
-                }
-                row {
+                    radioButton("ASK", MyBatisProperties.MapperXmlPath.ASK).enabled(false)
                     radioButton("RESOURCE", MyBatisProperties.MapperXmlPath.RESOURCE)
-                }
-                row {
                     radioButton("SOURCE", MyBatisProperties.MapperXmlPath.SOURCE)
                 }
             }
@@ -41,6 +36,34 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
                         myBatisProperties.mapperXmlPath = value
                     }
                 })
+
+            // Table Sql Fragment
+            row {
+                val tableSqlFragment = myBatisProperties.tableSqlFragment
+                checkBox("Table Sql Fragment")
+                    .bindSelected(
+                        getter = { tableSqlFragment.enable },
+                        setter = { tableSqlFragment.enable = it }
+                    )
+
+                textField()
+                    .label("Id:")
+                    .align(Align.FILL)
+                    .bindText(
+                        getter = { tableSqlFragment.id },
+                        setter = { tableSqlFragment.id = it }
+                    )
+
+
+                textField()
+                    .label("Prefix:")
+                    .align(Align.FILL)
+                    .bindText(
+                        getter = { tableSqlFragment.prefix },
+                        setter = { tableSqlFragment.prefix = it }
+                    )
+            }
+
         }
 
 

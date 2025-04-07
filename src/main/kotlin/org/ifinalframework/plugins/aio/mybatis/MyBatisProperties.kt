@@ -18,6 +18,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 )
 data class MyBatisProperties(
     var mapperXmlPath: MapperXmlPath = MapperXmlPath.RESOURCE,
+    var tableSqlFragment: TableSqlFragment = TableSqlFragment(),
     var insertMethodRegex: String = "^(insert|add|create)+\\w*\$",
     var deleteMethodRegex: String = "^(del|remove|clean)+\\w*\$",
     var updateMethodRegex: String = "^(update|set)+\\w*\$",
@@ -31,6 +32,18 @@ data class MyBatisProperties(
     override fun loadState(properties: MyBatisProperties) {
         XmlSerializerUtil.copyBean<MyBatisProperties>(properties, this)
     }
+
+    /**
+     * <sql id="${id}">
+     *
+     * </sql>
+     *
+     */
+    data class TableSqlFragment(
+        var enable: Boolean = true,
+        var id: String = "table",
+        var prefix: String = "t_"
+    )
 
 
     enum class MapperXmlPath {
