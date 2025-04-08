@@ -5,13 +5,12 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.lang.jvm.JvmModifier
-import com.intellij.lang.jvm.types.JvmType
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.PsiEnumConstant
+import com.intellij.psi.PsiModifier
 import com.intellij.psi.PsiPrimitiveType
 import com.intellij.psi.PsiType
 import com.intellij.psi.impl.source.PsiClassReferenceType
@@ -27,7 +26,7 @@ import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.service.PsiService
 import org.ifinalframework.plugins.aio.util.SpiUtil
-import java.util.Objects
+import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import javax.swing.Icon
@@ -361,7 +360,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                             ) ?: return
 
                             val method = statement.getId().value ?: return
-                            val params = method.parameters
+                            val params = method.parameterList.parameters
                             if (params.size == 1) {
                                 val type = params[0].type
                                 processParam(null, type, result, PlatformIcons.PARAMETER_ICON, position.project)
@@ -379,7 +378,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
             }
     }
 
-    private fun processParam(prefix: String?, type: JvmType, result: CompletionResultSet, icon: Icon, project: Project) {
+    private fun processParam(prefix: String?, type: PsiType, result: CompletionResultSet, icon: Icon, project: Project) {
 
         val testCompletion = project.service<MyBatisProperties>().testCompletion
 
@@ -392,11 +391,10 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                         .withIcon(icon)
                         .withCaseSensitivity(false)
                 )
-            }
-            else {
+            } else {
                 val clazz = project.service<PsiService>().findClass(className) ?: return
                 clazz.allFields
-                    .filter { !it.hasModifier(JvmModifier.STATIC) }
+                    .filter { !it.hasModifierProperty(PsiModifier.STATIC) }
                     .forEach { field ->
                         var typeText = field.type.presentableText
 
