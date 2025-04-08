@@ -39,7 +39,9 @@
 
     </select>
     <select id="selectResultMaps" resultMap="baseMap"></select>
-    <select id="selectSingle" resultMap="baseMap"></select>
+    <select id="selectSingle" resultMap="baseMap">
+        <if test="null != tags and tags.size > 0"
+    </select>
 
 
 </mapper>

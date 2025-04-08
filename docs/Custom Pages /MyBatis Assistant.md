@@ -21,4 +21,14 @@ MyBatis Assistant 可以帮助开发者快速编写MyBatis相关代码，并检�
 
 ![Generate Mapper](https://plugins.jetbrains.com/files/26415/61653-page/a9371578-faf0-43a3-bc2f-297be99679fc)
 
-### Statement是否存在
+### 自动补全
+
+## test
+
+`test`属性自动补全，支持`<if/>`和`<when/>`标签。
+
+![MyBatis Test Completion](https://plugins.jetbrains.com/files/26415/61653-page/fc0278aa-aab9-4e73-8ace-6f3dea6d6e9e)
+
+可以在`Settings->Tools->Final AIO->MyBatis`中自定义补全表达式。
+
+![MyBatis Test Completion Setting](https://plugins.jetbrains.com/files/26415/61653-page/92b448e6-846a-48c3-8532-a35cba33b50d)

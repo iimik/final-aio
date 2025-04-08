@@ -59,6 +59,7 @@
 - 🔥添加 MyBatis 行标记，在Java/Kotlin和Xml文件中快速跳转。
 - 🔥Mapper xml 文件中定义和引用之间跳转。
 - 🔥快速生成Mapper xml和Statement。
+- 🔥属性自动补全。
 
 ## Spring
 
