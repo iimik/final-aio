@@ -1,20 +1,15 @@
 package org.ifinalframework.plugins.aio.mybatis
 
-import com.intellij.grazie.utils.orFalse
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiModifier
-import com.intellij.psi.PsiPrimitiveType
-import com.intellij.psi.PsiType
-import com.intellij.psi.PsiTypeParameterList
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomUtil
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.IdDomElement
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
 import org.jetbrains.uast.UClass
-import org.jetbrains.uast.UMethod
 
 
 /**
@@ -113,10 +108,9 @@ object MyBatisUtils {
         if ("java.lang.Object" == qualifiedName || Any::class.qualifiedName == qualifiedName) return false
 
         // 含有特定注解
-        val hasAnnotation = MybatisConstants.ALL_STATEMENTS.map { method.hasAnnotation(it) }.firstOrNull { it }.orFalse()
+        val hasAnnotation = MybatisConstants.ALL_STATEMENTS.map { method.hasAnnotation(it) }.firstOrNull { it } ?: false
         return !hasAnnotation
     }
-
 
 
 }
