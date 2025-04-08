@@ -25,9 +25,6 @@
         <include refid="table"/>
         (name)
         VALUE (#{})
-        <if test="null != age"/>
-        <if test="null != list and list.size != 0"/>
-        <if test="null != resultMap.age"/>
     </insert>
     <insert id="insert3"></insert>
     <delete id="delete">
@@ -42,7 +39,9 @@
 
     </select>
     <select id="selectResultMaps" resultMap="baseMap"></select>
-    <select id="selectSingle" resultMap="baseMap"></select>
+    <select id="selectSingle" resultMap="baseMap">
+        <if test="null != tags and tags.size > 0"
+    </select>
 
 
 </mapper>
