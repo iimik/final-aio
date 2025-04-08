@@ -5,6 +5,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
+import org.ifinalframework.plugins.aio.resource.I18N
 import javax.swing.JComponent
 
 /**
@@ -15,6 +16,7 @@ import javax.swing.JComponent
 class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Beta {
 
     val myBatisProperties: MyBatisProperties = project.service<MyBatisProperties>()
+
 
     val panel = panel {
 
@@ -64,6 +66,49 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
                     )
             }
 
+        }
+
+        group("Test Completion") {
+
+            val testCompletion = myBatisProperties.testCompletion
+
+            row {
+                label("配置不同类型的补全表达式，可以使用\${TARGET}来表示属性")
+            }
+
+            row {
+                textField()
+                    .label(I18N.message("MyBatis.MyBatisConfigurable.testCompletion.String.label") + ":")
+                    .align(Align.FILL)
+                    .bindText(
+                        getter = { testCompletion.stringType },
+                        setter = {
+                            testCompletion.stringType = it
+                        }
+                    )
+            }
+
+            row {
+                textField()
+                    .label(I18N.message("MyBatis.MyBatisConfigurable.testCompletion.String.collection") + ":")
+                    .align(Align.FILL)
+                    .bindText(
+                        getter = { testCompletion.collectionType },
+                        setter = { testCompletion.collectionType = it }
+                    )
+            }
+
+            row {
+                textField()
+                    .label(I18N.message("MyBatis.MyBatisConfigurable.testCompletion.String.default") + ":")
+                    .align(Align.FILL)
+                    .bindText(
+                        getter = { testCompletion.defaultType },
+                        setter = {
+                            testCompletion.defaultType = it
+                        }
+                    )
+            }
         }
 
 

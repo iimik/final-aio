@@ -23,7 +23,7 @@ interface KotlinMapper {
     /**
      * 插入
      */
-    fun insert(@Param("p1")name: String, age: Int): Int
+    fun insert(@Param("p1")name: String, age: Int, list: List<String>, resultMap: ResultMap): Int
 
     @Insert("")
     fun insertWithInsert(): Int

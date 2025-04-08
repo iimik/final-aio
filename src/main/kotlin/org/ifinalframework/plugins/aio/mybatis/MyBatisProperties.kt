@@ -19,6 +19,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 data class MyBatisProperties(
     var mapperXmlPath: MapperXmlPath = MapperXmlPath.RESOURCE,
     var tableSqlFragment: TableSqlFragment = TableSqlFragment(),
+    var testCompletion: TestCompletion = TestCompletion(),
     var insertMethodRegex: String = "^(insert|add|create)+\\w*\$",
     var deleteMethodRegex: String = "^(del|remove|clean)+\\w*\$",
     var updateMethodRegex: String = "^(update|set)+\\w*\$",
@@ -32,6 +33,12 @@ data class MyBatisProperties(
     override fun loadState(properties: MyBatisProperties) {
         XmlSerializerUtil.copyBean<MyBatisProperties>(properties, this)
     }
+
+    data class TestCompletion(
+        var stringType: String = "null != \${TARGET} and \${TARGET} != ''",
+        var collectionType: String = "null != \${TARGET} and \${TARGET}.size > 0",
+        var defaultType: String = "null != \${TARGET}",
+    )
 
     /**
      * <sql id="${id}">

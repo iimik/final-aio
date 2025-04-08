@@ -5,16 +5,21 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.lang.jvm.JvmModifier
+import com.intellij.lang.jvm.types.JvmType
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.project.Project
 import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.PsiEnumConstant
-import com.intellij.psi.PsiField
+import com.intellij.psi.PsiPrimitiveType
+import com.intellij.psi.PsiType
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.xml.XmlToken
 import com.intellij.util.PlatformIcons
 import com.intellij.util.ProcessingContext
 import com.intellij.util.xml.DomUtil
+import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
 import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.*
@@ -22,7 +27,12 @@ import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.service.PsiService
 import org.ifinalframework.plugins.aio.util.SpiUtil
+import java.util.Objects
+import java.util.stream.Collectors
 import java.util.stream.Stream
+import javax.swing.Icon
+
+private const val TEST_COMPLETION_PLACE_HOLDER = "\${TARGET}"
 
 /**
  * Mapper Xml 自动补全提示
@@ -325,7 +335,9 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
             XmlPatterns.xmlAttribute().withName("test").inside(XmlPatterns.xmlTag().withName("when"))
         )
 
-        Stream.of(ifTest, whenTest)
+        val test = XmlPatterns.xmlAttribute().withName("test")
+
+        Stream.of(ifTest, whenTest, test)
             .forEach { place ->
 
                 thisLogger().info("testPropertyCompletion: $place")
@@ -352,29 +364,14 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                             val params = method.parameters
                             if (params.size == 1) {
                                 val type = params[0].type
-                                if (type is PsiClassReferenceType) {
-                                    val className = type.reference!!.qualifiedName
-                                    val clazz = position.project.service<PsiService>().findClass(className) ?: return
-                                    clazz.allFields
-                                        .forEach { field ->
-
-                                            var typeText = field.type.presentableText
-
-                                            docService.getSummary(field)?.let { typeText = "$it ($typeText)" }
-
-                                            result.addElement(
-                                                LookupElementBuilder.create(buildTest(field))
-                                                    .withIcon(PlatformIcons.PROPERTY_ICON)
-                                                    .withTypeText(typeText)
-                                                    .withCaseSensitivity(false)
-                                            )
-                                        }
-                                }
-                                println()
+                                processParam(null, type, result, PlatformIcons.PARAMETER_ICON, position.project)
                             } else {
-
+                                params.forEach { param ->
+                                    val prefix = param.name
+                                    val type = param.type
+                                    processParam(prefix, type, result, PlatformIcons.PARAMETER_ICON, position.project)
+                                }
                             }
-
 
                             result.stopHere()
                         }
@@ -382,20 +379,61 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
             }
     }
 
-    private fun buildTest(field: PsiField): String {
-        val type = field.type
-        val name = field.name
-        if(type is PsiClassReferenceType) {
+    private fun processParam(prefix: String?, type: JvmType, result: CompletionResultSet, icon: Icon, project: Project) {
+
+        val testCompletion = project.service<MyBatisProperties>().testCompletion
+
+        if (type is PsiClassReferenceType) {
             val className = type.reference!!.qualifiedName
-            if("java.lang.String" == className){
-                return "null != $name and $name != ''"
-            }else if("java.util.List" == className || "java.util.Set" == className){
-                return "null != $name and ${name}.size != 0"
+            if (className.startsWith("java.lang.") || className.startsWith("java.util.")) {
+                val name = prefix ?: "value"
+                result.addElement(
+                    LookupElementBuilder.create(buildTest(null, type, name, testCompletion))
+                        .withIcon(icon)
+                        .withCaseSensitivity(false)
+                )
+            }
+            else {
+                val clazz = project.service<PsiService>().findClass(className) ?: return
+                clazz.allFields
+                    .filter { !it.hasModifier(JvmModifier.STATIC) }
+                    .forEach { field ->
+                        var typeText = field.type.presentableText
+
+                        docService.getSummary(field)?.let { typeText = "$it ($typeText)" }
+
+                        result.addElement(
+                            LookupElementBuilder.create(buildTest(prefix, field.type, field.name, testCompletion))
+                                .withIcon(PlatformIcons.PROPERTY_ICON)
+                                .withTypeText(typeText)
+                                .withCaseSensitivity(false)
+                        )
+                    }
+            }
+        } else if (type is PsiPrimitiveType) {
+            val name = prefix ?: "value"
+            result.addElement(
+                LookupElementBuilder.create(buildTest(null, type, name, testCompletion))
+                    .withIcon(icon)
+                    .withCaseSensitivity(false)
+            )
+        }
+    }
+
+    private fun buildTest(prefix: String? = null, type: PsiType, name: String, testCompletion: MyBatisProperties.TestCompletion): String {
+
+        val param = Stream.of(prefix, name).filter { Objects.nonNull(it) }.collect(Collectors.joining("."))
+
+        if (type is PsiClassReferenceType) {
+            val className = type.reference!!.qualifiedName
+            if ("java.lang.String" == className) {
+                return testCompletion.stringType.replace(TEST_COMPLETION_PLACE_HOLDER, param)
+            } else if ("java.util.List" == className || "java.util.Set" == className) {
+                return testCompletion.collectionType.replace(TEST_COMPLETION_PLACE_HOLDER, param)
             }
         }
 
-
-        return "null != $name"
+        return testCompletion.defaultType.replace(TEST_COMPLETION_PLACE_HOLDER, param)
     }
 
 
