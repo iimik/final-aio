@@ -25,6 +25,10 @@
         <!--=======================================================    Service   ========================================================-->
         <!--=============================================================================================================================-->
         <applicationService
+                serviceInterface="org.ifinalframework.plugins.aio.psi.service.DocService"
+                serviceImplementation="org.ifinalframework.plugins.aio.psi.service.DefaultDocService"
+        />
+        <applicationService
                 serviceInterface="org.ifinalframework.plugins.aio.jvm.AnnotationService"
                 serviceImplementation="org.ifinalframework.plugins.aio.jvm.DefaultAnnotationService"
         />

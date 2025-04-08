@@ -1,9 +1,9 @@
 package org.ifinalframework.plugins.aio.issue;
 
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.application.condition.ConditionOnJvm
 import org.ifinalframework.plugins.aio.psi.service.DocService
-import org.ifinalframework.plugins.aio.util.SpiUtil
 import org.springframework.stereotype.Component
 
 
@@ -29,10 +29,9 @@ import org.springframework.stereotype.Component
 @Component
 @ConditionOnJvm
 class JvmIssueService(
-    private val docService: DocService,
 ) : IssueService {
 
-    constructor() : this(SpiUtil.languageSpi<DocService>())
+    private val docService = service<DocService>()
 
     override fun getIssue(element: PsiElement): Issue? {
         // @issue 10 docTag issue

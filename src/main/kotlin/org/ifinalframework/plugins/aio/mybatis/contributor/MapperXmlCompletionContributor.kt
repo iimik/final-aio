@@ -25,7 +25,6 @@ import org.ifinalframework.plugins.aio.mybatis.xml.dom.*
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.service.PsiService
-import org.ifinalframework.plugins.aio.util.SpiUtil
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -41,7 +40,7 @@ private const val TEST_COMPLETION_PLACE_HOLDER = "\${TARGET}"
  */
 class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
 
-    val docService = SpiUtil.languageSpi<DocService>()
+    val docService = service<DocService>()
 
     init {
         statementIdCompletion()
