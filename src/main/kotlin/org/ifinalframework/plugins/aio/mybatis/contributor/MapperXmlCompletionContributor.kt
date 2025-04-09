@@ -8,7 +8,9 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
+import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.XmlPatterns
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiEnumConstant
 import com.intellij.psi.PsiModifier
 import com.intellij.psi.PsiPrimitiveType
@@ -45,15 +47,16 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
     init {
         statementIdCompletion()
         resultMapCompletion()
-        resultMapPropertyCompletion()
-        resultMapJdbcTypeCompletion()
+        propertyCompletion()
+        foreachCompletion()
+        jdbcTypeCompletion()
         includeRefidCompletion()
         testPropertyCompletion()
     }
 
 
     /**
-     * 自动补全`statement`的`id`属性
+     * 自动补全`statement`的`id`属性，其中`id`为`namespace`指定的Mapper接口中方法。
      *
      * ```xml
      * <insert id="insert"/>
@@ -166,17 +169,17 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
      * <id property=""/>
      * <result property=""/>
      * ```
-     * @see [resultMapJdbcTypeCompletion]
+     * @see [jdbcTypeCompletion]
      */
-    private fun resultMapPropertyCompletion() {
-        val idProperty = XmlPatterns.psiElement().inside(
-            XmlPatterns.xmlAttribute().withName("property").inside(XmlPatterns.xmlTag().withName("id"))
-        )
-        val resultProperty = XmlPatterns.psiElement().inside(
-            XmlPatterns.xmlAttribute().withName("property").inside(XmlPatterns.xmlTag().withName("result"))
-        )
+    private fun propertyCompletion() {
 
-        Stream.of(idProperty, resultProperty)
+        val property = XmlPatterns.psiElement()
+            .inside(
+                XmlPatterns.xmlAttributeValue()
+                    .inside(XmlPatterns.xmlAttribute().withName("property"))
+            )
+
+        Stream.of(property)
             .forEach { place ->
 
                 thisLogger().info("resultMapPropertyCompletion: $place")
@@ -221,6 +224,143 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
             }
     }
 
+    private fun foreachCompletion() {
+
+        val collection = XmlPatterns.psiElement()
+            .inside(
+                XmlPatterns.xmlAttributeValue()
+                    .inside(XmlPatterns.xmlAttribute().withName("collection"))
+            )
+
+        Stream.of(collection)
+            .forEach { place ->
+
+                thisLogger().info("foreachCollectionCompletion: $place")
+
+                extend(
+                    CompletionType.BASIC,
+                    place,
+                    object : CompletionProvider<CompletionParameters>() {
+                        override fun addCompletions(
+                            parameters: CompletionParameters,
+                            context: ProcessingContext,
+                            result: CompletionResultSet
+                        ) {
+
+                            val position = parameters.position
+                            if (position !is XmlToken) return
+                            val domElement = DomUtil.getDomElement(position) ?: return
+                            val statement = if (domElement is Statement) domElement else DomUtil.getParentOfType(
+                                domElement,
+                                Statement::class.java,
+                                true
+                            ) ?: return
+
+                            val method = statement.getId().value ?: return
+                            val params = method.parameterList.parameters
+                            if (params.size == 1) {
+                                val type = params[0].type
+                                processParamForCollection(null, type, result, PlatformIcons.PARAMETER_ICON, position.project)
+                            } else {
+                                params.forEach { param ->
+                                    val prefix = param.name
+                                    val type = param.type
+                                    processParamForCollection(prefix, type, result, PlatformIcons.PARAMETER_ICON, position.project)
+                                }
+                            }
+
+                            result.stopHere()
+
+                        }
+                    })
+            }
+
+
+        val map = mutableMapOf<ElementPattern<out PsiElement>,List<String>>()
+        map[XmlPatterns.psiElement()
+                    .inside(
+                        XmlPatterns.xmlAttributeValue()
+                            .inside(XmlPatterns.xmlAttribute().withName("open"))
+                    )] = listOf("(")
+        map[XmlPatterns.psiElement()
+            .inside(
+                XmlPatterns.xmlAttributeValue()
+                    .inside(XmlPatterns.xmlAttribute().withName("close"))
+            )] = listOf(")")
+        map[XmlPatterns.psiElement()
+            .inside(
+                XmlPatterns.xmlAttributeValue()
+                    .inside(XmlPatterns.xmlAttribute().withName("separator"))
+            )] = listOf(",")
+
+
+        map[XmlPatterns.psiElement()
+            .inside(
+                XmlPatterns.xmlAttributeValue()
+                    .inside(XmlPatterns.xmlAttribute().withName("item"))
+            )] = listOf("item","entry")
+
+        map.forEach { place, tips ->
+                thisLogger().info("foreachCollectionCompletion: $place")
+
+                extend(
+                    CompletionType.BASIC,
+                    place,
+                    object : CompletionProvider<CompletionParameters>() {
+                        override fun addCompletions(
+                            parameters: CompletionParameters,
+                            context: ProcessingContext,
+                            result: CompletionResultSet
+                        ) {
+
+                            tips.forEach { tip ->
+                                result.addElement(
+                                    LookupElementBuilder.create(tip)
+                                        .withCaseSensitivity(false)
+                                )
+                            }
+
+                            result.stopHere()
+
+                        }
+                    })
+            }
+    }
+
+    private fun processParamForCollection(prefix: String?, type: PsiType, result: CompletionResultSet, icon: Icon, project: Project) {
+
+        if (type is PsiClassReferenceType) {
+            val className = type.reference!!.qualifiedName
+            if (className.startsWith("java.lang.") || className.startsWith("java.util.")) {
+                val name = prefix ?: "value"
+                result.addElement(
+                    LookupElementBuilder.create(name)
+                        .withTypeText(type.presentableText)
+                        .withIcon(icon)
+                        .withCaseSensitivity(false)
+                )
+            } else {
+                val clazz = project.service<PsiService>().findClass(className) ?: return
+                clazz.allFields
+                    .filter { !it.hasModifierProperty(PsiModifier.STATIC) }
+                    .filter { it.type is PsiClassReferenceType && (it.type as PsiClassReferenceType).reference!!.qualifiedName.startsWith("java.util.") }
+                    .forEach { field ->
+                        var typeText = field.type.presentableText
+
+                        docService.getSummary(field)?.let { typeText = "$it ($typeText)" }
+
+                        result.addElement(
+                            LookupElementBuilder.create(field.name)
+                                .withIcon(PlatformIcons.PROPERTY_ICON)
+                                .withTypeText(typeText)
+                                .withCaseSensitivity(false)
+                        )
+                    }
+            }
+        }
+    }
+
+
     /**
      * 自动补全`jdbcType`
      *
@@ -228,20 +368,20 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
      * <id jdbcType=""/>
      * <result jdbcType=""/>
      * ```
-     * @see [resultMapPropertyCompletion]
+     * @see [propertyCompletion]
      */
-    private fun resultMapJdbcTypeCompletion() {
-        val idProperty = XmlPatterns.psiElement().inside(
-            XmlPatterns.xmlAttribute().withName("jdbcType").inside(XmlPatterns.xmlTag().withName("id"))
-        )
-        val resultProperty = XmlPatterns.psiElement().inside(
-            XmlPatterns.xmlAttribute().withName("jdbcType").inside(XmlPatterns.xmlTag().withName("result"))
-        )
+    private fun jdbcTypeCompletion() {
 
-        Stream.of(idProperty, resultProperty)
+        val jdbcType = XmlPatterns.psiElement()
+            .inside(
+                XmlPatterns.xmlAttributeValue()
+                    .inside(XmlPatterns.xmlAttribute().withName("jdbcType"))
+            )
+
+        Stream.of(jdbcType)
             .forEach { place ->
 
-                thisLogger().info("resultMapJdbcTypeCompletion: $place")
+                thisLogger().info("jdbcTypeCompletion: $place")
 
                 extend(
                     CompletionType.BASIC,
@@ -325,17 +465,13 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
      * ```
      */
     private fun testPropertyCompletion() {
-        val ifTest = XmlPatterns.psiElement().inside(
-            XmlPatterns.xmlAttribute().withName("test").inside(XmlPatterns.xmlTag().withName("if"))
-        )
+        val test = XmlPatterns.psiElement()
+            .inside(
+                XmlPatterns.xmlAttributeValue()
+                    .inside(XmlPatterns.xmlAttribute().withName("test"))
+            )
 
-        val whenTest = XmlPatterns.psiElement().inside(
-            XmlPatterns.xmlAttribute().withName("test").inside(XmlPatterns.xmlTag().withName("when"))
-        )
-
-        val test = XmlPatterns.xmlAttribute().withName("test")
-
-        Stream.of(ifTest, whenTest, test)
+        Stream.of(test)
             .forEach { place ->
 
                 thisLogger().info("testPropertyCompletion: $place")
@@ -416,6 +552,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
             )
         }
     }
+
 
     private fun buildTest(prefix: String? = null, type: PsiType, name: String, testCompletion: MyBatisProperties.TestCompletion): String {
 
