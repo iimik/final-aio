@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.issue;
+package org.ifinalframework.plugins.aio.issue
 
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
@@ -28,8 +28,7 @@ import org.springframework.stereotype.Component
  **/
 @Component
 @ConditionOnJvm
-class JvmIssueService(
-) : IssueService {
+class JvmIssueService : IssueService {
 
     private val docService = service<DocService>()
 
@@ -56,7 +55,7 @@ class JvmIssueService(
      */
     private fun getLineIssue(element: PsiElement): Issue? {
         val comment = docService.getLineComment(element)?.trim() ?: return null
-        return parseLineIssue(comment);
+        return parseLineIssue(comment)
     }
 
     private fun parseDocTagIssue(name: String, value: String): Issue? {
