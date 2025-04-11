@@ -17,12 +17,14 @@ import com.intellij.psi.PsiType
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.xml.XmlTag
 import org.ifinalframework.plugins.aio.intellij.GenericQuickFix
+import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.*
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.getContainingUClass
+import java.util.stream.Collectors
 
 
 /**
@@ -34,20 +36,22 @@ import org.jetbrains.uast.getContainingUClass
  **/
 class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
 
-    private val statementGenerators = listOf(
+    private val statementGenerators: Map<String, StatementGenerator> = listOf(
         InsertStatementGenerator(),
         UpdateStatementGenerator(),
         DeleteStatementGenerator(),
         SelectStatementGenerator()
-    )
+    ).stream().collect(Collectors.toMap({ it.toString().lowercase() }, { it }))
 
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         method.getContainingUClass() ?: return
-        val generators = findStatementGenerators()
+
+
+        val generators = findStatementGenerators(project)
 
         if (generators.size == 1) {
-            val generator = generators[0]
+            val generator = generators.first()
             generator.generate(project, method)
         } else {
             JBPopupFactory.getInstance().createListPopup(
@@ -67,13 +71,23 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
         }
     }
 
-    private fun findStatementGenerators(): List<StatementGenerator> {
-        val generators = statementGenerators.filter { it.supports(method) }
-        if (generators.isNotEmpty()) {
-            return generators
+    private fun findStatementGenerators(project: Project): List<StatementGenerator> {
+
+        val statementMethodCompletion = project.service<MyBatisProperties>().statementMethodCompletion
+        if (statementMethodCompletion.filterWithRegex) {
+            if (method.name.matches(Regex(statementMethodCompletion.insertMethodRegex))) {
+                return listOf(statementGenerators["insert"]!!)
+            } else if (method.name.matches(Regex(statementMethodCompletion.deleteMethodRegex))) {
+                return listOf(statementGenerators["delete"]!!)
+            } else if (method.name.matches(Regex(statementMethodCompletion.updateMethodRegex))) {
+                return listOf(statementGenerators["update"]!!)
+            } else if (method.name.matches(Regex(statementMethodCompletion.selectMethodRegex))) {
+                return listOf(statementGenerators["select"]!!)
+            }
         }
 
-        return statementGenerators
+
+        return statementGenerators.values.toList()
     }
 
     override fun getName(): String {
@@ -83,12 +97,9 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
 
     interface StatementGenerator {
         fun generate(project: Project, method: UMethod)
-
-        fun supports(method: UMethod): Boolean
     }
 
-    abstract class AbstractStatementGenerator<T : Statement>(val regex: Regex) : StatementGenerator {
-        constructor(regex: String) : this(Regex(regex))
+    abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
 
         final override fun generate(project: Project, method: UMethod) {
             val uClass = method.getContainingUClass() ?: return
@@ -116,9 +127,6 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
             }
         }
 
-        override fun supports(method: UMethod): Boolean {
-            return regex.matches(method.name)
-        }
 
         protected abstract fun generateStatement(mapper: Mapper, method: UMethod): T
 
@@ -129,7 +137,7 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
         }
     }
 
-    class InsertStatementGenerator : AbstractStatementGenerator<Insert>("^(insert|add|create)+\\w*\$") {
+    class InsertStatementGenerator : AbstractStatementGenerator<Insert>() {
         override fun generateStatement(mapper: Mapper, method: UMethod): Insert {
             return mapper.addInsert()
         }
@@ -139,7 +147,7 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
         }
     }
 
-    class UpdateStatementGenerator : AbstractStatementGenerator<Update>("^(update)+\\w*\$") {
+    class UpdateStatementGenerator : AbstractStatementGenerator<Update>() {
         override fun generateStatement(mapper: Mapper, method: UMethod): Update {
             return mapper.addUpdate()
         }
@@ -149,7 +157,7 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
         }
     }
 
-    class DeleteStatementGenerator : AbstractStatementGenerator<Delete>("^(delete|remove)+\\w*\$") {
+    class DeleteStatementGenerator : AbstractStatementGenerator<Delete>() {
         override fun generateStatement(mapper: Mapper, method: UMethod): Delete {
             return mapper.addDelete()
         }
@@ -166,22 +174,22 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
      *      - 如果返回类型是基础类型（如String，Int等），则直接填写`resultType`属性，否则优化查询是否有定义`resultMap`，有则填写`resultMap`属性。
      *
      */
-    class SelectStatementGenerator : AbstractStatementGenerator<Select>("^(select|find|get|query)+\\w*\$") {
+    class SelectStatementGenerator : AbstractStatementGenerator<Select>() {
         override fun generateStatement(mapper: Mapper, method: UMethod): Select {
 
             val returnType = resolveReturnType(method)
 
             return mapper.addSelect().apply {
 
-                if(returnType is PsiPrimitiveType){
+                if (returnType is PsiPrimitiveType) {
                     getResultType().stringValue = returnType.boxedTypeName
-                }else if (returnType is PsiClassReferenceType){
+                } else if (returnType is PsiClassReferenceType) {
                     val className = returnType.reference.qualifiedName
 
                     val resultMap = mapper.getResultMaps().firstOrNull { it.getType().stringValue == className }
-                    if(resultMap != null){
+                    if (resultMap != null) {
                         getResultMap().stringValue = resultMap.getId().stringValue
-                    }else{
+                    } else {
                         getResultType().stringValue = className
                     }
 
@@ -189,17 +197,17 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
             }
         }
 
-        private fun resolveReturnType(method: PsiMethod): PsiType?{
+        private fun resolveReturnType(method: PsiMethod): PsiType? {
             val psiType = method.returnType ?: return null
 
-            if(psiType is PsiPrimitiveType){
+            if (psiType is PsiPrimitiveType) {
                 return psiType
             }
 
-            if(psiType is PsiClassReferenceType){
+            if (psiType is PsiClassReferenceType) {
                 val reference = psiType.reference
                 // 如果是参数类型且只有一个参数类型，如List<?>，取第一个元素，
-                if(reference is PsiJavaCodeReferenceElement && reference.typeParameters.size == 1){
+                if (reference is PsiJavaCodeReferenceElement && reference.typeParameters.size == 1) {
                     return reference.typeParameters[0]
                 }
             }

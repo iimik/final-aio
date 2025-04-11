@@ -112,10 +112,12 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
         }
 
 
-        group(title = "Mapper Method Statement Type") {
+        group(title = "Statement Completion") {
+
+            val statementMethodCompletion = myBatisProperties.statementMethodCompletion
 
             row {
-                label("根据Method的名称推断对应的Statement类型")
+                label("约定Method和Statement之间的映射关系")
             }
 
             row {
@@ -123,12 +125,7 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
                     .label("Insert:")
                     .align(Align.FILL)
                     .comment("Insert Statement 正则匹配")
-                    .bindText(
-                        getter = { myBatisProperties.insertMethodRegex },
-                        setter = {
-                            myBatisProperties.insertMethodRegex = it
-                        }
-                    )
+                    .bindText(statementMethodCompletion::insertMethodRegex)
             }
 
             row {
@@ -136,21 +133,27 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
                     .label("Delete:")
                     .align(Align.FILL)
 
-                    .bindText(myBatisProperties::deleteMethodRegex)
+                    .bindText(statementMethodCompletion::deleteMethodRegex)
             }
 
             row {
                 textField()
                     .label("Update:")
                     .align(Align.FILL)
-                    .bindText(myBatisProperties::updateMethodRegex)
+                    .bindText(statementMethodCompletion::updateMethodRegex)
             }
 
             row {
                 textField()
                     .label("Select:")
                     .align(Align.FILL)
-                    .bindText(myBatisProperties::selectMethodRegex)
+                    .bindText(statementMethodCompletion::selectMethodRegex)
+            }
+
+            row {
+                checkBox("启用正则方法过滤")
+                    .comment("开启时，只有满足正则的方法才会出现在补全提示中")
+                    .bindSelected(statementMethodCompletion::filterWithRegex)
             }
         }.layout(RowLayout.LABEL_ALIGNED)
     }

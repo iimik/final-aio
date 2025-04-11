@@ -31,6 +31,7 @@ interface KotlinMapper {
     @InsertProvider
     fun insertWithProvider(): Int
     fun delete(): Int
+    fun remove(): Int
 
     fun update(): Int
 

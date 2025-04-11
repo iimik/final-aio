@@ -10,11 +10,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.XmlPatterns
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiEnumConstant
-import com.intellij.psi.PsiModifier
-import com.intellij.psi.PsiPrimitiveType
-import com.intellij.psi.PsiType
+import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.xml.XmlToken
 import com.intellij.util.PlatformIcons
@@ -30,12 +26,15 @@ import org.ifinalframework.plugins.aio.service.PsiService
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
-import javax.swing.Icon
 
 private const val TEST_COMPLETION_PLACE_HOLDER = "\${TARGET}"
 
 /**
  * Mapper Xml 自动补全提示
+ *
+ * ## Statement
+ *
+ * Statement.id属性使用对应的mapper中声明的方法进行补全
  *
  * @issue 33
  * @author iimik
@@ -86,14 +85,36 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                         ) {
                             val position = parameters.position
                             if (position !is XmlToken) return
+                            val statementMethodCompletion =
+                                position.project.getService(MyBatisProperties::class.java).statementMethodCompletion
                             val domElement = DomUtil.getDomElement(position) ?: return
                             val statement = DomUtil.getParentOfType(domElement, Statement::class.java, true) ?: return
                             val mapper = MyBatisUtils.getMapper(statement)
                             val className = mapper.getNamespace().rawText ?: return
 
+                            val regex = if(statementMethodCompletion.filterWithRegex){
+                                val value = when(statement.xmlTag!!.name){
+                                    "insert" -> statementMethodCompletion.insertMethodRegex
+                                    "delete" -> statementMethodCompletion.deleteMethodRegex
+                                    "update" -> statementMethodCompletion.updateMethodRegex
+                                    "select" -> statementMethodCompletion.selectMethodRegex
+                                    else -> throw RuntimeException()
+                                }
+
+                                Regex(value)
+
+                            }else null
+
                             position.project.service<MapperService>().findStatements(className)
+                                .filter {
+
+                                    return@filter if(regex != null){
+                                        it.name.matches(regex)
+                                    }else true
+
+                                }
                                 .forEach { method ->
-                                    var summary = docService.getSummary(method)
+                                    val summary = docService.getSummary(method)
 
                                     result.addElement(
                                         LookupElementBuilder.create(method.name)
@@ -182,7 +203,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
         Stream.of(property)
             .forEach { place ->
 
-                thisLogger().info("resultMapPropertyCompletion: $place")
+                thisLogger().info("propertyCompletion: $place")
 
                 extend(
                     CompletionType.BASIC,
@@ -235,7 +256,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
         Stream.of(collection)
             .forEach { place ->
 
-                thisLogger().info("foreachCollectionCompletion: $place")
+                thisLogger().info("foreachCompletion: $place")
 
                 extend(
                     CompletionType.BASIC,
@@ -260,12 +281,12 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                             val params = method.parameterList.parameters
                             if (params.size == 1) {
                                 val type = params[0].type
-                                processParamForCollection(null, type, result, PlatformIcons.PARAMETER_ICON, position.project)
+                                processParamForCollection(null, type, result, position.project)
                             } else {
                                 params.forEach { param ->
                                     val prefix = param.name
                                     val type = param.type
-                                    processParamForCollection(prefix, type, result, PlatformIcons.PARAMETER_ICON, position.project)
+                                    processParamForCollection(prefix, type, result, position.project)
                                 }
                             }
 
@@ -276,12 +297,12 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
             }
 
 
-        val map = mutableMapOf<ElementPattern<out PsiElement>,List<String>>()
+        val map = mutableMapOf<ElementPattern<out PsiElement>, List<String>>()
         map[XmlPatterns.psiElement()
-                    .inside(
-                        XmlPatterns.xmlAttributeValue()
-                            .inside(XmlPatterns.xmlAttribute().withName("open"))
-                    )] = listOf("(")
+            .inside(
+                XmlPatterns.xmlAttributeValue()
+                    .inside(XmlPatterns.xmlAttribute().withName("open"))
+            )] = listOf("(")
         map[XmlPatterns.psiElement()
             .inside(
                 XmlPatterns.xmlAttributeValue()
@@ -298,52 +319,52 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
             .inside(
                 XmlPatterns.xmlAttributeValue()
                     .inside(XmlPatterns.xmlAttribute().withName("item"))
-            )] = listOf("item","entry")
+            )] = listOf("item", "entry")
 
-        map.forEach { place, tips ->
-                thisLogger().info("foreachCollectionCompletion: $place")
+        map.forEach { (place, tips) ->
+            thisLogger().info("foreachCompletion: $place")
 
-                extend(
-                    CompletionType.BASIC,
-                    place,
-                    object : CompletionProvider<CompletionParameters>() {
-                        override fun addCompletions(
-                            parameters: CompletionParameters,
-                            context: ProcessingContext,
-                            result: CompletionResultSet
-                        ) {
+            extend(
+                CompletionType.BASIC,
+                place,
+                object : CompletionProvider<CompletionParameters>() {
+                    override fun addCompletions(
+                        parameters: CompletionParameters,
+                        context: ProcessingContext,
+                        result: CompletionResultSet
+                    ) {
 
-                            tips.forEach { tip ->
-                                result.addElement(
-                                    LookupElementBuilder.create(tip)
-                                        .withCaseSensitivity(false)
-                                )
-                            }
-
-                            result.stopHere()
-
+                        tips.forEach { tip ->
+                            result.addElement(
+                                LookupElementBuilder.create(tip)
+                                    .withCaseSensitivity(false)
+                            )
                         }
-                    })
-            }
+
+                        result.stopHere()
+
+                    }
+                })
+        }
     }
 
-    private fun processParamForCollection(prefix: String?, type: PsiType, result: CompletionResultSet, icon: Icon, project: Project) {
+    private fun processParamForCollection(prefix: String?, type: PsiType, result: CompletionResultSet, project: Project) {
 
         if (type is PsiClassReferenceType) {
-            val className = type.reference!!.qualifiedName
+            val className = type.reference.qualifiedName
             if (className.startsWith("java.lang.") || className.startsWith("java.util.")) {
                 val name = prefix ?: "value"
                 result.addElement(
                     LookupElementBuilder.create(name)
                         .withTypeText(type.presentableText)
-                        .withIcon(icon)
+                        .withIcon(PlatformIcons.PARAMETER_ICON)
                         .withCaseSensitivity(false)
                 )
             } else {
                 val clazz = project.service<PsiService>().findClass(className) ?: return
                 clazz.allFields
                     .filter { !it.hasModifierProperty(PsiModifier.STATIC) }
-                    .filter { it.type is PsiClassReferenceType && (it.type as PsiClassReferenceType).reference!!.qualifiedName.startsWith("java.util.") }
+                    .filter { it.type is PsiClassReferenceType && (it.type as PsiClassReferenceType).reference.qualifiedName.startsWith("java.util.") }
                     .forEach { field ->
                         var typeText = field.type.presentableText
 
@@ -498,12 +519,12 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                             val params = method.parameterList.parameters
                             if (params.size == 1) {
                                 val type = params[0].type
-                                processParam(null, type, result, PlatformIcons.PARAMETER_ICON, position.project)
+                                processParam(null, type, result, position.project)
                             } else {
                                 params.forEach { param ->
                                     val prefix = param.name
                                     val type = param.type
-                                    processParam(prefix, type, result, PlatformIcons.PARAMETER_ICON, position.project)
+                                    processParam(prefix, type, result, position.project)
                                 }
                             }
 
@@ -513,17 +534,17 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
             }
     }
 
-    private fun processParam(prefix: String?, type: PsiType, result: CompletionResultSet, icon: Icon, project: Project) {
+    private fun processParam(prefix: String?, type: PsiType, result: CompletionResultSet, project: Project) {
 
         val testCompletion = project.service<MyBatisProperties>().testCompletion
 
         if (type is PsiClassReferenceType) {
-            val className = type.reference!!.qualifiedName
+            val className = type.reference.qualifiedName
             if (className.startsWith("java.lang.") || className.startsWith("java.util.")) {
                 val name = prefix ?: "value"
                 result.addElement(
                     LookupElementBuilder.create(buildTest(null, type, name, testCompletion))
-                        .withIcon(icon)
+                        .withIcon(PlatformIcons.PARAMETER_ICON)
                         .withCaseSensitivity(false)
                 )
             } else {
@@ -547,7 +568,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
             val name = prefix ?: "value"
             result.addElement(
                 LookupElementBuilder.create(buildTest(null, type, name, testCompletion))
-                    .withIcon(icon)
+                    .withIcon(PlatformIcons.PARAMETER_ICON)
                     .withCaseSensitivity(false)
             )
         }
@@ -559,7 +580,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
         val param = Stream.of(prefix, name).filter { Objects.nonNull(it) }.collect(Collectors.joining("."))
 
         if (type is PsiClassReferenceType) {
-            val className = type.reference!!.qualifiedName
+            val className = type.reference.qualifiedName
             if ("java.lang.String" == className) {
                 return testCompletion.stringType.replace(TEST_COMPLETION_PLACE_HOLDER, param)
             } else if ("java.util.List" == className || "java.util.Set" == className) {
