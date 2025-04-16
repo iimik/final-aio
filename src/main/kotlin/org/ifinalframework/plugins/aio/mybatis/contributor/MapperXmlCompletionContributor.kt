@@ -456,7 +456,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(
                     parameters: CompletionParameters,
-                    context: ProcessingContext,result: CompletionResultSet
+                    context: ProcessingContext, result: CompletionResultSet
                 ) {
                     val position = parameters.position
                     if (position !is XmlToken) return
@@ -564,7 +564,8 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                                 .withCaseSensitivity(false)
                         )
 
-                        // 扩展，如果属性名为 startXXX，且能找到endXXX，则生成一个between参数的校验
+                        // 扩展区间补全
+                        // 如果属性名为 startXXX，且能找到endXXX，则生成一个between参数的校验
                         if (field.name.startsWith("start")) {
                             val endName = field.name.replace("start", "end")
                             val endField = clazz.findFieldByName(endName, true)
@@ -573,7 +574,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                                 val betweenTest = testCompletion.betweenType.replace(TEST_COMPLETION_START_PLACE_HOLDER, field.name)
                                     .replace(TEST_COMPLETION_END_PLACE_HOLDER, endField.name)
 
-                                var endTypeText  = endField.type.presentableText
+                                var endTypeText = endField.type.presentableText
 
                                 docService.getSummary(endField)?.let { endTypeText = "$it ($endTypeText)" }
 
