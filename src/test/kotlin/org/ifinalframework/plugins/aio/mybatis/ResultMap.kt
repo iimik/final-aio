@@ -1,5 +1,7 @@
 package org.ifinalframework.plugins.aio.mybatis
 
+import java.util.*
+
 
 /**
  * ResultMap
@@ -10,6 +12,9 @@ package org.ifinalframework.plugins.aio.mybatis
 data class ResultMap(
     /**
      * ID
+     *
+     * @since 0.0.1
+     * @author iimik
      */
     val id: Long,
     val name: String,
@@ -19,4 +24,7 @@ data class ResultMap(
     val age: Int,
 
     val tags: List<String>,
+
+    val startDate: Date,
+    val endDate: Date,
 )

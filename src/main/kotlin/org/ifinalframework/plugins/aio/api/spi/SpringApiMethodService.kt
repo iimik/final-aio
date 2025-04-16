@@ -1,5 +1,6 @@
 package org.ifinalframework.plugins.aio.api.spi
 
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.constans.SpringAnnotations
@@ -23,7 +24,7 @@ import java.util.stream.Stream
  **/
 class SpringApiMethodService : ApiMethodService {
     private val annotationResolver = SpiUtil.languageSpi<AnnotationResolver<PsiElement>>()
-    private val docService = SpiUtil.languageSpi<DocService>()
+    private val docService = service<DocService>()
 
     override fun getApiMarker(element: PsiElement): ApiMarker? {
 

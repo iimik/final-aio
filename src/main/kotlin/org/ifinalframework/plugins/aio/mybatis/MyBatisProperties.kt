@@ -19,6 +19,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 data class MyBatisProperties(
     var mapperXmlPath: MapperXmlPath = MapperXmlPath.RESOURCE,
     var tableSqlFragment: TableSqlFragment = TableSqlFragment(),
+    var statementMethodCompletion: StatementMethodCompletion = StatementMethodCompletion(),
     var testCompletion: TestCompletion = TestCompletion(),
     var insertMethodRegex: String = "^(insert|add|create)+\\w*\$",
     var deleteMethodRegex: String = "^(del|remove|clean)+\\w*\$",
@@ -34,9 +35,18 @@ data class MyBatisProperties(
         XmlSerializerUtil.copyBean<MyBatisProperties>(properties, this)
     }
 
+    data class StatementMethodCompletion(
+        var insertMethodRegex: String = "^(insert|add|create|new)+\\w*\$",
+        var deleteMethodRegex: String = "^(del|remove|clean)+\\w*\$",
+        var updateMethodRegex: String = "^(update|set)+\\w*\$",
+        var selectMethodRegex: String = "^(select|find|get|query|count)+\\w*\$",
+        var filterWithRegex: Boolean = true
+    )
+
     data class TestCompletion(
         var stringType: String = "null != \${TARGET} and \${TARGET} != ''",
         var collectionType: String = "null != \${TARGET} and \${TARGET}.size > 0",
+        var betweenType: String = "null != \${START_TARGET} and null != \${END_TARGET}",
         var defaultType: String = "null != \${TARGET}",
     )
 

@@ -27,12 +27,12 @@
         VALUE (#{})
     </insert>
     <insert id="insert3"></insert>
-    <delete id="delete">
-        
-    </delete>
+    <delete id="delete"></delete>
+
     <delete id="delete2">
 
     </delete>
+    <delete id="remove"></delete>
     <update id="update"></update>
     <update id="test"></update>
     <select id="select" resultType="java.lang.String" resultMap="resultMap2">
@@ -40,7 +40,10 @@
     </select>
     <select id="selectResultMaps" resultMap="baseMap"></select>
     <select id="selectSingle" resultMap="baseMap">
-        <if test="null != tags and tags.size > 0"
+        <if test="te"
+        <foreach collection="tags" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
     </select>
 
 
