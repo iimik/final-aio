@@ -66,8 +66,9 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
                     )
             }
 
-        }
+        }.layout(RowLayout.LABEL_ALIGNED)
 
+        // test 补全提示配置
         group("Test Completion") {
 
             val testCompletion = myBatisProperties.testCompletion
@@ -86,7 +87,7 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
                             testCompletion.stringType = it
                         }
                     )
-            }
+            }.layout(RowLayout.LABEL_ALIGNED)
 
             row {
                 textField()
@@ -96,7 +97,7 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
                         getter = { testCompletion.collectionType },
                         setter = { testCompletion.collectionType = it }
                     )
-            }
+            }.layout(RowLayout.LABEL_ALIGNED)
 
             row {
                 textField()
@@ -107,7 +108,7 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
                         setter = { testCompletion.betweenType = it }
                     )
                     .comment(I18N.message("MyBatis.MyBatisConfigurable.testCompletion.Between.comment"))
-            }
+            }.layout(RowLayout.LABEL_ALIGNED)
 
             row {
                 textField()
@@ -119,8 +120,8 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
                             testCompletion.defaultType = it
                         }
                     )
-            }
-        }
+            }.layout(RowLayout.LABEL_ALIGNED)
+        }.layout(RowLayout.LABEL_ALIGNED)
 
 
         group(title = "Statement Completion") {
@@ -137,7 +138,7 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
                     .align(Align.FILL)
                     .comment("Insert Statement 正则匹配")
                     .bindText(statementMethodCompletion::insertMethodRegex)
-            }
+            }.layout(RowLayout.LABEL_ALIGNED)
 
             row {
                 textField()
@@ -145,21 +146,21 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
                     .align(Align.FILL)
 
                     .bindText(statementMethodCompletion::deleteMethodRegex)
-            }
+            }.layout(RowLayout.LABEL_ALIGNED)
 
             row {
                 textField()
                     .label("Update:")
                     .align(Align.FILL)
                     .bindText(statementMethodCompletion::updateMethodRegex)
-            }
+            }.layout(RowLayout.LABEL_ALIGNED)
 
             row {
                 textField()
                     .label("Select:")
                     .align(Align.FILL)
                     .bindText(statementMethodCompletion::selectMethodRegex)
-            }
+            }.layout(RowLayout.LABEL_ALIGNED)
 
             row {
                 checkBox("启用正则方法过滤")
