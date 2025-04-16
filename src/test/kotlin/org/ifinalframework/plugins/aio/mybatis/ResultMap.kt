@@ -1,5 +1,7 @@
 package org.ifinalframework.plugins.aio.mybatis
 
+import java.util.*
+
 
 /**
  * ResultMap
@@ -22,4 +24,7 @@ data class ResultMap(
     val age: Int,
 
     val tags: List<String>,
+
+    val startDate: Date,
+    val endDate: Date,
 )

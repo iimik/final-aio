@@ -90,7 +90,7 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
 
             row {
                 textField()
-                    .label(I18N.message("MyBatis.MyBatisConfigurable.testCompletion.String.collection") + ":")
+                    .label(I18N.message("MyBatis.MyBatisConfigurable.testCompletion.Collection.label") + ":")
                     .align(Align.FILL)
                     .bindText(
                         getter = { testCompletion.collectionType },
@@ -100,7 +100,18 @@ class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Bet
 
             row {
                 textField()
-                    .label(I18N.message("MyBatis.MyBatisConfigurable.testCompletion.String.default") + ":")
+                    .label(I18N.message("MyBatis.MyBatisConfigurable.testCompletion.Between.label") + ":")
+                    .align(Align.FILL)
+                    .bindText(
+                        getter = { testCompletion.betweenType },
+                        setter = { testCompletion.betweenType = it }
+                    )
+                    .comment(I18N.message("MyBatis.MyBatisConfigurable.testCompletion.Between.comment"))
+            }
+
+            row {
+                textField()
+                    .label(I18N.message("MyBatis.MyBatisConfigurable.testCompletion.Default.label") + ":")
                     .align(Align.FILL)
                     .bindText(
                         getter = { testCompletion.defaultType },

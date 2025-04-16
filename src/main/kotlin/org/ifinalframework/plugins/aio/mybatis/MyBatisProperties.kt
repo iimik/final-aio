@@ -46,6 +46,7 @@ data class MyBatisProperties(
     data class TestCompletion(
         var stringType: String = "null != \${TARGET} and \${TARGET} != ''",
         var collectionType: String = "null != \${TARGET} and \${TARGET}.size > 0",
+        var betweenType: String = "null != \${START_TARGET} and null != \${END_TARGET}",
         var defaultType: String = "null != \${TARGET}",
     )
 

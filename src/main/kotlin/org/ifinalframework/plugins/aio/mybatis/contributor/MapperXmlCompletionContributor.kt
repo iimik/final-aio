@@ -28,6 +28,8 @@ import java.util.stream.Collectors
 import java.util.stream.Stream
 
 private const val TEST_COMPLETION_PLACE_HOLDER = "\${TARGET}"
+private const val TEST_COMPLETION_START_PLACE_HOLDER = "\${START_TARGET}"
+private const val TEST_COMPLETION_END_PLACE_HOLDER = "\${END_TARGET}"
 
 /**
  * Mapper Xml 自动补全提示
@@ -92,8 +94,8 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                             val mapper = MyBatisUtils.getMapper(statement)
                             val className = mapper.getNamespace().rawText ?: return
 
-                            val regex = if(statementMethodCompletion.filterWithRegex){
-                                val value = when(statement.xmlTag!!.name){
+                            val regex = if (statementMethodCompletion.filterWithRegex) {
+                                val value = when (statement.xmlTag!!.name) {
                                     "insert" -> statementMethodCompletion.insertMethodRegex
                                     "delete" -> statementMethodCompletion.deleteMethodRegex
                                     "update" -> statementMethodCompletion.updateMethodRegex
@@ -103,14 +105,14 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
 
                                 Regex(value)
 
-                            }else null
+                            } else null
 
                             position.project.service<MapperService>().findStatements(className)
                                 .filter {
 
-                                    return@filter if(regex != null){
+                                    return@filter if (regex != null) {
                                         it.name.matches(regex)
-                                    }else true
+                                    } else true
 
                                 }
                                 .forEach { method ->
@@ -454,8 +456,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(
                     parameters: CompletionParameters,
-                    context: ProcessingContext,
-                    result: CompletionResultSet
+                    context: ProcessingContext,result: CompletionResultSet
                 ) {
                     val position = parameters.position
                     if (position !is XmlToken) return
@@ -562,6 +563,28 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                                 .withTypeText(typeText)
                                 .withCaseSensitivity(false)
                         )
+
+                        // 扩展，如果属性名为 startXXX，且能找到endXXX，则生成一个between参数的校验
+                        if (field.name.startsWith("start")) {
+                            val endName = field.name.replace("start", "end")
+                            val endField = clazz.findFieldByName(endName, true)
+                            if (endField != null) {
+
+                                val betweenTest = testCompletion.betweenType.replace(TEST_COMPLETION_START_PLACE_HOLDER, field.name)
+                                    .replace(TEST_COMPLETION_END_PLACE_HOLDER, endField.name)
+
+                                var endTypeText  = endField.type.presentableText
+
+                                docService.getSummary(endField)?.let { endTypeText = "$it ($endTypeText)" }
+
+                                result.addElement(
+                                    LookupElementBuilder.create(betweenTest)
+                                        .withIcon(PlatformIcons.PROPERTY_ICON)
+                                        .withTypeText("$typeText and $endTypeText")
+                                        .withCaseSensitivity(false)
+                                )
+                            }
+                        }
                     }
             }
         } else if (type is PsiPrimitiveType) {

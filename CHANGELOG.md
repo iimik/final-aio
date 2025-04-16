@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [0.0.13] - 2025-04-15
+
+### 优化
+
+- MyBatis
+  - 🔥Mapper xml 自动补全`test`属性，支持区间属性。
+
 ## [0.0.12] - 2025-04-08
 
 ### 新增
@@ -115,7 +122,8 @@
 - Issue 管理
   - 🔥添加Issue行标记，并可在浏览器中快速打开，支持Git Issue和Jira。(#10)
 
-[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.12...HEAD
+[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.13...HEAD
+[0.0.13]: https://github.com/iimik/final-aio/compare/v0.0.12...v0.0.13
 [0.0.12]: https://github.com/iimik/final-aio/compare/v0.0.11...v0.0.12
 [0.0.11]: https://github.com/iimik/final-aio/compare/v0.0.10...v0.0.11
 [0.0.10]: https://github.com/iimik/final-aio/compare/v0.0.9...v0.0.10

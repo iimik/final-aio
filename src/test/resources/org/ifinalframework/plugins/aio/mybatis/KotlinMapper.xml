@@ -40,6 +40,7 @@
     </select>
     <select id="selectResultMaps" resultMap="baseMap"></select>
     <select id="selectSingle" resultMap="baseMap">
+        <if test="te"
         <foreach collection="tags" open="(" close=")" separator="," item="item">
             #{item}
         </foreach>
