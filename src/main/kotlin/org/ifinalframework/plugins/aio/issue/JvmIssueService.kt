@@ -1,10 +1,9 @@
 package org.ifinalframework.plugins.aio.issue
 
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
-import org.ifinalframework.plugins.aio.application.condition.ConditionOnJvm
 import org.ifinalframework.plugins.aio.psi.service.DocService
-import org.springframework.stereotype.Component
 
 
 /**
@@ -26,8 +25,7 @@ import org.springframework.stereotype.Component
  * @since 0.0.1
  * @see MarkdownIssueService
  **/
-@Component
-@ConditionOnJvm
+@Service
 class JvmIssueService : IssueService {
 
     private val docService = service<DocService>()

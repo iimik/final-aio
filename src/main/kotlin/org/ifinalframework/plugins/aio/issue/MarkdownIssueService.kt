@@ -1,10 +1,9 @@
 package org.ifinalframework.plugins.aio.issue
 
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import org.ifinalframework.plugins.aio.application.condition.ConditionOnMarkdown
-import org.springframework.stereotype.Component
 
 
 /**
@@ -17,8 +16,7 @@ import org.springframework.stereotype.Component
  * @since 0.0.2
  * @see JvmIssueService
  **/
-@Component
-@ConditionOnMarkdown
+@Service
 class MarkdownIssueService : IssueService {
 
     override fun getIssue(element: PsiElement): Issue? {

@@ -1,6 +1,7 @@
 package org.ifinalframework.plugins.aio.api.spi
 
 import com.intellij.openapi.components.service
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.constans.SpringAnnotations
@@ -13,6 +14,7 @@ import org.ifinalframework.plugins.aio.util.SpiUtil
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.getContainingUClass
 import org.jetbrains.uast.toUElement
+import java.util.concurrent.CancellationException
 import java.util.stream.Stream
 
 
@@ -28,40 +30,45 @@ class SpringApiMethodService : ApiMethodService {
 
     override fun getApiMarker(element: PsiElement): ApiMarker? {
 
-        val uElement = R.computeInRead { element.toUElement() } ?: return null
+        try {
 
-        return when (uElement) {
-            is UMethod -> {
-                val uClass = R.computeInRead { uElement.getContainingUClass() } ?: return null
-                val category = docService.getSummary(uClass.sourcePsi!!) ?: uClass.name ?: return null
-                val name = docService.getSummary(uElement.sourcePsi!!) ?: uElement.name
+            val uElement = R.computeInRead { element.toUElement() } ?: return null
 
-                val clazzRequestAnnotation =
-                    R.computeInRead { uClass.findAnyAnnotation(SpringAnnotations.REQUEST_MAPPING, SpringAnnotations.FEIGN_CLIENT) }
-                val methodRequestMappingAnn =
-                    SpringAnnotations.REQUEST_MAPPINGS.firstNotNullOfOrNull { R.computeInRead { uElement.findAnnotation(it) } }
-                        ?: return null
+            return when (uElement) {
+                is UMethod -> {
+                    val uClass = R.computeInRead { uElement.getContainingUClass() } ?: return null
+                    val category = docService.getSummary(uClass.sourcePsi!!) ?: uClass.name ?: return null
+                    val name = docService.getSummary(uElement.sourcePsi!!) ?: uElement.name
 
-                val qualifiedName = R.computeInRead { methodRequestMappingAnn.qualifiedName }
-                val methodRequestAnnotationMap = annotationResolver.resolve(methodRequestMappingAnn.sourcePsi!!)
+                    val clazzRequestAnnotation =
+                        R.computeInRead { uClass.findAnyAnnotation(SpringAnnotations.REQUEST_MAPPING, SpringAnnotations.FEIGN_CLIENT) }
+                    val methodRequestMappingAnn =
+                        SpringAnnotations.REQUEST_MAPPINGS.firstNotNullOfOrNull { R.computeInRead { uElement.findAnnotation(it) } }
+                            ?: return null
 
-                val methods = when (qualifiedName) {
-                    SpringAnnotations.REQUEST_MAPPING -> methodRequestAnnotationMap.getList("method") ?: listOf("GET")
-                    SpringAnnotations.GET_MAPPING -> listOf("GET")
-                    SpringAnnotations.POST_MAPPING -> listOf("POST")
-                    SpringAnnotations.PUT_MAPPING -> listOf("PUT")
-                    SpringAnnotations.PATCH_MAPPING -> listOf("PATCH")
-                    SpringAnnotations.DELETE_MAPPING -> listOf("DELETE")
-                    else -> listOf("UNKNOWN")
+                    val qualifiedName = R.computeInRead { methodRequestMappingAnn.qualifiedName }
+                    val methodRequestAnnotationMap = annotationResolver.resolve(methodRequestMappingAnn.sourcePsi!!)
+
+                    val methods = when (qualifiedName) {
+                        SpringAnnotations.REQUEST_MAPPING -> methodRequestAnnotationMap.getList("method") ?: listOf("GET")
+                        SpringAnnotations.GET_MAPPING -> listOf("GET")
+                        SpringAnnotations.POST_MAPPING -> listOf("POST")
+                        SpringAnnotations.PUT_MAPPING -> listOf("PUT")
+                        SpringAnnotations.PATCH_MAPPING -> listOf("PATCH")
+                        SpringAnnotations.DELETE_MAPPING -> listOf("DELETE")
+                        else -> listOf("UNKNOWN")
+                    }
+
+
+                    val classRequestAnnotationMap = clazzRequestAnnotation?.let { annotationResolver.resolve(it.sourcePsi!!) }
+                    val paths = getApiPaths(classRequestAnnotationMap, methodRequestAnnotationMap)
+                    return ApiMarker(ApiMarker.Type.METHOD, category, name, methods, paths)
                 }
 
-
-                val classRequestAnnotationMap = clazzRequestAnnotation?.let { annotationResolver.resolve(it.sourcePsi!!) }
-                val paths = getApiPaths(classRequestAnnotationMap, methodRequestAnnotationMap)
-                return ApiMarker(ApiMarker.Type.METHOD, category, name, methods, paths)
+                else -> null
             }
-
-            else -> null
+        } catch (_: CancellationException) {
+            return null
         }
 
 

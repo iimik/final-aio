@@ -8,8 +8,9 @@
 
     <resource-bundle>messages.i18n</resource-bundle>
 
-    <depends config-file="final-java.xml">com.intellij.modules.java</depends>
-    <depends config-file="final-kotlin.xml">org.jetbrains.kotlin</depends>
+    <depends>com.intellij.modules.java</depends>
+    <depends>org.jetbrains.kotlin</depends>
+    <depends>org.intellij.plugins.markdown</depends>
 
     <projectListeners>
         <listener class="org.ifinalframework.plugins.aio.listener.ConfigFileChangeListener"
@@ -79,10 +80,10 @@
         <!--=============================================================================================================================-->
         <codeInsight.lineMarkerProvider
                 language="Markdown"
-                implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
+                implementationClass="org.ifinalframework.plugins.aio.issue.MarkdownIssueLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider
                 language="UAST"
-                implementationClass="org.ifinalframework.plugins.aio.issue.IssueLineMarkerProvider"/>
+                implementationClass="org.ifinalframework.plugins.aio.issue.JvmIssueLineMarkerProvider"/>
         <!--=============================================================================================================================-->
         <!--=======================================================    MyBatis    =======================================================-->
         <!--=============================================================================================================================-->
