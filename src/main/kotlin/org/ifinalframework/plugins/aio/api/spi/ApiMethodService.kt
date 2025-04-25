@@ -10,7 +10,9 @@ import org.ifinalframework.plugins.aio.api.model.ApiMarker
  *
  * @author iimik
  * @since 0.0.2
+ * @see SpringApiMethodService
  **/
+@FunctionalInterface
 interface ApiMethodService {
     fun getApiMarker(element: PsiElement): ApiMarker?
 
