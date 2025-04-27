@@ -4,6 +4,17 @@
 
 ## [Unreleased]
 
+## [0.0.14] - 2025-04-27
+
+### 优化
+
+- Spring
+  - Spring MVC支持自定义`@ResultBody`注解。
+
+### 修复
+
+- 🐛修复了一些问题。
+
 ## [0.0.13] - 2025-04-15
 
 ### 优化
@@ -122,7 +133,8 @@
 - Issue 管理
   - 🔥添加Issue行标记，并可在浏览器中快速打开，支持Git Issue和Jira。(#10)
 
-[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.13...HEAD
+[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.14...HEAD
+[0.0.14]: https://github.com/iimik/final-aio/compare/v0.0.13...v0.0.14
 [0.0.13]: https://github.com/iimik/final-aio/compare/v0.0.12...v0.0.13
 [0.0.12]: https://github.com/iimik/final-aio/compare/v0.0.11...v0.0.12
 [0.0.11]: https://github.com/iimik/final-aio/compare/v0.0.10...v0.0.11
