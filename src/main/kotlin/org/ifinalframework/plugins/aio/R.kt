@@ -5,6 +5,7 @@ import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
+import java.util.concurrent.CancellationException
 
 
 /**
@@ -21,8 +22,10 @@ object R {
     }
 
     fun <T> computeInRead(action: () -> T): T? {
-        try {
-            return ReadAction.compute<T, Throwable>(action)
+        return try {
+            ReadAction.compute<T, Throwable>(action)
+        } catch (_: CancellationException) {
+            null
         } catch (e: Exception) {
             throw RuntimeException(e)
         }

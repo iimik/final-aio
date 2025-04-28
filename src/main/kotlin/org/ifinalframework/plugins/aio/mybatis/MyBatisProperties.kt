@@ -21,12 +21,7 @@ data class MyBatisProperties(
     var tableSqlFragment: TableSqlFragment = TableSqlFragment(),
     var statementMethodCompletion: StatementMethodCompletion = StatementMethodCompletion(),
     var testCompletion: TestCompletion = TestCompletion(),
-    var insertMethodRegex: String = "^(insert|add|create)+\\w*\$",
-    var deleteMethodRegex: String = "^(del|remove|clean)+\\w*\$",
-    var updateMethodRegex: String = "^(update|set)+\\w*\$",
-    var selectMethodRegex: String = "^(select|find|get|query|count)+\\w*\$",
-
-    ) : PersistentStateComponent<MyBatisProperties> {
+) : PersistentStateComponent<MyBatisProperties> {
     override fun getState(): MyBatisProperties? {
         return this
     }
@@ -43,10 +38,29 @@ data class MyBatisProperties(
         var filterWithRegex: Boolean = true
     )
 
+    /**
+     * Test属性补全配置
+     * ```xml
+     * <if test=""/>
+     * <when test=""/>
+     * ```
+     */
     data class TestCompletion(
+        /**
+         * 字符串
+         */
         var stringType: String = "null != \${TARGET} and \${TARGET} != ''",
+        /**
+         * 集合
+         */
         var collectionType: String = "null != \${TARGET} and \${TARGET}.size > 0",
+        /**
+         * 区间
+         */
         var betweenType: String = "null != \${START_TARGET} and null != \${END_TARGET}",
+        /**
+         * 默认
+         */
         var defaultType: String = "null != \${TARGET}",
     )
 

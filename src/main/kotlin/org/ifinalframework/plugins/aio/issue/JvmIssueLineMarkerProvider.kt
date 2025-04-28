@@ -3,6 +3,7 @@ package org.ifinalframework.plugins.aio.issue
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
+import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.application.ElementApplication
@@ -18,13 +19,11 @@ import java.awt.event.MouseEvent
  * @author iimik
  * @since 0.0.1
  **/
-class IssueLineMarkerProvider : LineMarkerProvider {
-
-    private val issueService = SpiUtil.languageSpi<IssueService>()
+class JvmIssueLineMarkerProvider : LineMarkerProvider {
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
         try {
-            val issue = issueService.getIssue(element) ?: return null
+            val issue = service<JvmIssueService>().getIssue(element) ?: return null
             val builder = NavigationGutterIconBuilder.create(issue.type.icon)
             builder.setTargets(element)
             builder.setTooltipText(I18N.getMessage("${this::class.simpleName}.${issue.type.name.lowercase()}Tooltip"))
@@ -35,6 +34,7 @@ class IssueLineMarkerProvider : LineMarkerProvider {
             }
         } catch (ex: ProcessCanceledException) {
             // ignore
+            return null
         }
         return null
     }

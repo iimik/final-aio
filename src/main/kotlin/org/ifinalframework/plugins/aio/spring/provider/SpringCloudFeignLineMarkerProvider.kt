@@ -40,7 +40,6 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
         val springService = project.service<SpringService>()
         val psiService = project.service<PsiService>()
         val feignClientAnnotation = psiService.findClass(SpringAnnotations.FEIGN_CLIENT) ?: return
-        val restControllerAnnotation = psiService.findClass(SpringAnnotations.REST_CONTROLLER) ?: return
         try {
 
             val u = element.toUElement() ?: return
@@ -59,7 +58,8 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
                     }
 
                     val apiMarker = apiMethodService.getApiMarker(element.parent) ?: return
-                    val controllers = AnnotationTargetsSearch.search(restControllerAnnotation)
+
+                    val controllers = springService.getResponseBodyAnnotations().flatMap {  AnnotationTargetsSearch.search(it) }
                         .filterIsInstance<PsiClass>()
 
                     val methods = controllers.stream().flatMap { c -> c.allMethods.stream() }

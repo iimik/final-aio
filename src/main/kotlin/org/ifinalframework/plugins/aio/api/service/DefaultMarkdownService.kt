@@ -8,13 +8,14 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.writeText
+import com.intellij.psi.PsiFile
 import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.ApiConfigs
 import org.ifinalframework.plugins.aio.api.model.ApiMarker
 import org.ifinalframework.plugins.aio.common.util.getBasePath
 import org.ifinalframework.plugins.aio.service.EnvironmentService
 import org.ifinalframework.plugins.aio.service.NotificationService
-import org.intellij.plugins.markdown.lang.psi.impl.MarkdownFile
+import org.intellij.plugins.markdown.lang.psi.MarkdownPsiElement
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
 import java.io.File
 import java.util.*
@@ -27,17 +28,14 @@ import java.util.*
  * @since 0.0.6
  **/
 class DefaultMarkdownService : MarkdownService {
-    override fun findMarkdownFile(module: Module, marker: ApiMarker): MarkdownFile? {
+    override fun findMarkdownFile(module: Module, marker: ApiMarker): PsiFile? {
         val environmentService = module.project.service<EnvironmentService>()
         val markdownBasePath = environmentService.getProperty(module, ApiConfigs.MarkdownBasePath)!!
         val markdownFilePath = "$markdownBasePath/${marker.category.replace("-", "/")}/${marker.name}.md"
         val path = "${module.getBasePath()}/${markdownFilePath}"
         val file = File(path)
         if (file.exists() && file.isFile) {
-            val psiFile = file.toPsiFile(module.project)
-            if (psiFile is MarkdownFile) {
-                return psiFile
-            }
+            return file.toPsiFile(module.project)
         }
 
         return null;
@@ -61,7 +59,7 @@ class DefaultMarkdownService : MarkdownService {
                 NotificationDisplayType.TOOL_WINDOW, "创建Markdown文件：$markdownFileName", NotificationType.INFORMATION
             )
             val editorManager = FileEditorManager.getInstance(project)
-                editorManager.openFile(file!!, true)
+            editorManager.openFile(file!!, true)
         }
     }
 }

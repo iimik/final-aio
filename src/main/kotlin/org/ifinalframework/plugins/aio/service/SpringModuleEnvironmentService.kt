@@ -8,6 +8,7 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.module.Module
 import org.ifinalframework.plugins.aio.application.ModuleEnvironment
 import org.springframework.core.env.Environment
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 
@@ -20,7 +21,7 @@ import kotlin.reflect.KClass
 class SpringModuleEnvironmentService : EnvironmentService {
 
     private val logger = logger<SpringModuleEnvironmentService>()
-    private val cache = mutableMapOf<Module, Environment>()
+    private val cache = ConcurrentHashMap<Module, Environment>()
 
     override fun getProperty(module: Module, key: String): String? {
         return getEnvironment(module).getProperty(key)
