@@ -59,6 +59,14 @@
                 serviceInterface="org.ifinalframework.plugins.aio.api.service.MarkdownService"
                 serviceImplementation="org.ifinalframework.plugins.aio.api.service.DefaultMarkdownService"
         />
+        <projectService
+                serviceInterface="org.ifinalframework.plugins.aio.api.yapi.YapiService"
+                serviceImplementation="org.ifinalframework.plugins.aio.api.yapi.DefaultYapiService"
+        />
+        <applicationService
+                serviceInterface="org.ifinalframework.plugins.aio.api.open.ApiOpener"
+                serviceImplementation="org.ifinalframework.plugins.aio.api.open.YapiOpener"
+        />
         <codeInsight.lineMarkerProvider
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.api.provider.ApiLineMarkerProvider"/>
@@ -134,6 +142,18 @@
                 id="org.ifinalframework.plugins.aio.setting.FinalConfigurable"
                 displayName="Final AIO"
         >
+            <configurable
+                instance="org.ifinalframework.plugins.aio.api.setting.ApiConfigurable"
+                id="org.ifinalframework.plugins.aio.api.setting.ApiConfigurable"
+                displayName="Api"
+                nonDefaultProject="true">
+                <configurable
+                    instance="org.ifinalframework.plugins.aio.api.yapi.YApiConfigurable"
+                    id="org.ifinalframework.plugins.aio.api.yapi.YApiConfigurable"
+                    displayName="YApi"
+                    nonDefaultProject="true"
+                    />
+            </configurable>
             <configurable
                     instance="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
                     id="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"

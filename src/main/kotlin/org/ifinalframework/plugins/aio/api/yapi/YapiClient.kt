@@ -1,9 +1,11 @@
 package org.ifinalframework.plugins.aio.api.yapi
 
 import org.ifinalframework.plugins.aio.api.yapi.model.*
-import org.springframework.cloud.openfeign.FeignClient
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Query
+import retrofit2.http.Url
+import java.net.URI
 
 /**
  * YapiClient
@@ -11,16 +13,24 @@ import org.springframework.web.bind.annotation.RequestParam
  * @see <a href="https://hellosean1025.github.io/yapi/openapi.html">yapi开放 api</a>
  * @since 0.0.1
  **/
-@FeignClient(name = "yapi-client", url = "\${final.api.yapi.server-url}")
 interface YapiClient {
+
+    companion object {
+        const val GET_PROJECT = "/api/project/get"
+        const val GET_CAT_MENU = "/api/interface/getCatMenu"
+        const val GET_LIST_IN_CAT = "/api/interface/list_cat"
+        const val GET_LIST_IN_MENU = "/api/interface/list_menu"
+    }
+
     /**
      * 获取项目基本信息
      *
      * @param token 项目token
      * @return
      */
-    @GetMapping("/api/project/get")
-    fun getProject(@RequestParam("token") token: String): Result<Project?>
+    @GET
+    fun getProject(@Url host: String, @Query("token") token: String): Call<Result<Project?>>
+
 
     /**
      * 获取项目分类菜单列表
@@ -29,11 +39,12 @@ interface YapiClient {
      * @param token     项目token
      * @return
      */
-    @GetMapping("/api/interface/getCatMenu")
+    @GET
     fun getCatMenus(
-        @RequestParam("project_id") projectId: Long,
-        @RequestParam("token") token: String
-    ): Result<List<CatMenu?>?>
+        @Url host: String,
+        @Query("project_id") projectId: Long,
+        @Query("token") token: String
+    ): Call<Result<List<CatMenu?>?>>
 
     /**
      * 获取某个分类下接口列表
@@ -44,20 +55,22 @@ interface YapiClient {
      * @param limit 每页数量，默认为10，如果不想要分页数据，可将 limit 设置为比较大的数字，比如 1000
      * @return
      */
-    @GetMapping("/api/interface/list_cat")
+    @GET
     fun getApiListInCat(
-        @RequestParam("token") token: String,
-        @RequestParam("catid") catId: Long,
-        @RequestParam("page") page: Int = 1,
-        @RequestParam("limit") limit: Int = Int.MAX_VALUE
+        host: URI,
+        @Query("token") token: String,
+        @Query("catid") catId: Long,
+        @Query("page") page: Int = 1,
+        @Query("limit") limit: Int = Int.MAX_VALUE
     ): Result<Page<Api>>
 
     /**
      * 获取接口菜单列表
      */
-    @GetMapping("/api/interface/list_menu")
+    @GET
     fun getApiListInMenu(
-        @RequestParam("token") token: String,
-        @RequestParam("project_id") projectId: Long,
-    ): Result<List<CatMenu>>
+        @Url host: String,
+        @Query("token") token: String,
+        @Query("project_id") projectId: Long,
+    ): Call<Result<List<CatMenu>>>
 }

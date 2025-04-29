@@ -8,10 +8,9 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.api.model.ApiMarker
-import org.ifinalframework.plugins.aio.api.open.OpenApiApplication
+import org.ifinalframework.plugins.aio.api.open.ApiOpener
 import org.ifinalframework.plugins.aio.api.service.MarkdownService
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
-import org.ifinalframework.plugins.aio.application.ElementApplication
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
 import org.ifinalframework.plugins.aio.service.EnvironmentService
@@ -65,7 +64,9 @@ class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
         builder.setTargets(element)
         builder.setTooltipText("Open API")
         return builder.createLineMarkerInfo(element) { _, _ ->
-            ElementApplication.run(OpenApiApplication::class, element.parent)
+
+            val apiMarker = service<ApiMethodService>().getApiMarker(element.parent) ?: return@createLineMarkerInfo
+            service<ApiOpener>().open(element.module!!, apiMarker)
         }
     }
 

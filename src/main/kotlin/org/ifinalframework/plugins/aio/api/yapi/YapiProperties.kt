@@ -1,6 +1,11 @@
 package org.ifinalframework.plugins.aio.api.yapi
 
-import org.springframework.boot.context.properties.ConfigurationProperties
+import com.intellij.openapi.components.PersistentStateComponent
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
+import com.intellij.util.xmlb.XmlSerializerUtil
+import com.intellij.util.xmlb.annotations.XMap
 
 
 /**
@@ -9,8 +14,21 @@ import org.springframework.boot.context.properties.ConfigurationProperties
  * @author iimik
  * @since 0.0.2
  **/
-@ConfigurationProperties("final.api.yapi")
-data class YapiProperties(
-    val serverUrl: String?,
-    val token: String?,
+@Service(Service.Level.PROJECT)
+@State(
+    name = "org.ifinalframework.plugins.aio.api.yapi.YapiProperties",
+    storages = [Storage("final-aio.xml")]
 )
+data class YapiProperties(
+    var serverUrl: String? = null,
+    @XMap
+    var tokens: MutableMap<String, String> = mutableMapOf(),
+) : PersistentStateComponent<YapiProperties> {
+    override fun getState(): YapiProperties? {
+        return this
+    }
+
+    override fun loadState(properties: YapiProperties) {
+        XmlSerializerUtil.copyBean<YapiProperties>(properties, this)
+    }
+}
