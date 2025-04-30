@@ -28,7 +28,15 @@ data class ApiMarker(
      * 路径
      */
     val paths: List<String>,
+    /**
+     * 权限
+     * @since 0.0.15
+     */
+    var securities: List<String>? = null,
 ) {
+
+
+
     enum class Type {
         CONTROLLER, METHOD
     }

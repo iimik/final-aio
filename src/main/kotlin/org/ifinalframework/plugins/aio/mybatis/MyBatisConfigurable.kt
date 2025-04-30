@@ -13,7 +13,7 @@ import javax.swing.JComponent
  *
  * @author iimik
  */
-class MyBatisConfigurable(val project: Project) : Configurable, Configurable.Beta {
+class MyBatisConfigurable(val project: Project) : Configurable {
 
     val myBatisProperties: MyBatisProperties = project.service<MyBatisProperties>()
 

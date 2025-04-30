@@ -1,9 +1,11 @@
 package org.ifinalframework.plugins.aio.api.spi
 
 import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import org.apache.commons.lang3.StringUtils
 import org.ifinalframework.plugins.aio.R
+import org.ifinalframework.plugins.aio.api.ApiProperties
 import org.ifinalframework.plugins.aio.api.constans.SpringAnnotations
 import org.ifinalframework.plugins.aio.api.model.ApiMarker
 import org.ifinalframework.plugins.aio.common.util.UAnnotatedKt.findAnyAnnotation
@@ -62,7 +64,8 @@ class SpringApiMethodService : ApiMethodService {
 
                     val classRequestAnnotationMap = clazzRequestAnnotation?.let { annotationResolver.resolve(it.sourcePsi!!) }
                     val paths = getApiPaths(classRequestAnnotationMap, methodRequestAnnotationMap)
-                    return ApiMarker(ApiMarker.Type.METHOD, category, name, methods, paths)
+                    val securities = getSecurities(uElement, element.project)
+                    return ApiMarker(ApiMarker.Type.METHOD, category, name, methods, paths, securities)
                 }
 
                 else -> null
@@ -72,6 +75,23 @@ class SpringApiMethodService : ApiMethodService {
         }
 
 
+    }
+
+    private fun getSecurities(method: UMethod, project: Project): List<String>? {
+        val securityAnnotation = project.service<ApiProperties>().securityAnnotation
+        if (StringUtils.isNotEmpty(securityAnnotation)) {
+            val annClassName = StringUtils.substringBeforeLast(securityAnnotation, "#")
+            val property = StringUtils.substringAfterLast(securityAnnotation, "#")
+
+            val securityAnn = R.computeInRead { method.findAnnotation(annClassName) }
+            if (securityAnn != null) {
+                val annotationAttributes = annotationResolver.resolve(securityAnn.sourcePsi!!)
+                return annotationAttributes.getList(property)
+            }
+
+        }
+
+        return null
     }
 
     private fun getApiPaths(classAnnotation: AnnotationAttributes?, methodAnnotation: AnnotationAttributes): List<String> {
