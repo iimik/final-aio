@@ -9,4 +9,5 @@ data class MarkdownTemplate(
     val NAME: String,
     val METHOD: String?,
     val PATH: String?,
+    val SECURITIES: List<String>?,
 )

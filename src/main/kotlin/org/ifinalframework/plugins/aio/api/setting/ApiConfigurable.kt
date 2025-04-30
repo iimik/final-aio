@@ -32,6 +32,20 @@ class ApiConfigurable(val project: Project) : Configurable, Configurable.Beta {
 
         panel = panel {
 
+            group("通用") {
+                row {
+                    textField()
+                        .label("权限:")
+                        .align(Align.FILL)
+                        .bindText(
+                            getter = { apiProperties.securityAnnotation ?: "" },
+                            setter = {
+                                apiProperties.securityAnnotation = it
+                            }
+                        )
+                }.layout(RowLayout.LABEL_ALIGNED)
+            }
+
             group("Context Paths") {
                 ModuleManager.getInstance(project).modules.map { it.name }
                     .sorted()

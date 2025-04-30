@@ -60,6 +60,7 @@ class DefaultMarkdownService : MarkdownService {
                 NAME = marker.name,
                 METHOD = marker.methods.firstOrNull(),
                 PATH = marker.paths.firstOrNull(),
+                SECURITIES = marker.securities
             )
 
             val markdownContent = Velocities.eval(markdownProperties.template, template)
