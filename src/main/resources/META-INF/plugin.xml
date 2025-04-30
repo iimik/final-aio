@@ -143,16 +143,22 @@
                 displayName="Final AIO"
         >
             <configurable
-                instance="org.ifinalframework.plugins.aio.api.setting.ApiConfigurable"
-                id="org.ifinalframework.plugins.aio.api.setting.ApiConfigurable"
-                displayName="Api"
-                nonDefaultProject="true">
+                    instance="org.ifinalframework.plugins.aio.api.setting.ApiConfigurable"
+                    id="org.ifinalframework.plugins.aio.api.setting.ApiConfigurable"
+                    displayName="Api"
+                    nonDefaultProject="true">
                 <configurable
-                    instance="org.ifinalframework.plugins.aio.api.yapi.YApiConfigurable"
-                    id="org.ifinalframework.plugins.aio.api.yapi.YApiConfigurable"
-                    displayName="YApi"
-                    nonDefaultProject="true"
-                    />
+                        instance="org.ifinalframework.plugins.aio.api.yapi.YApiConfigurable"
+                        id="org.ifinalframework.plugins.aio.api.yapi.YApiConfigurable"
+                        displayName="YApi"
+                        nonDefaultProject="true"
+                />
+                <configurable
+                        instance="org.ifinalframework.plugins.aio.api.markdown.MarkdownConfigurable"
+                        id="org.ifinalframework.plugins.aio.api.markdown.MarkdownConfigurable"
+                        displayName="Markdown"
+                        nonDefaultProject="true"
+                />
             </configurable>
             <configurable
                     instance="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
