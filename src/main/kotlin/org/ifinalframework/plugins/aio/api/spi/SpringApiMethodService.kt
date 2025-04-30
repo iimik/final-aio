@@ -1,7 +1,6 @@
 package org.ifinalframework.plugins.aio.api.spi
 
 import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import org.apache.commons.lang3.StringUtils
@@ -78,9 +77,9 @@ class SpringApiMethodService : ApiMethodService {
 
     }
 
-    private fun getSecurities(method: UMethod, project: Project):List<String>? {
+    private fun getSecurities(method: UMethod, project: Project): List<String>? {
         val securityAnnotation = project.service<ApiProperties>().securityAnnotation
-        if(StringUtils.isNotEmpty(securityAnnotation)) {
+        if (StringUtils.isNotEmpty(securityAnnotation)) {
             val annClassName = StringUtils.substringBeforeLast(securityAnnotation, "#")
             val property = StringUtils.substringAfterLast(securityAnnotation, "#")
 
