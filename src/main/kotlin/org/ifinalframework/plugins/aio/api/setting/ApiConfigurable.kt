@@ -16,7 +16,10 @@ import javax.swing.JComponent
 /**
  * ApiConfigurable
  *
+ * @see org.ifinalframework.plugins.aio.api.yapi.YApiConfigurable
+ * @see org.ifinalframework.plugins.aio.api.markdown.MarkdownConfigurable
  * @author iimik
+ * @since 0.0.15
  */
 class ApiConfigurable(val project: Project) : Configurable, Configurable.Beta {
 

@@ -10,22 +10,26 @@ import com.intellij.util.xmlb.XmlSerializerUtil
  * MarkdownProperties
  *
  * @author iimik
+ * @since 0.0.15
  */
 @Service(Service.Level.PROJECT)
 @State(
-    name = "org.ifinalframework.plugins.aio.api.markdown.MarkdownProperties",
+    name = "org.ifinalframework.plugins.aio.api.markdown.ApiMarkdownProperties",
     storages = [Storage("final-aio.xml")]
 )
-class MarkdownProperties(
+class ApiMarkdownProperties(
+    /**
+     * 模板
+     */
     var template: String = """
         # ${'$'}{NAME}
     """.trimIndent(),
-) : PersistentStateComponent<MarkdownProperties> {
-    override fun getState(): MarkdownProperties? {
+) : PersistentStateComponent<ApiMarkdownProperties> {
+    override fun getState(): ApiMarkdownProperties? {
         return this
     }
 
-    override fun loadState(properties: MarkdownProperties) {
-        XmlSerializerUtil.copyBean<MarkdownProperties>(properties, this)
+    override fun loadState(properties: ApiMarkdownProperties) {
+        XmlSerializerUtil.copyBean<ApiMarkdownProperties>(properties, this)
     }
 }

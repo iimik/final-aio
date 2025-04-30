@@ -11,14 +11,13 @@ import com.intellij.openapi.vfs.writeText
 import com.intellij.psi.PsiFile
 import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.ApiConfigs
-import org.ifinalframework.plugins.aio.api.markdown.MarkdownProperties
+import org.ifinalframework.plugins.aio.api.markdown.ApiMarkdownProperties
 import org.ifinalframework.plugins.aio.api.markdown.MarkdownTemplate
 import org.ifinalframework.plugins.aio.api.model.ApiMarker
 import org.ifinalframework.plugins.aio.common.util.getBasePath
 import org.ifinalframework.plugins.aio.service.EnvironmentService
 import org.ifinalframework.plugins.aio.service.NotificationService
 import org.ifinalframework.plugins.aio.util.Velocities
-import org.intellij.plugins.markdown.lang.psi.MarkdownPsiElement
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
 import java.io.File
 import java.util.*
@@ -51,7 +50,7 @@ class DefaultMarkdownService : MarkdownService {
         val markdownFileName = "${marker.name}.md"
         File(markdownFilePath).mkdirs()
         val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(markdownFilePath)
-        val markdownProperties = module.project.service<MarkdownProperties>()
+        val markdownProperties = module.project.service<ApiMarkdownProperties>()
         R.dispatch {
             val project = module.project
             val file = R.computeInWrite { Objects.requireNonNull<VirtualFile?>(virtualFile).createChildData(project, markdownFileName) }

@@ -30,6 +30,7 @@ data class ApiMarker(
     val paths: List<String>,
     /**
      * 权限
+     * @since 0.0.15
      */
     var securities: List<String>? = null,
 ) {

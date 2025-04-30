@@ -16,6 +16,7 @@ import javax.swing.JComponent
  * MarkdownConfigurable
  *
  * @author iimik
+ * @since 0.0.15
  */
 class MarkdownConfigurable(val project: Project) : Configurable, Configurable.Beta {
 
@@ -27,7 +28,7 @@ class MarkdownConfigurable(val project: Project) : Configurable, Configurable.Be
 
     override fun createComponent(): JComponent? {
 
-        val markdownProperties = project.service<MarkdownProperties>()
+        val markdownProperties = project.service<ApiMarkdownProperties>()
 
         panel = panel {
             group(I18N.message("Api.MarkdownConfigurable.template.label")) {

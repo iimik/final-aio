@@ -16,6 +16,8 @@ import javax.swing.JComponent
  * YApiConfigurable
  *
  * @author iimik
+ * @since 0.0.15
+ * @see org.ifinalframework.plugins.aio.api.setting.ApiConfigurable
  */
 class YApiConfigurable(val project: Project) : Configurable, Configurable.Beta {
 
