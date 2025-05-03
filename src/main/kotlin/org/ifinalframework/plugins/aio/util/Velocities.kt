@@ -56,7 +56,16 @@ class Velocities {
          */
         fun eval(express: String, context: Context): String {
             val writer = StringWriter()
-            velocityEngine.evaluate(context, writer, "velocity", StringReader(express))
+
+            // markdown title replace
+            val value = express.replace("###### ", "\${H6} ")
+                .replace("##### ", "\${H5} ")
+                .replace("#### ", "\${H4} ")
+                .replace("### ", "\${H3} ")
+                .replace("## ", "\${H2} ")
+                .replace("# ", "\${H1} ")
+
+            velocityEngine.evaluate(context, writer, "velocity", StringReader(value))
             return writer.toString()
         }
     }
@@ -116,12 +125,12 @@ class Velocities {
         }
 
         private fun appendMarkdownHeader(context: VelocityContext) {
-            context.put("H1","#")
-            context.put("H2","##")
-            context.put("H3","###")
-            context.put("H4","####")
-            context.put("H5","#####")
-            context.put("H6","######")
+            context.put("H1", "#")
+            context.put("H2", "##")
+            context.put("H3", "###")
+            context.put("H4", "####")
+            context.put("H5", "#####")
+            context.put("H6", "######")
         }
     }
 
