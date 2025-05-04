@@ -1,19 +1,17 @@
 package org.ifinalframework.plugins.aio.mybatis
 
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiMethod
-import com.intellij.psi.PsiModifier
+import com.intellij.psi.*
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomUtil
+import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils.isMapper
+import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils.isStatementMethod
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.IdDomElement
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
-import org.jetbrains.uast.UClass
 
 
 /**
- * MapperUtils
+ * MyBaati 工具类
  *
  * @author iimik
  * @since 0.0.6
@@ -32,7 +30,7 @@ object MyBatisUtils {
      */
     fun isMapper(element: PsiElement): Boolean {
         return when (element) {
-            is UClass -> element.isInterface && element.name != null && element.name!!.endsWith(MAPPER) && element.name != MAPPER
+            is PsiClass -> element.isInterface && element.name != null && element.name!!.endsWith(MAPPER) && element.name != MAPPER
             else -> false
         }
     }
@@ -94,7 +92,7 @@ object MyBatisUtils {
     /**
      * 判断一个方法是不是Statement方法
      * - 非默认方法
-     * - 不含有特定的注解
+     * - 不含有特定的注解[MybatisConstants.ALL_SQL_ANNOTATIONS]
      * @see [isMapper]
      */
     fun isStatementMethod(method: PsiMethod): Boolean {
@@ -104,11 +102,15 @@ object MyBatisUtils {
         }
 
         val clazz = method.containingClass ?: return false
+        // Mapper 必须是接口
+        if (!isMapper(clazz)) {
+            return false
+        }
         val qualifiedName = clazz.qualifiedName
         if ("java.lang.Object" == qualifiedName || Any::class.qualifiedName == qualifiedName) return false
 
         // 含有特定注解
-        val hasAnnotation = MybatisConstants.ALL_STATEMENTS.map { method.hasAnnotation(it) }.firstOrNull { it } ?: false
+        val hasAnnotation = MybatisConstants.ALL_SQL_ANNOTATIONS.map { method.hasAnnotation(it) }.firstOrNull { it } ?: false
         return !hasAnnotation
     }
 
