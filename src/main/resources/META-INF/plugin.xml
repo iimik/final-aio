@@ -92,6 +92,10 @@
         <codeInsight.lineMarkerProvider
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.issue.JvmIssueLineMarkerProvider"/>
+        <completion.contributor language="JAVA"
+                                implementationClass="org.ifinalframework.plugins.aio.issue.completion.IssueCompletionContributor"
+                                order="first"
+        />
         <!--=============================================================================================================================-->
         <!--=======================================================    MyBatis    =======================================================-->
         <!--=============================================================================================================================-->

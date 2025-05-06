@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [0.0.16] - 2025-05-06
+
+### 新增
+
+- Issue
+  - Issue支持补全
+
 ## [0.0.15] - 2025-04-30
 
 ### 新增
@@ -140,7 +147,8 @@
 - Issue 管理
   - 🔥添加Issue行标记，并可在浏览器中快速打开，支持Git Issue和Jira。(#10)
 
-[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.15...HEAD
+[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.16...HEAD
+[0.0.16]: https://github.com/iimik/final-aio/compare/v0.0.15...v0.0.16
 [0.0.15]: https://github.com/iimik/final-aio/compare/v0.0.14...v0.0.15
 [0.0.14]: https://github.com/iimik/final-aio/compare/v0.0.13...v0.0.14
 [0.0.13]: https://github.com/iimik/final-aio/compare/v0.0.12...v0.0.13

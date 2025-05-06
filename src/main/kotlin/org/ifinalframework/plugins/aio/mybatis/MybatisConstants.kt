@@ -5,30 +5,36 @@ import com.intellij.psi.xml.XmlTag
 
 
 /**
- * MybatisAnnotations
+ * MyBatis 常量
  *
  * @author iimik
  * @since 0.0.4
  * @see <a href="https://github.com/mybatis/mybatis-3/tree/master/src/main/java/org/apache/ibatis/annotations">Annotations</a>
  **/
 object MybatisConstants {
-    val INSERT = "org.apache.ibatis.annotations.Insert"
-    val DELETE = "org.apache.ibatis.annotations.Delete"
-    val UPDATE = "org.apache.ibatis.annotations.Update"
-    val SELECT = "org.apache.ibatis.annotations.Select"
+    /**
+     * SQL注解，被标记的方法不需要在xml中定义SQL
+     */
+    const val INSERT = "org.apache.ibatis.annotations.Insert"
+    const val DELETE = "org.apache.ibatis.annotations.Delete"
+    const val UPDATE = "org.apache.ibatis.annotations.Update"
+    const val SELECT = "org.apache.ibatis.annotations.Select"
 
-    val INSERT_PROVIDER = "org.apache.ibatis.annotations.InsertProvider"
-    val DELETE_PROVIDER = "org.apache.ibatis.annotations.DeleteProvider"
-    val UPDATE_PROVIDER = "org.apache.ibatis.annotations.UpdateProvider"
-    val SELECT_PROVIDER = "org.apache.ibatis.annotations.SelectProvider"
+    /**
+     * SQL提供者注释，被标记的方法也不需要在xml中定义SQL
+     */
+    const val INSERT_PROVIDER = "org.apache.ibatis.annotations.InsertProvider"
+    const val DELETE_PROVIDER = "org.apache.ibatis.annotations.DeleteProvider"
+    const val UPDATE_PROVIDER = "org.apache.ibatis.annotations.UpdateProvider"
+    const val SELECT_PROVIDER = "org.apache.ibatis.annotations.SelectProvider"
 
-    val ALL_STATEMENTS = setOf(INSERT, DELETE, UPDATE, SELECT, INSERT_PROVIDER, DELETE_PROVIDER, UPDATE_PROVIDER, SELECT_PROVIDER)
+    val ALL_SQL_ANNOTATIONS = setOf(INSERT, DELETE, UPDATE, SELECT, INSERT_PROVIDER, DELETE_PROVIDER, UPDATE_PROVIDER, SELECT_PROVIDER)
 
-    val XML_TAG_MAPPER = "mapper"
-    val XML_TAG_INSERT = "insert"
-    val XML_TAG_DELETE = "delete"
-    val XML_TAG_UPDATE = "update"
-    val XML_TAG_SELECT = "select"
+    const val XML_TAG_MAPPER = "mapper"
+    const val XML_TAG_INSERT = "insert"
+    const val XML_TAG_DELETE = "delete"
+    const val XML_TAG_UPDATE = "update"
+    const val XML_TAG_SELECT = "select"
 
     const val PARAM = "org.apache.ibatis.annotations.Param"
 
