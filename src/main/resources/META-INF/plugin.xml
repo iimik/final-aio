@@ -131,6 +131,13 @@
                 language="SQL"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperSqlParamCompletionContributor"
         />
+        <projectConfigurable
+                parentId="language"
+                instance="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
+                id="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
+                displayName="MyBatis"
+                nonDefaultProject="true"
+        />
         <!--=============================================================================================================================-->
         <!--=======================================================    Spring     =======================================================-->
         <!--=============================================================================================================================-->
@@ -164,12 +171,6 @@
                         nonDefaultProject="true"
                 />
             </configurable>
-            <configurable
-                    instance="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
-                    id="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
-                    displayName="MyBatis"
-                    nonDefaultProject="true"
-            />
         </projectConfigurable>
 
     </extensions>
