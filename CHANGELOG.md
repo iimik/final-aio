@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### 优化
+
+- MyBatis
+  - 优化MyBatis XML模板配置
+
 ## [0.0.16] - 2025-05-06
 
 ### 新增
