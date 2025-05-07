@@ -2,6 +2,7 @@ package org.ifinalframework.plugins.aio.issue
 
 import com.intellij.util.containers.stream
 import org.ifinalframework.plugins.aio.resource.AllIcons
+import org.ifinalframework.plugins.aio.resource.I18N
 import javax.swing.Icon
 
 
@@ -13,9 +14,10 @@ import javax.swing.Icon
  **/
 enum class IssueType(
     val icon: Icon,
+    val toolTip: String,
 ) {
-    ISSUE(AllIcons.Issues.ISSUE),
-    JIRA(AllIcons.Issues.JIRA);
+    ISSUE(AllIcons.Issues.ISSUE, I18N.message("Issue.JvmIssueLineMarkerProvider.issueTooltip")),
+    JIRA(AllIcons.Issues.JIRA,I18N.message("Issue.JvmIssueLineMarkerProvider.jiraTooltip"));
 
     companion object {
         fun ofNullable(name: String?): IssueType? {
