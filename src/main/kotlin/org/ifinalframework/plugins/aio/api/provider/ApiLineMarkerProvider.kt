@@ -7,13 +7,14 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.psi.PsiElement
+import org.apache.commons.lang3.StringUtils
 import org.ifinalframework.plugins.aio.api.model.ApiMarker
 import org.ifinalframework.plugins.aio.api.open.ApiOpener
 import org.ifinalframework.plugins.aio.api.service.MarkdownService
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
+import org.ifinalframework.plugins.aio.api.yapi.YapiProperties
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
-import org.ifinalframework.plugins.aio.service.EnvironmentService
 import org.jetbrains.kotlin.idea.base.util.module
 import org.jetbrains.uast.UIdentifier
 import org.jetbrains.uast.getContainingUClass
@@ -28,19 +29,16 @@ import org.jetbrains.uast.toUElement
  **/
 class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
-    private val logger = logger<ApiLineMarkerProvider>()
-
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         try {
             val module = element.module ?: return
             val uElement = element.toUElement() ?: return
             if (uElement is UIdentifier) {
                 val uClass = uElement.getContainingUClass()
-                val environmentService = element.project.service<EnvironmentService>()
-                val enable = environmentService.getProperty(module, "final.api.yapi.enable", Boolean::class, false)
+                val yapiProperties = element.project.service<YapiProperties>()
+                val enable = !StringUtils.isAnyBlank(yapiProperties.serverUrl, yapiProperties.tokens[module.name])
                 val apiMethodService = service<ApiMethodService>()
                 apiMethodService.getApiMarker(element.parent)?.let {
-                    logger.info("final.api.yapi.enable=$enable")
                     if (enable) {
                         // 仅当启用时才添加
                         result.add(buildOpenApiLineMarkerInfo(element))
