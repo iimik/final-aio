@@ -13,6 +13,8 @@ data class CatMenu(
     @JsonProperty("_id")
     val id: Long,
     val name: String,
+    @JsonProperty("project_id")
+    val projectId: Long,
     val list: List<Api>?,
 ) {
     override fun toString(): String {

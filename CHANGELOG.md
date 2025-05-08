@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+
+### 新增
+
+- Api
+  - YApi支持打开分类
+
 ### 优化
 
 - MyBatis
