@@ -28,7 +28,6 @@ class YapiOpener(
         when (apiMarker.type) {
             ApiMarker.Type.METHOD -> openApiMenu(project, module, apiMarker)
             ApiMarker.Type.CONTROLLER -> openCatMenu(project, module, apiMarker)
-            else -> null
         }
 
 
