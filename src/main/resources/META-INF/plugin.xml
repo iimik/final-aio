@@ -16,7 +16,7 @@
         <listener class="org.ifinalframework.plugins.aio.listener.ConfigFileChangeListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </projectListeners>
-
+    
 
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="FINAL_AIO_BALLOON"/>
@@ -83,6 +83,10 @@
                 implementationClass="org.ifinalframework.plugins.aio.api.provider.MarkdownDocumentationProvider"
                 order="first"
         />
+        <statusBarWidgetFactory implementation="org.ifinalframework.plugins.aio.api.yapi.YApiStatusBarWidgetFactory"
+                                id="yapi"
+                                />
+        
         <!--=============================================================================================================================-->
         <!--=======================================================     Issue     =======================================================-->
         <!--=============================================================================================================================-->

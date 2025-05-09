@@ -20,7 +20,7 @@ interface YapiClient {
         const val GET_CAT_MENU = "/api/interface/getCatMenu"
         const val GET_LIST_IN_CAT = "/api/interface/list_cat"
         const val GET_LIST_IN_MENU = "/api/interface/list_menu"
-        const val GET_API_LIST = " /api/interface/list"
+        const val GET_API_LIST = "/api/interface/list"
     }
 
     /**

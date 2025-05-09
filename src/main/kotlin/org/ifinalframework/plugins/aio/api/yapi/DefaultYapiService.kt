@@ -2,15 +2,21 @@ package org.ifinalframework.plugins.aio.api.yapi;
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.intellij.notification.NotificationDisplayType
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.service
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleManager
+import com.intellij.openapi.module.ModuleUtil
 import org.apache.commons.lang3.StringUtils
+import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.yapi.model.Api
 import org.ifinalframework.plugins.aio.api.yapi.model.CatMenu
 import org.ifinalframework.plugins.aio.api.yapi.model.Project
+import org.ifinalframework.plugins.aio.service.NotificationService
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
-import java.util.Objects
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
@@ -53,57 +59,70 @@ class DefaultYapiService(val project: com.intellij.openapi.project.Project) : Ya
     }
 
     override fun getCatMenu(module: Module, category: String): CatMenu? {
+        return getCatMenu(module)?.get(category)
+    }
 
-        return categoryCache.computeIfAbsent(module){
+    private fun getCatMenu(module: Module): Map<String, CatMenu>? = categoryCache.computeIfAbsent(module) {
+        val yapiProperties = module.project.service<YapiProperties>()
+        if (StringUtils.isEmpty(yapiProperties.serverUrl)) {
+            return@computeIfAbsent null
+        }
+        val token = yapiProperties.tokens[module.name] ?: return@computeIfAbsent null
 
-            val yapiProperties = module.project.service<YapiProperties>()
-            if (StringUtils.isEmpty(yapiProperties.serverUrl)) {
-                return@computeIfAbsent null
-            }
-            val token = yapiProperties.tokens[module.name] ?: return@computeIfAbsent null
-
-            val result = yapiClient.getCatMenus(yapiProperties.serverUrl + YapiClient.GET_CAT_MENU, token)
-                .execute().body()!!
-            return@computeIfAbsent if (result.isSuccess()) {
-                val categoryMap = mutableMapOf<String, CatMenu>()
-                result.data!!.stream()
-                    .filter{ Objects.nonNull(it) }
-                    .forEach { categoryMap.put(it!!.name,it)}
-                categoryMap
-            } else null
-        }?.get(category)
-
-
+        val result = yapiClient.getCatMenus(yapiProperties.serverUrl + YapiClient.GET_CAT_MENU, token)
+            .execute().body()!!
+        return@computeIfAbsent if (result.isSuccess()) {
+            val categoryMap = mutableMapOf<String, CatMenu>()
+            result.data!!.stream()
+                .filter { Objects.nonNull(it) }
+                .forEach { categoryMap.put(it!!.name, it) }
+            categoryMap
+        } else null
     }
 
     override fun getApi(module: Module, category: String, method: String, path: String): Api? {
+        val apis = getApis(module)
+        return apis?.get("$method $path")
+    }
 
-        val apis = apiCache.computeIfAbsent(module) { m ->
+    private fun getApis(module: Module): Map<String, Api>? = apiCache.computeIfAbsent(module) { m ->
 
-            val yapiProperties = m.project.service<YapiProperties>()
-            if (StringUtils.isEmpty(yapiProperties.serverUrl)) {
-                return@computeIfAbsent null
-            }
-            val token = yapiProperties.tokens[m.name] ?: return@computeIfAbsent null
-
-            val result =
-                yapiClient.getApiList(yapiProperties.serverUrl + YapiClient.GET_API_LIST, token).execute().body()!!
-
-            return@computeIfAbsent if (result.isSuccess()) {
-                val apiMap = mutableMapOf<String, Api>()
-
-                result.data.list.stream()
-                    .forEach {
-                        apiMap.put("${it.method} ${it.path}", it)
-                    }
-
-
-                apiMap
-
-            } else emptyMap<String, Api>()
+        val yapiProperties = m.project.service<YapiProperties>()
+        if (StringUtils.isEmpty(yapiProperties.serverUrl)) {
+            return@computeIfAbsent null
         }
+        val token = yapiProperties.tokens[m.name] ?: return@computeIfAbsent null
 
-        return apis["$method $path"]
+        val result =
+            yapiClient.getApiList(yapiProperties.serverUrl + YapiClient.GET_API_LIST, token).execute().body()!!
 
+        return@computeIfAbsent if (result.isSuccess()) {
+            val apiMap = mutableMapOf<String, Api>()
+
+            result.data.list.stream()
+                .forEach {
+                    apiMap.put("${it.method} ${it.path}", it)
+                }
+
+
+            apiMap
+
+        } else emptyMap<String, Api>()
+    }
+
+    override fun refresh() {
+        R.async {
+            projectCache.clear()
+            categoryCache.clear()
+            apiCache.clear()
+
+            val yapiProperties = project.service<YapiProperties>()
+            ModuleManager.getInstance(project).modules.forEach { module ->
+                val token = yapiProperties.tokens[module.name]
+            }
+
+            service<NotificationService>().notify(NotificationDisplayType.TOOL_WINDOW, "清除YApi缓存", NotificationType.INFORMATION)
+
+        }
     }
 }

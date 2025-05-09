@@ -14,9 +14,10 @@ class KotlinYapiOpener {
     
     @GetMapping("/index")
     fun index(){
-
     }
 
-    @PostMapping("/index")
-    fun index2(){}
+    @GetMapping("/index2")
+    fun index2(){
+    }
+
 }

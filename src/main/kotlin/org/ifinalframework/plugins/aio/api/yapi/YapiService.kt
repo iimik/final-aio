@@ -17,4 +17,9 @@ interface YapiService {
     fun getProject(module: Module): Project?
     fun getCatMenu(module: Module, category: String): CatMenu?
     fun getApi(module: Module, category: String, method: String, path: String): Api?
+
+    /**
+     * @since 0.0.17
+     */
+    fun refresh()
 }
