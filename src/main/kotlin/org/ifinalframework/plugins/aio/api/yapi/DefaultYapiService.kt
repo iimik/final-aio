@@ -55,7 +55,6 @@ class DefaultYapiService(val project: com.intellij.openapi.project.Project) : Ya
     override fun getCatMenu(module: Module, category: String): CatMenu? {
 
         return categoryCache.computeIfAbsent(module){
-            val project = getProject(module) ?: return@computeIfAbsent null
 
             val yapiProperties = module.project.service<YapiProperties>()
             if (StringUtils.isEmpty(yapiProperties.serverUrl)) {
@@ -63,7 +62,7 @@ class DefaultYapiService(val project: com.intellij.openapi.project.Project) : Ya
             }
             val token = yapiProperties.tokens[module.name] ?: return@computeIfAbsent null
 
-            val result = yapiClient.getCatMenus(yapiProperties.serverUrl + YapiClient.GET_CAT_MENU, project.id, token)
+            val result = yapiClient.getCatMenus(yapiProperties.serverUrl + YapiClient.GET_CAT_MENU, token)
                 .execute().body()!!
             return@computeIfAbsent if (result.isSuccess()) {
                 val categoryMap = mutableMapOf<String, CatMenu>()
@@ -80,7 +79,6 @@ class DefaultYapiService(val project: com.intellij.openapi.project.Project) : Ya
     override fun getApi(module: Module, category: String, method: String, path: String): Api? {
 
         val apis = apiCache.computeIfAbsent(module) { m ->
-            val project = getProject(m) ?: return@computeIfAbsent null
 
             val yapiProperties = m.project.service<YapiProperties>()
             if (StringUtils.isEmpty(yapiProperties.serverUrl)) {
@@ -89,20 +87,16 @@ class DefaultYapiService(val project: com.intellij.openapi.project.Project) : Ya
             val token = yapiProperties.tokens[m.name] ?: return@computeIfAbsent null
 
             val result =
-                yapiClient.getApiListInMenu(yapiProperties.serverUrl + YapiClient.GET_LIST_IN_MENU, token, project.id).execute().body()!!
+                yapiClient.getApiList(yapiProperties.serverUrl + YapiClient.GET_API_LIST, token).execute().body()!!
 
             return@computeIfAbsent if (result.isSuccess()) {
                 val apiMap = mutableMapOf<String, Api>()
-                val categoryMap = mutableMapOf<String, CatMenu>()
 
-                result.data.stream()
-                    .peek { categoryMap.put(it.name, it) }
-                    .flatMap { it.list?.stream() }
+                result.data.list.stream()
                     .forEach {
                         apiMap.put("${it.method} ${it.path}", it)
                     }
 
-                categoryCache.put(module, categoryMap)
 
                 apiMap
 

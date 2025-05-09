@@ -20,6 +20,7 @@ interface YapiClient {
         const val GET_CAT_MENU = "/api/interface/getCatMenu"
         const val GET_LIST_IN_CAT = "/api/interface/list_cat"
         const val GET_LIST_IN_MENU = "/api/interface/list_menu"
+        const val GET_API_LIST = " /api/interface/list"
     }
 
     /**
@@ -42,7 +43,6 @@ interface YapiClient {
     @GET
     fun getCatMenus(
         @Url host: String,
-        @Query("project_id") projectId: Long,
         @Query("token") token: String
     ): Call<Result<List<CatMenu?>?>>
 
@@ -73,4 +73,12 @@ interface YapiClient {
         @Query("token") token: String,
         @Query("project_id") projectId: Long,
     ): Call<Result<List<CatMenu>>>
+
+    @GET
+    fun getApiList(
+        @Url host: String,
+        @Query("token") token: String,
+        @Query("page") page: Int = 1,
+        @Query("limit") limit: Int = Int.MAX_VALUE
+    ):Call<Result<Page<Api>>>
 }
