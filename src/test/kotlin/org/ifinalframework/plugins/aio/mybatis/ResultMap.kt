@@ -27,4 +27,6 @@ data class ResultMap(
 
     val startDate: Date,
     val endDate: Date,
-)
+){
+    var haha: Int? = null
+}
