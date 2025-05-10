@@ -16,6 +16,7 @@ import javax.swing.Icon
  * YApiStatusBarWidgetFactory
  *
  * @author iimik
+ * @since 0.0.17
  */
 class YApiStatusBarWidgetFactory : StatusBarWidgetFactory {
     override fun getId(): @NonNls String {
