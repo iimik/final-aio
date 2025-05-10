@@ -4,20 +4,23 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.psi.PsiElement
+import org.apache.commons.lang3.StringUtils
+import org.ifinalframework.plugins.aio.api.ApiProperties
 import org.ifinalframework.plugins.aio.api.model.ApiMarker
 import org.ifinalframework.plugins.aio.api.open.ApiOpener
 import org.ifinalframework.plugins.aio.api.service.MarkdownService
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
+import org.ifinalframework.plugins.aio.api.yapi.YapiProperties
+import org.ifinalframework.plugins.aio.api.yapi.YapiService
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
-import org.ifinalframework.plugins.aio.service.EnvironmentService
 import org.jetbrains.kotlin.idea.base.util.module
 import org.jetbrains.uast.UIdentifier
 import org.jetbrains.uast.getContainingUClass
 import org.jetbrains.uast.toUElement
+import kotlin.text.trimEnd
 
 
 /**
@@ -28,22 +31,35 @@ import org.jetbrains.uast.toUElement
  **/
 class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
-    private val logger = logger<ApiLineMarkerProvider>()
-
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         try {
+            val project = element.project
             val module = element.module ?: return
             val uElement = element.toUElement() ?: return
             if (uElement is UIdentifier) {
                 val uClass = uElement.getContainingUClass()
-                val environmentService = element.project.service<EnvironmentService>()
-                val enable = environmentService.getProperty(module, "final.api.yapi.enable", Boolean::class, false)
+                val yapiProperties = element.project.service<YapiProperties>()
+                val enable = !StringUtils.isAnyBlank(yapiProperties.serverUrl, yapiProperties.tokens[module.name])
                 val apiMethodService = service<ApiMethodService>()
                 apiMethodService.getApiMarker(element.parent)?.let {
-                    logger.info("final.api.yapi.enable=$enable")
                     if (enable) {
-                        // 仅当启用时才添加
-                        result.add(buildOpenApiLineMarkerInfo(element))
+                        val apiProperties = project.service<ApiProperties>()
+                        val contextPath = apiProperties.contextPaths[module.name]?.trimEnd('/') ?: ""
+                        val methodPath = it.paths.first().trimStart('/')
+
+                        val path = "$contextPath/$methodPath"
+                        val yapiService = project.service<YapiService>()
+
+                        when(it.type){
+                            ApiMarker.Type.METHOD -> yapiService.getApi(module, it.category, it.methods.first(), path)
+                            ApiMarker.Type.CONTROLLER -> yapiService.getCatMenu(module, it.category)
+                            else -> null
+                        }?.let {
+                            // 仅当启用时才添加
+                            result.add(buildOpenApiLineMarkerInfo(element))
+                        }
+
+
                     }
                     // 忽略接口
                     if (uClass != null && !uClass.isInterface) {

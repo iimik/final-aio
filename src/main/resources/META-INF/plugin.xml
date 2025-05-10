@@ -8,7 +8,7 @@
 
     <resource-bundle>messages.i18n</resource-bundle>
 
-    <depends>com.intellij.modules.java</depends>
+    <depends>com.intellij.java</depends>
     <depends>org.jetbrains.kotlin</depends>
     <depends>org.intellij.plugins.markdown</depends>
 
@@ -16,7 +16,7 @@
         <listener class="org.ifinalframework.plugins.aio.listener.ConfigFileChangeListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </projectListeners>
-
+    
 
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="FINAL_AIO_BALLOON"/>
@@ -83,6 +83,10 @@
                 implementationClass="org.ifinalframework.plugins.aio.api.provider.MarkdownDocumentationProvider"
                 order="first"
         />
+        <statusBarWidgetFactory implementation="org.ifinalframework.plugins.aio.api.yapi.YApiStatusBarWidgetFactory"
+                                id="yapi"
+                                />
+        
         <!--=============================================================================================================================-->
         <!--=======================================================     Issue     =======================================================-->
         <!--=============================================================================================================================-->
@@ -131,6 +135,13 @@
                 language="SQL"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperSqlParamCompletionContributor"
         />
+        <projectConfigurable
+                parentId="language"
+                instance="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
+                id="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
+                displayName="MyBatis"
+                nonDefaultProject="true"
+        />
         <!--=============================================================================================================================-->
         <!--=======================================================    Spring     =======================================================-->
         <!--=============================================================================================================================-->
@@ -164,12 +175,6 @@
                         nonDefaultProject="true"
                 />
             </configurable>
-            <configurable
-                    instance="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
-                    id="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
-                    displayName="MyBatis"
-                    nonDefaultProject="true"
-            />
         </projectConfigurable>
 
     </extensions>

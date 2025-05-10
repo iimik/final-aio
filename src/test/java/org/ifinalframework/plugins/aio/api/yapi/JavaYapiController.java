@@ -23,7 +23,7 @@ public class JavaYapiController {
      * @return
      */
     @GetMapping("/value")
-    public String index() {
+    public String index () {
         // # 17
         return "index";
     }

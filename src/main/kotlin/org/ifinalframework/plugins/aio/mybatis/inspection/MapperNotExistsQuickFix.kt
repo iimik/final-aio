@@ -2,6 +2,7 @@ package org.ifinalframework.plugins.aio.mybatis.inspection
 
 import com.google.common.base.CaseFormat
 import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.ide.fileTemplates.FileTemplateManager
 import com.intellij.notification.NotificationDisplayType
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.service
@@ -17,6 +18,7 @@ import org.ifinalframework.plugins.aio.common.util.getBasePath
 import org.ifinalframework.plugins.aio.intellij.GenericQuickFix
 import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
+import org.ifinalframework.plugins.aio.mybatis.template.MyBatisFileTemplateGroupDescriptorFactory
 import org.ifinalframework.plugins.aio.resource.I18N
 import org.ifinalframework.plugins.aio.service.NotificationService
 import org.jetbrains.kotlin.idea.base.util.module
@@ -36,6 +38,7 @@ import java.util.*
  *
  * @author iimik
  * @since 0.0.10
+ * @see MyBatisFileTemplateGroupDescriptorFactory
  */
 class MapperNotExistsQuickFix(val clazz: UClass) : GenericQuickFix() {
     override fun applyFix(project: Project, problem: ProblemDescriptor) {
@@ -64,17 +67,15 @@ class MapperNotExistsQuickFix(val clazz: UClass) : GenericQuickFix() {
         R.dispatch {
             val project = module.project
             val file = R.computeInWrite { Objects.requireNonNull<VirtualFile?>(virtualFile).createChildData(project, fileName) }
+
+            // 解析模板
+            val template = FileTemplateManager.getInstance(project)
+                .getJ2eeTemplate(MyBatisFileTemplateGroupDescriptorFactory.MYBATIS_MAPPER_XML_TEMPLATE)
+            val properties = Properties()
+            properties.setProperty("NAMESPACE", clazz.qualifiedName)
+            val content = template.getText(properties)
             // 写模板内容
-            R.runInWrite {
-                file?.writeText(
-                    """
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="${clazz.qualifiedName}">
-</mapper>
-                """.trimIndent()
-                )
-            }
+            R.runInWrite { file?.writeText(content) }
             service<NotificationService>().notify(
                 NotificationDisplayType.TOOL_WINDOW, "创建Mapper文件：$fileName", NotificationType.INFORMATION
             )

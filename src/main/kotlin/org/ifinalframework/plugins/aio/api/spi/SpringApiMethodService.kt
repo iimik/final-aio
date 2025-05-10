@@ -13,6 +13,7 @@ import org.ifinalframework.plugins.aio.core.annotation.AnnotationAttributes
 import org.ifinalframework.plugins.aio.jvm.AnnotationResolver
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.util.SpiUtil
+import org.jetbrains.uast.UClass
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.getContainingUClass
 import org.jetbrains.uast.toUElement
@@ -66,6 +67,18 @@ class SpringApiMethodService : ApiMethodService {
                     val paths = getApiPaths(classRequestAnnotationMap, methodRequestAnnotationMap)
                     val securities = getSecurities(uElement, element.project)
                     return ApiMarker(ApiMarker.Type.METHOD, category, name, methods, paths, securities)
+                }
+
+                is UClass -> {
+                    val uClass = uElement
+                    val category = docService.getSummary(uClass.sourcePsi!!) ?: uClass.name ?: return null
+                    val clazzRequestAnnotation =
+                        R.computeInRead { uClass.findAnyAnnotation(SpringAnnotations.REQUEST_MAPPING, SpringAnnotations.FEIGN_CLIENT) }
+                            ?: return null
+                    val classRequestAnnotationMap =
+                        clazzRequestAnnotation?.let { annotationResolver.resolve(it.sourcePsi!!) } ?: return null
+                    val paths = getRequestMappingPath(classRequestAnnotationMap)
+                    return ApiMarker(ApiMarker.Type.CONTROLLER, category, "README", emptyList(), paths, emptyList())
                 }
 
                 else -> null
