@@ -1,10 +1,9 @@
 package org.ifinalframework.plugins.aio.issue
 
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
 import org.ifinalframework.plugins.aio.service.BrowserService
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.stereotype.Component
 
 
 /**
@@ -13,22 +12,20 @@ import org.springframework.stereotype.Component
  * @jira 1 https://iimik.atlassian.net/browse/AIO-1
  * @author iimik
  * @since 0.0.1
+ * @see GitIssueOpener
  **/
-@Component
-@EnableConfigurationProperties(JiraIssueProperties::class)
+@Service(Service.Level.PROJECT)
 class JiraIssueOpener(
-    private val jiraIssueProperties: JiraIssueProperties,
-    private val issueUrlFormatter: IssueUrlFormatter<JiraIssueProperties>,
-
-    ) : IssueOpener {
-    @Autowired
-    constructor(properties: JiraIssueProperties) : this(properties, JiraIssueUrlFormatter())
+    private val project: Project,
+) : IssueOpener {
+    private val issueUrlFormatter: IssueUrlFormatter<IssueProperties.JiraIssueProperties> = JiraIssueUrlFormatter()
 
     override fun open(issue: Issue) {
         if (IssueType.JIRA != issue.type) {
             return
         }
-        val url = issueUrlFormatter.format(issue, jiraIssueProperties) ?: return
+        val issueProperties = project.service<IssueProperties>()
+        val url = issueUrlFormatter.format(issue, issueProperties.jiraIssue) ?: return
         service<BrowserService>().open(url)
     }
 }

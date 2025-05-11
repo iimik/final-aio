@@ -16,7 +16,7 @@
         <listener class="org.ifinalframework.plugins.aio.listener.ConfigFileChangeListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </projectListeners>
-    
+
 
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="FINAL_AIO_BALLOON"/>
@@ -85,11 +85,13 @@
         />
         <statusBarWidgetFactory implementation="org.ifinalframework.plugins.aio.api.yapi.YApiStatusBarWidgetFactory"
                                 id="yapi"
-                                />
-        
+        />
+
         <!--=============================================================================================================================-->
         <!--=======================================================     Issue     =======================================================-->
         <!--=============================================================================================================================-->
+        <projectService serviceImplementation="org.ifinalframework.plugins.aio.issue.IssueDispatchOpener"
+                        serviceInterface="org.ifinalframework.plugins.aio.issue.IssueOpener"/>
         <codeInsight.lineMarkerProvider
                 language="Markdown"
                 implementationClass="org.ifinalframework.plugins.aio.issue.MarkdownIssueLineMarkerProvider"/>
@@ -100,6 +102,12 @@
                                 implementationClass="org.ifinalframework.plugins.aio.issue.completion.IssueCompletionContributor"
                                 order="first"
         />
+        <projectConfigurable
+            id="org.ifinalframework.plugins.aio.issue.IssueConfigurable"
+            instance="org.ifinalframework.plugins.aio.issue.IssueConfigurable"
+            parentId="org.ifinalframework.plugins.aio.setting.FinalConfigurable"
+            nonDefaultProject="true"
+            />
         <!--=============================================================================================================================-->
         <!--=======================================================    MyBatis    =======================================================-->
         <!--=============================================================================================================================-->

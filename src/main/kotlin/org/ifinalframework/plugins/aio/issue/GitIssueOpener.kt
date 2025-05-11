@@ -1,12 +1,12 @@
 package org.ifinalframework.plugins.aio.issue
 
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import org.ifinalframework.plugins.aio.common.util.getService
 import org.ifinalframework.plugins.aio.git.GitService
 import org.ifinalframework.plugins.aio.service.BrowserService
-import org.springframework.stereotype.Component
 
 
 /**
@@ -15,8 +15,9 @@ import org.springframework.stereotype.Component
  * @issue 11
  * @author iimik
  * @since 0.0.1
+ * @see JiraIssueOpener
  **/
-@Component
+@Service(Service.Level.PROJECT)
 class GitIssueOpener(
     private val project: Project,
 ) : IssueOpener {
