@@ -4,10 +4,11 @@
 
     <resultMap id="baseMap" type="org.ifinalframework.plugins.aio.mybatis.ResultMap">
 
+        <result column="name" property="name"/>
     </resultMap>
 
     <resultMap id="resultMap" type="org.ifinalframework.plugins.aio.mybatis.ResultMap" extends="resultMap">
-        <id column="id" property="id"/>
+        <id column="id" property="id" />
         <result column="id" property="age"/>
     </resultMap>
 

@@ -103,11 +103,12 @@
                                 order="first"
         />
         <projectConfigurable
-            id="org.ifinalframework.plugins.aio.issue.IssueConfigurable"
-            instance="org.ifinalframework.plugins.aio.issue.IssueConfigurable"
-            parentId="org.ifinalframework.plugins.aio.setting.FinalConfigurable"
-            nonDefaultProject="true"
-            />
+                id="org.ifinalframework.plugins.aio.issue.IssueConfigurable"
+                instance="org.ifinalframework.plugins.aio.issue.IssueConfigurable"
+                parentId="org.ifinalframework.plugins.aio.setting.FinalConfigurable"
+                nonDefaultProject="true"
+                displayName="Issue"
+        />
         <!--=============================================================================================================================-->
         <!--=======================================================    MyBatis    =======================================================-->
         <!--=============================================================================================================================-->
@@ -126,6 +127,12 @@
                 displayName="Mapper Inspection"
                 groupName="Mybatis" enabledByDefault="true" level="ERROR"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.MapperInspection"/>
+        <localInspection
+                language="UAST"
+                displayName="ResultMap Inspection"
+                groupName="MyBatis" enabledByDefault="true" level="ERROR"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.ResultMapInspection"
+        />
         <localInspection
                 language="XML"
                 shortName="MybatisMapperXmlInspection"

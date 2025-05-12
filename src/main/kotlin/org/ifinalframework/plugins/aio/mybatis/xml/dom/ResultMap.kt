@@ -49,6 +49,12 @@ interface ResultMap : IdDomElement {
     @SubTagList("result")
     fun getResult(): List<Result>
 
+    @SubTagList("id")
+    fun addId(): Id
+    @SubTagList("result")
+    fun addResult(): Result
+
+
     /**
      * ```xml
      * <id column="id" jdbcType="INTEGER" property="id"/>
@@ -73,6 +79,10 @@ interface ResultMap : IdDomElement {
         @Attribute("typeHandler")
         @Convert(TypeHandlerConverter::class)
         fun getTypeHandler(): GenericAttributeValue<PsiClass>
+
+        @NameValue
+        @Attribute("javaType")
+        fun getJavaType(): GenericAttributeValue<PsiClass>
 
         @NameValue
         @Attribute("jdbcType")

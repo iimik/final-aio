@@ -29,4 +29,8 @@ data class ResultMap(
     val endDate: Date,
 ){
     var haha: Int? = null
+
+    fun setHaha2(haha: String){
+
+    }
 }
