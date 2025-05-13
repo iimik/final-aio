@@ -32,8 +32,12 @@ class ResultMapInspection : AbstractBaseUastLocalInspectionTool() {
 
         val uClass = field.getContainingUClass() ?: return null
         val qualifiedName = uClass.qualifiedName ?: return null
+        if (field.isDeprecated) {
+            // 忽略标记过期的字段
+            return null
+        }
         val resultMaps = manager.project.service<MapperService>().findResultMaps(qualifiedName)
-        if(resultMaps.isEmpty()) return null
+        if (resultMaps.isEmpty()) return null
 
         if (resultMaps
                 .flatMap { it.getProperties() }
@@ -60,6 +64,7 @@ class ResultMapInspection : AbstractBaseUastLocalInspectionTool() {
         override fun getFamilyName(): String {
             return I18N.message("MyBatis.ResultMapPropertyNotExistsQuickFix.name")
         }
+
         override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
             val clazz = field.getContainingUClass() ?: return
             val className = clazz.qualifiedName ?: return
@@ -80,6 +85,7 @@ class ResultMapInspection : AbstractBaseUastLocalInspectionTool() {
                                 <resultMap id="${value.getId().stringValue}" type="${value.getType().stringValue}">
                             """.trimIndent()
                         }
+
                         override fun onChosen(resultMap: ResultMap, finalChoice: Boolean): PopupStep<*>? {
                             WriteCommandAction.runWriteCommandAction(project) {
                                 val property = resultMap.addResult()
