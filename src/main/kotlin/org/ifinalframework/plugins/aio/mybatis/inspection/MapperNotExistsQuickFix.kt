@@ -54,9 +54,9 @@ class MapperNotExistsQuickFix(val clazz: UClass) : GenericQuickFix() {
         val language = element.language.id.lowercase()
         val myBatisProperties = module.project.service<MyBatisProperties>()
         return if (MyBatisProperties.MapperXmlPath.RESOURCE == myBatisProperties.mapperXmlPath) {
-            return "${module.getBasePath()}/resources/${clazz.qualifiedName!!.substringBeforeLast('.').replace('.', '/')}"
+            return "${module.getBasePath()}/src/main/resources/${clazz.qualifiedName!!.substringBeforeLast('.').replace('.', '/')}"
         } else if (MyBatisProperties.MapperXmlPath.SOURCE == myBatisProperties.mapperXmlPath) {
-            "${module.getBasePath()}/${language}/${clazz.qualifiedName!!.substringBeforeLast('.').replace('.', '/')}"
+            "${module.getBasePath()}/src/main/${language}/${clazz.qualifiedName!!.substringBeforeLast('.').replace('.', '/')}"
         } else null
     }
 
