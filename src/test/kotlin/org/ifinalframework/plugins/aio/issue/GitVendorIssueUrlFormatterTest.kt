@@ -1,6 +1,6 @@
 package org.ifinalframework.plugins.aio.issue
 
-import com.intellij.testFramework.LightPlatformTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.ifinalframework.plugins.aio.git.GitRemote
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -11,12 +11,12 @@ import org.junit.jupiter.api.Test
  * @author iimik
  * @since 0.0.1
  */
-class GitVendorIssueUrlFormatterTest : LightPlatformTestCase() {
+class GitVendorIssueUrlFormatterTest: BasePlatformTestCase() {
 
     private val formatter = GitVendorIssueUrlFormatter()
 
     @Test
-    fun testFormat() {
+    open fun testFormat() {
         // #11 github.com
         Assertions.assertEquals(
             "https://github.com/iimik/final-aio/issues/11",
