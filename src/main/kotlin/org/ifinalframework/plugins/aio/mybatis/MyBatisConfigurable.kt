@@ -17,14 +17,13 @@ class MyBatisConfigurable(val project: Project) : Configurable {
 
     val myBatisProperties: MyBatisProperties = project.service<MyBatisProperties>()
 
-
     val panel = panel {
 
         group("通用") {
             // Mapper Xml 路径
             buttonsGroup("Mapper XML 生成路径", indent = true) {
                 row {
-                    radioButton("ASK", MyBatisProperties.MapperXmlPath.ASK).enabled(false)
+                    radioButton("ASK", MyBatisProperties.MapperXmlPath.ASK)
                     radioButton("RESOURCE", MyBatisProperties.MapperXmlPath.RESOURCE)
                     radioButton("SOURCE", MyBatisProperties.MapperXmlPath.SOURCE)
                 }

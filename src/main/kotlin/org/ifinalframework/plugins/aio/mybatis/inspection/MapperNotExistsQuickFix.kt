@@ -9,6 +9,9 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.ui.popup.PopupStep
+import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.writeText
@@ -19,9 +22,11 @@ import org.ifinalframework.plugins.aio.intellij.GenericQuickFix
 import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.mybatis.template.MyBatisFileTemplateGroupDescriptorFactory
+import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
 import org.ifinalframework.plugins.aio.service.NotificationService
 import org.jetbrains.kotlin.idea.base.util.module
+import org.jetbrains.kotlin.idea.util.sourceRoots
 import org.jetbrains.uast.UClass
 import java.io.File
 import java.util.*
@@ -45,30 +50,55 @@ class MapperNotExistsQuickFix(val clazz: UClass) : GenericQuickFix() {
         val element = problem.psiElement
         val module = element.module ?: return
         val myBatisProperties = module.project.service<MyBatisProperties>()
-        val path = getMapperPath(element, module, myBatisProperties) ?: return
-        createInModuleResource(path, module, myBatisProperties)
+        val mapperSourceRoots = getMapperSourceRoots(element, module, myBatisProperties)
+        createMapperInSourceRoots(module, mapperSourceRoots, clazz, myBatisProperties)
 
     }
 
-    private fun getMapperPath(element: PsiElement, module: Module, myBatisProperties: MyBatisProperties): String? {
+    private fun getMapperSourceRoots(element: PsiElement, module: Module, myBatisProperties: MyBatisProperties): List<VirtualFile> {
         val language = element.language.id.lowercase()
-        val myBatisProperties = module.project.service<MyBatisProperties>()
+
+        val sourceRoots = module.sourceRoots
         return if (MyBatisProperties.MapperXmlPath.RESOURCE == myBatisProperties.mapperXmlPath) {
-            return "${module.getBasePath()}/src/main/resources/${clazz.qualifiedName!!.substringBeforeLast('.').replace('.', '/')}"
+            return sourceRoots.filter { it.toString().contains("resources") }.toList()
         } else if (MyBatisProperties.MapperXmlPath.SOURCE == myBatisProperties.mapperXmlPath) {
-            "${module.getBasePath()}/src/main/${language}/${clazz.qualifiedName!!.substringBeforeLast('.').replace('.', '/')}"
-        } else null
+            return sourceRoots.filter { it.toString().contains(language) }.toList()
+        } else sourceRoots.toList()
     }
 
-    private fun createInModuleResource(path: String, module: Module, myBatisProperties: MyBatisProperties) {
+    private fun createMapperInSourceRoots(module: Module, roots: List<VirtualFile>, mapper: UClass, myBatisProperties: MyBatisProperties) {
+        if (roots.size == 1) {
+            createInSourceRoot(module, roots.first(), myBatisProperties)
+        } else if (roots.size > 1) {
+            val basePath = module.getBasePath() + "/"
+            JBPopupFactory.getInstance().createListPopup(
+                object : BaseListPopupStep<VirtualFile>(
+                    I18N.message("MyBatis.MapperNotExistsQuickFix.sourceRootSelect.title"),
+                    roots,
+                    AllIcons.Mybatis.JVM
+                ) {
+
+                    override fun getTextFor(value: VirtualFile): String {
+                        return value.toString().substringAfterLast(basePath)
+                    }
+
+                    override fun onChosen(sourceRoot: VirtualFile, finalChoice: Boolean): PopupStep<*>? {
+                        createInSourceRoot(module, sourceRoot, myBatisProperties)
+                        return PopupStep.FINAL_CHOICE
+                    }
+                }
+            ).showInFocusCenter()
+        }
+    }
+
+    private fun createInSourceRoot(module: Module, sourceRoot: VirtualFile, myBatisProperties: MyBatisProperties) {
+        val project = module.project
+        val path = "${sourceRoot.path}/${clazz.qualifiedName!!.substringBeforeLast('.').replace('.', '/')}"
         val fileName = "${clazz.name}.xml"
         File(path).mkdirs()
         val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(path)
         R.dispatch {
-            val project = module.project
             val file = R.computeInWrite { Objects.requireNonNull<VirtualFile?>(virtualFile).createChildData(project, fileName) }
-
-            // 解析模板
             val template = FileTemplateManager.getInstance(project)
                 .getJ2eeTemplate(MyBatisFileTemplateGroupDescriptorFactory.MYBATIS_MAPPER_XML_TEMPLATE)
             val properties = Properties()
@@ -98,7 +128,6 @@ class MapperNotExistsQuickFix(val clazz: UClass) : GenericQuickFix() {
             val editorManager = FileEditorManager.getInstance(project)
             editorManager.openFile(file!!, true)
         }
-
     }
 
 
