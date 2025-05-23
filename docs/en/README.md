@@ -1,6 +1,6 @@
 # Final AIO
 
-[![EN](https://shields.io/badge/README-English-blue)](docs/en/README.md)
+[![ZH](https://shields.io/badge/README-%E4%B8%AD%E6%96%87-blue)](../../README.md)
 ![Build](https://github.com/iimik/final-aio/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/26415.svg)](https://plugins.jetbrains.com/plugin/26415)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/26415.svg)](https://plugins.jetbrains.com/plugin/26415)
