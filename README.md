@@ -6,7 +6,7 @@
 
 ## 功能
 
-- [Issue行标记](docs/issue.md)：快速在浏览器中打开Git Issue和Jira。
+- [Issue行标记](docs/zh/issue/README.md)：快速在浏览器中打开Git Issue和Jira。
 - [Api Markdown 行标记](docs/api/markdown.md)：快速打开Api Markdown文档，不存在自动创建。
 - [Api View 行标记](docs/api/view.md)：快速在浏览器中打开Api文档（目前支持Yapi）。
 
