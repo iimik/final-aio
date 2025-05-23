@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.0.18] - 2025-05-23
+
 ### New
 
 - MyBatis
