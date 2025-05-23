@@ -5,12 +5,12 @@
 
     <variables>
     </variables>
-    <build-profile instance="gh-zh">
+    <build-profile instance="gp-zh">
         <variables>
             <noindex-content>false</noindex-content>
         </variables>
     </build-profile>
-    <build-profile instance="gh-en">
+    <build-profile instance="gp-en">
         <variables>
             <noindex-content>true</noindex-content>
         </variables>

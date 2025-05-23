@@ -13,7 +13,7 @@ permissions:
 env:
   INSTANCE: 'Writerside/gp'
   DOCKER_VERSION: '2025.04.8412'
-  # IS_GROUP: 'true'  # Uncomment to build a group
+  IS_GROUP: 'true'  # Uncomment to build a group
 
 jobs:
   build:
