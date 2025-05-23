@@ -6,7 +6,6 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.psi.PsiElement
-import org.ifinalframework.plugins.aio.application.ElementApplication
 import org.ifinalframework.plugins.aio.resource.I18N
 import java.awt.event.MouseEvent
 
@@ -17,6 +16,7 @@ import java.awt.event.MouseEvent
  * @issue 10
  * @author iimik
  * @since 0.0.1
+ * @see JvmIssueLineMarkerProvider
  **/
 class MarkdownIssueLineMarkerProvider : LineMarkerProvider {
 
@@ -31,7 +31,7 @@ class MarkdownIssueLineMarkerProvider : LineMarkerProvider {
             return builder.createLineMarkerInfo(
                 element
             ) { _: MouseEvent?, _: PsiElement? ->
-                ElementApplication.run(OpenIssueApplication::class, element)
+                element.project.service<IssueOpener>().open(issue)
             }
         } catch (ex: ProcessCanceledException) {
             // ignore

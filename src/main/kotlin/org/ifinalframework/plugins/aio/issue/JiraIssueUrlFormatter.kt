@@ -10,8 +10,8 @@ import org.apache.commons.lang3.StringUtils
  * @author iimik
  * @since 0.0.1
  **/
-class JiraIssueUrlFormatter : IssueUrlFormatter<JiraIssueProperties> {
-    override fun format(issue: Issue, param: JiraIssueProperties): String? {
+class JiraIssueUrlFormatter : IssueUrlFormatter<IssueProperties.JiraIssueProperties> {
+    override fun format(issue: Issue, param: IssueProperties.JiraIssueProperties): String? {
         if (StringUtils.isAnyBlank(param.serverUrl, param.projectCode)) {
             return null
         }

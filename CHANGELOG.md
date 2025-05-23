@@ -4,6 +4,17 @@
 
 ## [Unreleased]
 
+## [0.0.18] - 2025-05-23
+
+### New
+
+- MyBatis
+  - Mapper check support property.
+
+### Others
+
+- Update dependency version.
+
 ## [0.0.17] - 2025-05-10
 
 ### 新增
@@ -159,7 +170,8 @@
 - Issue 管理
   - 🔥添加Issue行标记，并可在浏览器中快速打开，支持Git Issue和Jira。(#10)
 
-[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.17...HEAD
+[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.18...HEAD
+[0.0.18]: https://github.com/iimik/final-aio/compare/v0.0.17...v0.0.18
 [0.0.17]: https://github.com/iimik/final-aio/compare/v0.0.16...v0.0.17
 [0.0.16]: https://github.com/iimik/final-aio/compare/v0.0.15...v0.0.16
 [0.0.15]: https://github.com/iimik/final-aio/compare/v0.0.14...v0.0.15

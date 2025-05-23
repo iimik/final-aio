@@ -16,6 +16,7 @@ import java.awt.event.MouseEvent
  * @issue 10
  * @author iimik
  * @since 0.0.1
+ * @see MarkdownIssueLineMarkerProvider
  **/
 class JvmIssueLineMarkerProvider : LineMarkerProvider {
 
@@ -28,7 +29,7 @@ class JvmIssueLineMarkerProvider : LineMarkerProvider {
             return builder.createLineMarkerInfo(
                 element
             ) { _: MouseEvent?, _: PsiElement? ->
-                ElementApplication.run(OpenIssueApplication::class, element)
+                element.project.service<IssueOpener>().open(issue)
             }
         } catch (ex: ProcessCanceledException) {
             // ignore

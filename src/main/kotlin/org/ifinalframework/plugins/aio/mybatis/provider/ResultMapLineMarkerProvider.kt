@@ -9,9 +9,7 @@ import com.intellij.psi.PsiModifier
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
-import org.jetbrains.uast.UClass
-import org.jetbrains.uast.UIdentifier
-import org.jetbrains.uast.toUElement
+import org.jetbrains.uast.*
 
 
 /**
@@ -28,24 +26,52 @@ class ResultMapLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
 
-        val uElement = element.toUElement() ?: return
+        val targetElements = getTargetElements(element) ?: return
+        if(targetElements.isEmpty()) return
+        targetElements.let {
+            val icon = AllIcons.Mybatis.JVM
+            val navigationGutterIconBuilder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(icon)
+            navigationGutterIconBuilder.setTooltipText(tooltip)
+                .setAlignment(GutterIconRenderer.Alignment.RIGHT)
+                .setTargets(targetElements)
+            result.add(navigationGutterIconBuilder.createLineMarkerInfo(element))
+        }
 
-        if (uElement is UIdentifier && uElement.uastParent is UClass) {
-            val uClass = uElement.uastParent as UClass
-            if (!uClass.hasModifierProperty(PsiModifier.ABSTRACT)) {
-                // 非抽象类
-                val qualifiedName = uClass.qualifiedName ?: return
-                val resultMaps = element.project.getService(MapperService::class.java).findResultMaps(qualifiedName)
-                if (resultMaps.isNotEmpty()) {
-                    val targets = resultMaps.stream().map { it.xmlTag }.toList()
-                    val icon = AllIcons.Mybatis.JVM
-                    val navigationGutterIconBuilder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(icon)
-                    navigationGutterIconBuilder.setTooltipText(tooltip)
-                    navigationGutterIconBuilder.setAlignment(GutterIconRenderer.Alignment.CENTER)
-                    navigationGutterIconBuilder.setTargets(targets)
-                    result.add(navigationGutterIconBuilder.createLineMarkerInfo(element))
-                }
+    }
+
+    private fun getTargetElements(element: PsiElement): List<PsiElement?>? {
+        val uElement = element.toUElement() ?: return null
+
+        if (uElement !is UIdentifier) return null
+
+        val parent = uElement.uastParent
+        return when (parent) {
+            is UClass -> {
+                val uClass = parent
+                if (uClass.hasModifierProperty(PsiModifier.ABSTRACT)) return null
+                val qualifiedName = uClass.qualifiedName ?: return null
+                element.project.getService(MapperService::class.java).findResultMaps(qualifiedName)
+                    .map { it.xmlTag }
+
             }
+
+            is UField,
+            is UParameter -> {
+                val uField = parent
+                if (uField.hasModifierProperty(PsiModifier.STATIC)) return null
+                val uClass = uField.getContainingUClass() ?: return null
+                if (uClass.hasModifierProperty(PsiModifier.ABSTRACT)) return null
+                val qualifiedName = uClass.qualifiedName ?: return null
+                element.project.getService(MapperService::class.java).findResultMaps(qualifiedName)
+                    .flatMap { it.getProperties() }
+                    .filter { it.getProperty().stringValue == uField.name }
+                    .map { it.getProperty().xmlAttributeValue }
+                    .toList()
+
+            }
+
+            else -> null
         }
     }
+
 }
