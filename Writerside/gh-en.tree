@@ -2,9 +2,9 @@
 <!DOCTYPE instance-profile
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
 
-<instance-profile id="gp"
-                 name="Github Pages"
-                 start-page="starter-topic.md">
+<instance-profile id="gh-en"
+                 name="Github-Pages-en"
+                 start-page="github-pages-en.md">
 
-    <toc-element topic="starter-topic.md"/>
+    <toc-element topic="github-pages-en.md"/>
 </instance-profile>
