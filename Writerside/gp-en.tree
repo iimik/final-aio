@@ -3,8 +3,7 @@
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
 
 <instance-profile id="gp-en"
-                 name="Github-Pages-en"
-                 start-page="github-pages-en.md">
-
-    <toc-element topic="github-pages-en.md"/>
+                  name="Final AIO"
+                  start-page="index_en.md">
+    <toc-element topic="index_en.md"/>
 </instance-profile>

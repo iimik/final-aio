@@ -4,6 +4,11 @@
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <variables>
+        <header-logo>logo.svg</header-logo>
+        <primary-color>#F34F2A</primary-color>
+        <download-title>Get Final AIO</download-title>
+        <download-page>https://plugins.jetbrains.com/plugin/26415-final-aio</download-page>
+        <showDownloadButton>true</showDownloadButton>
     </variables>
     <build-profile instance="gp-zh">
         <variables>
