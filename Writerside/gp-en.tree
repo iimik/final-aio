@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="gp-en"
+                 name="Github-Pages-en"
+                 start-page="github-pages-en.md">
+
+    <toc-element topic="github-pages-en.md"/>
+</instance-profile>

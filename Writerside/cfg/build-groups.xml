@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE build-groups SYSTEM "https://resources.jetbrains.com/writerside/1.0/build-groups.dtd">
+<build-groups xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/build-groups.xsd"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <build-group name="gp">
+        <instance instance-id="gp-zh" alias="中文" path="/zh"/>
+        <instance instance-id="gp-en" alias="English" path="/en"/>
+    </build-group>
+
+</build-groups>
