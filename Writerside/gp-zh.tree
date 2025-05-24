@@ -4,7 +4,7 @@
 
 <instance-profile id="gp-zh"
                  name="Github-Pages-zh"
-                 start-page="README.md">
+                 start-page="README.md" >
 
     <toc-element topic="github-pages-zh.md">
         <toc-element topic="README.md"/>
