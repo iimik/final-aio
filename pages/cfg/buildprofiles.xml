@@ -6,16 +6,11 @@
     <variables>
         <header-logo>logo.svg</header-logo>
         <primary-color>#F34F2A</primary-color>
-        <download-title>Get Final AIO</download-title>
+        <download-title>获取插件</download-title>
         <download-page>https://plugins.jetbrains.com/plugin/26415-final-aio</download-page>
         <showDownloadButton>true</showDownloadButton>
     </variables>
-    <build-profile instance="gp-zh">
-        <variables>
-            <noindex-content>false</noindex-content>
-        </variables>
-    </build-profile>
-    <build-profile instance="gp-en">
+    <build-profile instance="pages">
         <variables>
             <noindex-content>true</noindex-content>
         </variables>
