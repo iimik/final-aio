@@ -7,4 +7,5 @@
                  start-page="README.md">
 
     <toc-element topic="README.md"/>
+    <toc-element topic="Issue.md"/>
 </instance-profile>
