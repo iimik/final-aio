@@ -40,8 +40,10 @@ class SpringApiMethodService : ApiMethodService {
             return when (uElement) {
                 is UMethod -> {
                     val uClass = R.computeInRead { uElement.getContainingUClass() } ?: return null
-                    val category = docService.getSummary(uClass.sourcePsi!!) ?: uClass.name ?: return null
-                    val name = docService.getSummary(uElement.sourcePsi!!) ?: uElement.name
+                    val clazz = uClass.sourcePsi?:return null
+                    val psiElement = uElement.sourcePsi ?: return null
+                    val category = docService.getSummary(clazz) ?: uClass.name ?: return null
+                    val name = docService.getSummary(psiElement) ?: uElement.name
 
                     val clazzRequestAnnotation =
                         R.computeInRead { uClass.findAnyAnnotation(SpringAnnotations.REQUEST_MAPPING, SpringAnnotations.FEIGN_CLIENT) }
