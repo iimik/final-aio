@@ -8,4 +8,7 @@
 
     <toc-element topic="README.md"/>
     <toc-element topic="Issue.md"/>
+    <toc-element topic="MyBatis.md">
+        <toc-element topic="Completion.md"/>
+    </toc-element>
 </instance-profile>
