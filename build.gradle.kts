@@ -48,7 +48,7 @@ dependencies {
 //    implementation("org.apache.velocity.tools:velocity-tools-generic:3.1")
     testImplementation("org.springframework.boot:spring-boot-starter-web:${properties["spring.boot.version"]}")
     testImplementation("org.springframework.boot:spring-boot-starter-test:${properties["spring.boot.version"]}")
-    testImplementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.2.0")
+    testImplementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.3.0")
     // https://mvnrepository.com/artifact/org.mybatis/mybatis
     testImplementation("org.mybatis:mybatis:3.5.19")
 
