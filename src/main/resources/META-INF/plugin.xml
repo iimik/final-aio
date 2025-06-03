@@ -86,7 +86,6 @@
         <statusBarWidgetFactory implementation="org.ifinalframework.plugins.aio.api.yapi.YApiStatusBarWidgetFactory"
                                 id="yapi"
         />
-
         <!--=============================================================================================================================-->
         <!--=======================================================     Issue     =======================================================-->
         <!--=============================================================================================================================-->
@@ -98,9 +97,15 @@
         <codeInsight.lineMarkerProvider
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.issue.JvmIssueLineMarkerProvider"/>
-        <completion.contributor language="JAVA"
-                                implementationClass="org.ifinalframework.plugins.aio.issue.completion.IssueCompletionContributor"
-                                order="first"
+        <completion.contributor
+                language="JAVA"
+                implementationClass="org.ifinalframework.plugins.aio.issue.completion.IssueCompletionContributor"
+                order="first"
+        />
+        <completion.contributor
+                language="Markdown"
+                implementationClass="org.ifinalframework.plugins.aio.issue.completion.MarkdownIssueCompletionContributor"
+                order="first"
         />
         <projectConfigurable
                 id="org.ifinalframework.plugins.aio.issue.IssueConfigurable"
