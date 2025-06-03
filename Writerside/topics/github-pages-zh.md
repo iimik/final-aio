@@ -1,3 +1,0 @@
-# About Github-Pages-zh
-
-Start typing here...

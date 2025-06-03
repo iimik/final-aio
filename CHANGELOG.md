@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [0.0.19] - 2025-05-30
+
+### 新增
+
+- Issue
+  - Markdown 支持Issue补全。
+
 ## [0.0.18] - 2025-05-23
 
 ### New
@@ -170,7 +177,8 @@
 - Issue 管理
   - 🔥添加Issue行标记，并可在浏览器中快速打开，支持Git Issue和Jira。(#10)
 
-[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.18...HEAD
+[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.19...HEAD
+[0.0.19]: https://github.com/iimik/final-aio/compare/v0.0.18...v0.0.19
 [0.0.18]: https://github.com/iimik/final-aio/compare/v0.0.17...v0.0.18
 [0.0.17]: https://github.com/iimik/final-aio/compare/v0.0.16...v0.0.17
 [0.0.16]: https://github.com/iimik/final-aio/compare/v0.0.15...v0.0.16
