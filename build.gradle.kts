@@ -38,8 +38,8 @@ dependencies {
     // spring boot
     implementation("org.springframework.boot:spring-boot-starter:${properties["spring.boot.version"]}")
     implementation("org.springframework.boot:spring-boot-starter-aop:${properties["spring.boot.version"]}")
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-jackson:2.11.0")
+    implementation("com.squareup.retrofit2:retrofit:${properties["retrofit.version"]}")
+    implementation("com.squareup.retrofit2:converter-jackson:${properties["retrofit.version"]}")
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.0")
     // https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core
