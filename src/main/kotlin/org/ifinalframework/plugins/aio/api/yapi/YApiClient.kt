@@ -13,7 +13,7 @@ import java.net.URI
  * @see <a href="https://hellosean1025.github.io/yapi/openapi.html">yapi开放 api</a>
  * @since 0.0.1
  **/
-interface YapiClient {
+interface YApiClient {
 
     companion object {
         const val GET_PROJECT = "/api/project/get"
