@@ -11,6 +11,7 @@ import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
 import org.ifinalframework.plugins.aio.api.ApiProperties
+import org.ifinalframework.plugins.aio.resource.I18N
 import javax.swing.JComponent
 
 /**
@@ -38,8 +39,9 @@ class ApiConfigurable(val project: Project) : Configurable, Configurable.Beta {
             group("通用") {
                 row {
                     textField()
-                        .label("权限:")
+                        .label(I18N.message("Api.ApiConfigurable.securityAnnotation.label") + ":")
                         .align(Align.FILL)
+                        .comment(I18N.message("Api.ApiConfigurable.securityAnnotation.comment"))
                         .bindText(
                             getter = { apiProperties.securityAnnotation ?: "" },
                             setter = {
@@ -49,7 +51,10 @@ class ApiConfigurable(val project: Project) : Configurable, Configurable.Beta {
                 }.layout(RowLayout.LABEL_ALIGNED)
             }
 
-            group("Context Paths") {
+            group(I18N.message("Api.ApiConfigurable.contextPaths.label")) {
+                row {
+                    label("").comment(I18N.message("Api.ApiConfigurable.contextPaths.comment"))
+                }
                 ModuleManager.getInstance(project).modules.map { it.name }
                     .sorted()
                     .forEach { moduleName ->

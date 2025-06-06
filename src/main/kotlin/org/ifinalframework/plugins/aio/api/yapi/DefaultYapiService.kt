@@ -7,7 +7,6 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.service
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
-import com.intellij.openapi.module.ModuleUtil
 import org.apache.commons.lang3.StringUtils
 import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.yapi.model.Api
@@ -29,7 +28,7 @@ import java.util.concurrent.ConcurrentMap
  **/
 class DefaultYapiService(val project: com.intellij.openapi.project.Project) : YapiService {
 
-    private val yapiClient: YapiClient
+    private val yapiClient: YApiClient
     private val projectCache: ConcurrentMap<Module, Project> = ConcurrentHashMap<Module, Project>()
     private val categoryCache: ConcurrentMap<Module, Map<String, CatMenu>> = ConcurrentHashMap<Module, Map<String, CatMenu>>()
     private val apiCache: ConcurrentMap<Module, Map<String, Api>> = ConcurrentHashMap<Module, Map<String, Api>>()
@@ -42,7 +41,7 @@ class DefaultYapiService(val project: com.intellij.openapi.project.Project) : Ya
             .addConverterFactory(JacksonConverterFactory.create(objectMapper))
             .build()
 
-        yapiClient = retrofit.create(YapiClient::class.java)
+        yapiClient = retrofit.create(YApiClient::class.java)
     }
 
     override fun getProject(module: Module): Project? {
@@ -53,7 +52,7 @@ class DefaultYapiService(val project: com.intellij.openapi.project.Project) : Ya
         val token = yapiProperties.tokens[module.name] ?: return null
 
         return projectCache.computeIfAbsent(module) {
-            yapiClient.getProject(yapiProperties.serverUrl + YapiClient.GET_PROJECT, token).execute().body()!!.data
+            yapiClient.getProject(yapiProperties.serverUrl + YApiClient.GET_PROJECT, token).execute().body()!!.data
         }
 
     }
@@ -69,7 +68,7 @@ class DefaultYapiService(val project: com.intellij.openapi.project.Project) : Ya
         }
         val token = yapiProperties.tokens[module.name] ?: return@computeIfAbsent null
 
-        val result = yapiClient.getCatMenus(yapiProperties.serverUrl + YapiClient.GET_CAT_MENU, token)
+        val result = yapiClient.getCatMenus(yapiProperties.serverUrl + YApiClient.GET_CAT_MENU, token)
             .execute().body()!!
         return@computeIfAbsent if (result.isSuccess()) {
             val categoryMap = mutableMapOf<String, CatMenu>()
@@ -94,7 +93,7 @@ class DefaultYapiService(val project: com.intellij.openapi.project.Project) : Ya
         val token = yapiProperties.tokens[m.name] ?: return@computeIfAbsent null
 
         val result =
-            yapiClient.getApiList(yapiProperties.serverUrl + YapiClient.GET_API_LIST, token).execute().body()!!
+            yapiClient.getApiList(yapiProperties.serverUrl + YApiClient.GET_API_LIST, token).execute().body()!!
 
         return@computeIfAbsent if (result.isSuccess()) {
             val apiMap = mutableMapOf<String, Api>()
