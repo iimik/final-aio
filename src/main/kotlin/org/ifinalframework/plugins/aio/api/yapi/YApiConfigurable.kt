@@ -79,5 +79,6 @@ class YApiConfigurable(val project: Project) : Configurable, Configurable.Beta {
 
     override fun apply() {
         panel?.apply()
+        project.service<YapiService>().refresh()
     }
 }
