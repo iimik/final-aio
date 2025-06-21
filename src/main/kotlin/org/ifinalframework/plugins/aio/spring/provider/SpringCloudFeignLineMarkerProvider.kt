@@ -3,9 +3,9 @@ package org.ifinalframework.plugins.aio.spring.provider
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.markup.GutterIconRenderer
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiModifier
@@ -13,7 +13,6 @@ import com.intellij.psi.search.searches.AnnotationTargetsSearch
 import com.intellij.util.containers.stream
 import org.ifinalframework.plugins.aio.api.constans.SpringAnnotations
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
-import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
 import org.ifinalframework.plugins.aio.service.PsiService
 import org.ifinalframework.plugins.aio.spring.service.SpringService
@@ -21,6 +20,7 @@ import org.jetbrains.uast.UIdentifier
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.getContainingUClass
 import org.jetbrains.uast.toUElement
+import java.util.concurrent.CancellationException
 
 
 /**
@@ -34,6 +34,9 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
     private val mvcTooltip = I18N.message("Spring.SpringCloudFeignLineMarkerProvider.mvc.tooltip")
     private val feignTooltip = I18N.message("Spring.SpringCloudFeignLineMarkerProvider.feign.tooltip")
+
+    private val feignClientMethodIcon = AllIcons.General.OverridingMethod
+    private val controllerMethodIcon = AllIcons.General.OverridenMethod
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         val project = element.project
@@ -59,7 +62,7 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
                     val apiMarker = apiMethodService.getApiMarker(element.parent) ?: return
 
-                    val controllers = springService.getResponseBodyAnnotations().flatMap {  AnnotationTargetsSearch.search(it) }
+                    val controllers = springService.getResponseBodyAnnotations().flatMap { AnnotationTargetsSearch.search(it) }
                         .filterIsInstance<PsiClass>()
 
                     val methods = controllers.stream().flatMap { c -> c.allMethods.stream() }
@@ -70,8 +73,8 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
                         .toList()
 
                     if (methods.isNotEmpty()) {
-                        val icon = AllIcons.Spring.MVC
-                        val navigationGutterIconBuilder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(icon)
+                        val navigationGutterIconBuilder: NavigationGutterIconBuilder<PsiElement> =
+                            NavigationGutterIconBuilder.create(controllerMethodIcon)
                         navigationGutterIconBuilder.setTooltipText(feignTooltip)
                         navigationGutterIconBuilder.setAlignment(GutterIconRenderer.Alignment.CENTER)
                         navigationGutterIconBuilder.setTargets(methods)
@@ -91,9 +94,9 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
                         .toList()
 
                     if (methods.isNotEmpty()) {
-                        val icon = AllIcons.Spring.CLOUD
+
                         val navigationGutterIconBuilder: NavigationGutterIconBuilder<PsiElement> =
-                            NavigationGutterIconBuilder.create(icon)
+                            NavigationGutterIconBuilder.create(feignClientMethodIcon)
                         navigationGutterIconBuilder.setTooltipText(mvcTooltip)
                         navigationGutterIconBuilder.setAlignment(GutterIconRenderer.Alignment.CENTER)
                         navigationGutterIconBuilder.setTargets(methods)
@@ -103,7 +106,7 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
                 }
 
             }
-        } catch (ex: ProcessCanceledException) {
+        } catch (_: CancellationException) {
             // ignore
         }
     }
