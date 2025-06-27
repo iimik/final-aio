@@ -145,6 +145,11 @@
                 groupName="Mybatis" enabledByDefault="true" level="ERROR"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.MapperXmlInspection"
         />
+        <lang.documentationProvider
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.StatementDocumentationProvider"
+                order="first"
+        />
         <dom.fileMetaData rootTagName="mapper" implementation="org.ifinalframework.plugins.aio.mybatis.xml.MapperDescription"/>
         <completion.contributor
                 language="XML"
