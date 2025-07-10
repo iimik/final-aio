@@ -21,6 +21,7 @@ data class MyBatisProperties(
     var tableSqlFragment: TableSqlFragment = TableSqlFragment(),
     var statementMethodCompletion: StatementMethodCompletion = StatementMethodCompletion(),
     var testCompletion: TestCompletion = TestCompletion(),
+    var lineMarker: LineMarker = LineMarker(),
 ) : PersistentStateComponent<MyBatisProperties> {
     override fun getState(): MyBatisProperties? {
         return this
@@ -74,6 +75,13 @@ data class MyBatisProperties(
         var enable: Boolean = true,
         var id: String = "table",
         var prefix: String = "t_"
+    )
+
+    data class LineMarker(
+        var mapperMethod: Boolean = true,
+        var mapperStatement: Boolean = true,
+        var resultMapProperty: Boolean = true,
+        var resultMapResult: Boolean = true,
     )
 
 

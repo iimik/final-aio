@@ -167,6 +167,34 @@ class MyBatisConfigurable(val project: Project) : Configurable {
                     .bindSelected(statementMethodCompletion::filterWithRegex)
             }
         }.layout(RowLayout.LABEL_ALIGNED)
+
+        group("行标记") {
+            val lineMarker = myBatisProperties.lineMarker
+            row {
+                checkBox("Mapper Method")
+                    .align(Align.FILL)
+                    .bindSelected(lineMarker::mapperMethod)
+            }.layout(RowLayout.LABEL_ALIGNED)
+
+            row {
+                checkBox("Mapper Statement")
+                    .align(Align.FILL)
+                    .bindSelected(lineMarker::mapperStatement)
+            }.layout(RowLayout.LABEL_ALIGNED)
+
+            row {
+                checkBox("Result Map Property")
+                    .align(Align.FILL)
+                    .bindSelected(lineMarker::resultMapProperty)
+            }.layout(RowLayout.LABEL_ALIGNED)
+
+            row {
+                checkBox("Result Map Property")
+                    .align(Align.FILL)
+                    .bindSelected(lineMarker::resultMapProperty)
+            }.layout(RowLayout.LABEL_ALIGNED)
+        }
+
     }
 
     override fun createComponent(): JComponent? {
