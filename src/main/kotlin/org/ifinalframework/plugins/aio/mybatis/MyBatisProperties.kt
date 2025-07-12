@@ -19,6 +19,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 data class MyBatisProperties(
     var mapperXmlPath: MapperXmlPath = MapperXmlPath.RESOURCE,
     var tableSqlFragment: TableSqlFragment = TableSqlFragment(),
+    var resultMapInspection: Boolean = true,
     var statementMethodCompletion: StatementMethodCompletion = StatementMethodCompletion(),
     var testCompletion: TestCompletion = TestCompletion(),
     var lineMarker: LineMarker = LineMarker(),

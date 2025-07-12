@@ -38,6 +38,14 @@ class MyBatisConfigurable(val project: Project) : Configurable {
                     }
                 })
 
+            row{
+                checkBox("ResultMap实例类检查")
+                    .bindSelected(
+                        getter = { myBatisProperties.resultMapInspection },
+                        setter = { myBatisProperties.resultMapInspection = it }
+                    )
+            }
+
             // Table Sql Fragment
             row {
                 val tableSqlFragment = myBatisProperties.tableSqlFragment
