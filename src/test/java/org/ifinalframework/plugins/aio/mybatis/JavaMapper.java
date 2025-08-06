@@ -28,4 +28,6 @@ public interface JavaMapper {
     int delete();
 
     int select();
+
+    int selectSingle(JavaQuery query);
 }

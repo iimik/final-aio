@@ -20,6 +20,9 @@
 
     </select>
     <select id="selectResultMaps" resultMap="resultMap2"></select>
+    <select id="selectSingle" resultType="java.lang.Integer">
+       #{id,typeHandler=haha.java.typeHandler}
+    </select>
 
 
 </mapper>

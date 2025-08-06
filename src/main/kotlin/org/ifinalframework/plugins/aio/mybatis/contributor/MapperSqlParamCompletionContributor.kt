@@ -9,7 +9,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.util.PlatformIcons
-import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
 import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.service.PsiService

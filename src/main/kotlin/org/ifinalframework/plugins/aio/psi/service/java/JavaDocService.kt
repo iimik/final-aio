@@ -36,11 +36,7 @@ class JavaDocService : DocService {
                 element
             }
 
-            is PsiClass -> {
-                element.docComment
-            }
-
-            is PsiMethod -> {
+            is PsiJavaDocumentedElement -> {
                 element.docComment
             }
 
@@ -61,7 +57,11 @@ class JavaDocService : DocService {
     }
 
     override fun findTagValueByTag(element: PsiElement, tag: String): String? {
-        TODO("Not yet implemented")
+        val psiDocComment = getDocComment(element) ?: return null
+        val docTags = psiDocComment.tags
+        return docTags.stream().filter { it is PsiDocTag && it.name.equals(tag, ignoreCase = true) }
+            .map { it.valueElement?.text?.trim() }
+            .findFirst().orElse(null)
     }
 
     override fun getLineComment(element: PsiElement): String? {
