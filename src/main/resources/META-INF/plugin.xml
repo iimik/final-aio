@@ -159,6 +159,7 @@
         <completion.contributor
                 language="SQL"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperSqlParamCompletionContributor"
+                order="first"
         />
         <projectConfigurable
                 parentId="language"

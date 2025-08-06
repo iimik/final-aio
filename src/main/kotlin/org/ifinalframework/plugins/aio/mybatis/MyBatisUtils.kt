@@ -8,6 +8,7 @@ import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils.isMapper
 import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils.isStatementMethod
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.IdDomElement
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
+import org.ifinalframework.plugins.aio.mybatis.xml.dom.Statement
 
 
 /**
@@ -35,7 +36,7 @@ object MyBatisUtils {
         }
     }
 
-    fun isMybatisFile(file: PsiFile?): Boolean {
+    fun isMapperFile(file: PsiFile?): Boolean {
         if (file !is XmlFile) {
             return false
         }
@@ -88,6 +89,15 @@ object MyBatisUtils {
         }
         return DomUtil.getParentOfType(domElement, IdDomElement::class.java, true)
     }
+
+    fun findStatementDomElement(element: PsiElement?): Statement? {
+        val domElement = DomUtil.getDomElement(element) ?: return null
+        if (domElement is Statement) {
+            return domElement
+        }
+        return DomUtil.getParentOfType(domElement, Statement::class.java, true)
+    }
+
 
     /**
      * 判断一个方法是不是Statement方法
