@@ -4,7 +4,7 @@ package org.ifinalframework.plugins.aio.mybatis;
 public class JavaQuery {
     /**
      * ID
-     * @typeHandler haha.java.typeHandler
+     * @typeHandler org.ifinalframework.plugins.aio.mybatis.MyTypeHandler
      */
     private Long id;
 

@@ -152,6 +152,11 @@
         />
         <dom.fileMetaData rootTagName="mapper" implementation="org.ifinalframework.plugins.aio.mybatis.xml.MapperDescription"/>
         <completion.contributor
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.JavaDocCompletionContributor"
+                order="first"
+        />
+        <completion.contributor
                 language="XML"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperXmlCompletionContributor"
                 order="first"
