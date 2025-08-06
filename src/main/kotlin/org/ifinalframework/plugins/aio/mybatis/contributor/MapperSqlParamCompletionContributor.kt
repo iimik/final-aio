@@ -63,8 +63,6 @@ class MapperSqlParamCompletionContributor : AbsMapperCompletionContributor() {
 
     private fun processParam(prefix: String?, type: PsiType, result: CompletionResultSet, project: Project) {
 
-        val testCompletion = project.service<MyBatisProperties>().testCompletion
-
         if (type is PsiClassReferenceType) {
             val className = type.reference.qualifiedName
             if (className.startsWith("java.lang.") || className.startsWith("java.util.")) {
@@ -82,9 +80,15 @@ class MapperSqlParamCompletionContributor : AbsMapperCompletionContributor() {
                         var typeText = field.type.presentableText
 
                         docService.getSummary(field)?.let { typeText = "$it ($typeText)" }
+                        val typeHandler = docService.findTagValueByTag(field, "typeHandler")
+                        var name = field.name
+
+                        if(typeHandler != null) {
+                            name = "$name,typeHandler=$typeHandler"
+                        }
 
                         result.addElement(
-                            LookupElementBuilder.create(field.name)
+                            LookupElementBuilder.create(name)
                                 .withIcon(PlatformIcons.PROPERTY_ICON)
                                 .withTypeText(typeText)
                                 .withCaseSensitivity(false)

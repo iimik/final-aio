@@ -89,6 +89,7 @@ class KotlinDocService : DocService {
         return when (element) {
             is KDoc -> return element
             is KtDeclaration -> element.docComment
+            is KtLightElement<out KtElement, *> -> element.kotlinOrigin?.let { findKDoc(it) }
             else -> null
         }
     }

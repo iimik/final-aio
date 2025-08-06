@@ -43,7 +43,7 @@
     <select id="selectSingle" resultMap="baseMap">
         #{a}
         <foreach collection="tags" open="(" close=")" separator="," item="item">
-            #{it}
+            #{st}
         </foreach>
     </select>
 
