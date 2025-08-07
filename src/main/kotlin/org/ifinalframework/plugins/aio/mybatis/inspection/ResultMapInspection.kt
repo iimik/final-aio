@@ -12,6 +12,7 @@ import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.PopupStep
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import org.ifinalframework.plugins.aio.intellij.GenericQuickFix
+import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.ResultMap
 import org.ifinalframework.plugins.aio.resource.AllIcons
@@ -30,10 +31,17 @@ import org.jetbrains.uast.getContainingUClass
 class ResultMapInspection : AbstractBaseUastLocalInspectionTool() {
     override fun checkField(field: UField, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor?>? {
 
+        val myBatisProperties = field.project.service<MyBatisProperties>()
+        // 未开启检查
+        if(!myBatisProperties.resultMapInspection){
+            return super.checkField(field, manager, isOnTheFly)
+        }
+
         val uClass = field.getContainingUClass() ?: return null
         val qualifiedName = uClass.qualifiedName ?: return null
-        if (field.isDeprecated) {
+        if (field.isDeprecated || field.isStatic) {
             // 忽略标记过期的字段
+            // 忽略静态字段
             return null
         }
         val resultMaps = manager.project.service<MapperService>().findResultMaps(qualifiedName)

@@ -10,6 +10,7 @@ import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.util.xml.DomUtil
 import org.ifinalframework.plugins.aio.common.util.getService
+import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
 import org.ifinalframework.plugins.aio.mybatis.MybatisMarker
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.*
 import org.ifinalframework.plugins.aio.service.PsiService
@@ -42,6 +43,7 @@ class StatementLineMarkerService : MapperLineMarkerService<XmlToken> {
 
     override fun apply(token: XmlToken): MybatisMarker? {
         val project = token.project
+        val myBatisProperties = project.service<MyBatisProperties>()
         val psiFile = token.containingFile
         if (psiFile !is XmlFile) return null
         if ("mapper" != psiFile.rootTag?.name) return null
@@ -56,7 +58,7 @@ class StatementLineMarkerService : MapperLineMarkerService<XmlToken> {
             return when (domElement) {
                 is Mapper -> process(project, domElement)
                 is ResultMap -> process(project, domElement)
-                is Statement -> process(project, domElement)
+                is Statement -> if (myBatisProperties.lineMarker.mapperStatement) process(project, domElement) else null
                 else -> null
             }
         } else null

@@ -22,4 +22,6 @@ interface Statement : SqlFragment {
 
 
     fun setValue(content: String)
+
+    fun getValue(): String
 }

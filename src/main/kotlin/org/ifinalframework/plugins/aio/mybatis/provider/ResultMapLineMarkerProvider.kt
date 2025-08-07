@@ -3,9 +3,11 @@ package org.ifinalframework.plugins.aio.mybatis.provider
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiModifier
+import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
@@ -18,6 +20,7 @@ import org.jetbrains.uast.*
  * @issue 27
  * @author iimik
  * @since 0.0.4
+ * @see StatementLineMarkerProvider
  **/
 @Suppress("UElementAsPsi")
 class ResultMapLineMarkerProvider : RelatedItemLineMarkerProvider() {
@@ -26,8 +29,11 @@ class ResultMapLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
 
-        val targetElements = getTargetElements(element) ?: return
-        if(targetElements.isEmpty()) return
+        val myBatisProperties = element.project.service<MyBatisProperties>()
+
+
+        val targetElements = getTargetElements(element, myBatisProperties) ?: return
+        if (targetElements.isEmpty()) return
         targetElements.let {
             val icon = AllIcons.Mybatis.JVM
             val navigationGutterIconBuilder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(icon)
@@ -39,7 +45,7 @@ class ResultMapLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
     }
 
-    private fun getTargetElements(element: PsiElement): List<PsiElement?>? {
+    private fun getTargetElements(element: PsiElement, myBatisProperties: MyBatisProperties): List<PsiElement?>? {
         val uElement = element.toUElement() ?: return null
 
         if (uElement !is UIdentifier) return null
@@ -57,17 +63,20 @@ class ResultMapLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
             is UField,
             is UParameter -> {
-                val uField = parent
-                if (uField.hasModifierProperty(PsiModifier.STATIC)) return null
-                val uClass = uField.getContainingUClass() ?: return null
-                if (uClass.hasModifierProperty(PsiModifier.ABSTRACT)) return null
-                val qualifiedName = uClass.qualifiedName ?: return null
-                element.project.getService(MapperService::class.java).findResultMaps(qualifiedName)
-                    .flatMap { it.getProperties() }
-                    .filter { it.getProperty().stringValue == uField.name }
-                    .map { it.getProperty().xmlAttributeValue }
-                    .toList()
 
+                if (myBatisProperties.lineMarker.resultMapProperty) {
+                    val uField = parent
+                    if (uField.hasModifierProperty(PsiModifier.STATIC)) return null
+                    val uClass = uField.getContainingUClass() ?: return null
+                    if (uClass.hasModifierProperty(PsiModifier.ABSTRACT)) return null
+                    val qualifiedName = uClass.qualifiedName ?: return null
+                    element.project.getService(MapperService::class.java).findResultMaps(qualifiedName)
+                        .flatMap { it.getProperties() }
+                        .filter { it.getProperty().stringValue == uField.name }
+                        .map { it.getProperty().xmlAttributeValue }
+                        .toList()
+
+                } else null
             }
 
             else -> null

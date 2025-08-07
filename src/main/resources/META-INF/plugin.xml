@@ -145,7 +145,17 @@
                 groupName="Mybatis" enabledByDefault="true" level="ERROR"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.MapperXmlInspection"
         />
+        <lang.documentationProvider
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.StatementDocumentationProvider"
+                order="first"
+        />
         <dom.fileMetaData rootTagName="mapper" implementation="org.ifinalframework.plugins.aio.mybatis.xml.MapperDescription"/>
+        <completion.contributor
+                language="UAST"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.JavaDocCompletionContributor"
+                order="first"
+        />
         <completion.contributor
                 language="XML"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperXmlCompletionContributor"
@@ -154,6 +164,7 @@
         <completion.contributor
                 language="SQL"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperSqlParamCompletionContributor"
+                order="first"
         />
         <projectConfigurable
                 parentId="language"

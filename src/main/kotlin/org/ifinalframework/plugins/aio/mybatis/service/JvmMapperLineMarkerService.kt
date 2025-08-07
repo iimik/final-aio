@@ -1,8 +1,10 @@
 package org.ifinalframework.plugins.aio.mybatis.service
 
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.common.util.getService
+import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
 import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 import org.ifinalframework.plugins.aio.mybatis.MybatisMarker
 import org.jetbrains.uast.*
@@ -16,14 +18,18 @@ import org.jetbrains.uast.*
  * @see [StatementLineMarkerService]
  **/
 @Service
-class JvmMapperLineMarkerService : MapperLineMarkerService<Any> {
+class JvmMapperLineMarkerService : MapperLineMarkerService<PsiElement> {
 
-    override fun apply(element: Any): MybatisMarker? {
+    override fun apply(element: PsiElement): MybatisMarker? {
+
+
         val uElement = when (element) {
             is UElement -> element
             is PsiElement -> element.toUElement()
             else -> null
         } ?: return null
+
+        val myBatisProperties = element.project.service<MyBatisProperties>()
 
         val uClass = uElement.getContainingUClass() ?: return null
 
@@ -38,7 +44,7 @@ class JvmMapperLineMarkerService : MapperLineMarkerService<Any> {
 
         return when (parent) {
             is UClass -> processClass(parent)
-            is UMethod -> processMethod(parent)
+            is UMethod -> if (myBatisProperties.lineMarker.mapperMethod) processMethod(parent) else null
             else -> null
         }
 

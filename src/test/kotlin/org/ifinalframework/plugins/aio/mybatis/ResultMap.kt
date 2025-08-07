@@ -12,7 +12,7 @@ import java.util.*
 data class ResultMap(
     /**
      * ID
-     *
+     * @typeHandler haha
      * @since 0.0.1
      * @author iimik
      */
@@ -24,7 +24,10 @@ data class ResultMap(
     val age: Int,
 
     val tags: List<String>,
-
+    /**
+     * haha
+     * @typeHandler haha
+     */
     val startDate: Date,
     val endDate: Date,
 ){
