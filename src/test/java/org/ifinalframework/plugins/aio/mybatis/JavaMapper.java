@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.InsertProvider;
 
 /**
  * JavaMapper
- *
  * @author iimik
  * @since 0.0.4
  **/

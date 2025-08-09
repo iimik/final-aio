@@ -3,6 +3,10 @@
 <mapper namespace="org.ifinalframework.plugins.aio.mybatis.JavaMapper">
 
 
+    <sql id="table">
+
+    </sql>
+
     <insert id="insert">
         INSERT INTO
         <include refid="table"/>
@@ -21,6 +25,7 @@
     </select>
     <select id="selectResultMaps" resultMap="resultMap2"></select>
     <select id="selectSingle" resultType="java.lang.Integer">
+       SELECT * FROM <include refid="table"/>
        #{id,typeHandler=haha.java.typeHandler}
     </select>
 

@@ -28,14 +28,11 @@
         VALUE (#{})
     </insert>
     <insert id="insert3"></insert>
-    <delete id="delete"></delete>
 
-    <delete id="delete2">
 
-    </delete>
     <delete id="remove"></delete>
+    <delete id="delete"></delete>
     <update id="update"></update>
-    <update id="test"></update>
     <select id="select" resultType="java.lang.String" resultMap="resultMap2">
 
     </select>
