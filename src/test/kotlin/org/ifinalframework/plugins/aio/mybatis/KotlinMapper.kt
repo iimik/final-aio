@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param
 
 /**
  * KotlinMapper
+ * 
  * @author iimik
  * @since 0.0.4
  **/

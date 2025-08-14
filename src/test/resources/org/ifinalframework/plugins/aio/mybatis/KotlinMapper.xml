@@ -38,7 +38,12 @@
     </select>
     <select id="selectResultMaps" resultMap="baseMap"></select>
     <select id="selectSingle" resultMap="baseMap">
-        #{a}
+        <if test="null != age"></if>
+        <where>
+            <if test="null != startDate and null != endDate">
+
+            </if>
+        </where>
         <foreach collection="tags" open="(" close=")" separator="," item="item">
             #{st}
         </foreach>

@@ -19,8 +19,6 @@ interface Statement : SqlFragment {
     @Convert(StatementMethodResolvingConverter::class)
     fun getId(): GenericAttributeValue<PsiMethod>
 
-
-
     fun setValue(content: String)
 
     fun getValue(): String
