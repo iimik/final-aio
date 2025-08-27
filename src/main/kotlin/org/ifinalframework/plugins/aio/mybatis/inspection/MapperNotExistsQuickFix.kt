@@ -118,7 +118,7 @@ class MapperNotExistsQuickFix(val clazz: UClass) : GenericQuickFix() {
             if (tableSqlFragment.enable) {
                 R.runInWriteAction(project) {
                     val sql = mapper.addSql()
-                    sql.getId().stringValue = tableSqlFragment.id
+                    sql.getId().stringValue = tableSqlFragment.ids
                     val tableName = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, clazz.name!!.substringBeforeLast("Mapper"))
                     sql.setValue("${tableSqlFragment.prefix}${tableName}")
                 }

@@ -53,6 +53,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
         jdbcTypeCompletion()
         includeRefidCompletion()
         testPropertyCompletion()
+        sqlIdCompletion()
     }
 
 
@@ -435,6 +436,46 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                         }
                     })
             }
+    }
+
+    /**
+     * SQL片段`id`属性补全
+     *
+     * 从以下配置中读取：
+     * - 表：[MyBatisProperties.TableSqlFragment.ids]
+     * - 列：[MyBatisProperties.TableSqlFragment.ids]
+     */
+    private fun sqlIdCompletion() {
+        val sqlId = XmlPatterns.psiElement().inside(
+            XmlPatterns.xmlAttribute().withName("id").inside(XmlPatterns.xmlTag().withName("sql"))
+        )
+
+        thisLogger().info("sqlIdCompletion: $sqlId")
+
+        extend(
+            CompletionType.BASIC,
+            sqlId,
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(
+                    parameters: CompletionParameters,
+                    context: ProcessingContext, result: CompletionResultSet
+                ) {
+                    val position = parameters.position
+                    if (position !is XmlToken) return
+                    val domElement = DomUtil.getDomElement(position) ?: return
+
+                    val myBatisProperties = position.project.service<MyBatisProperties>()
+                    myBatisProperties.tableSqlFragment.ids.split(",")
+                        .forEach { id ->
+                            result.addElement(LookupElementBuilder.create(id))
+                        }
+
+                    myBatisProperties.columnSqlFragment.ids.split(",")
+                        .forEach { id -> result.addElement(LookupElementBuilder.create(id)) }
+
+                    result.stopHere()
+                }
+            })
     }
 
     /**

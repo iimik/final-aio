@@ -75,16 +75,16 @@ interface ResultMap : IdDomElement {
         @Convert(ResultMapPropertyConverter::class)
         fun getProperty(): GenericAttributeValue<String>
 
-        @NameValue
+        @NameValue(unique = false)
         @Attribute("typeHandler")
         @Convert(TypeHandlerConverter::class)
         fun getTypeHandler(): GenericAttributeValue<PsiClass>
 
-        @NameValue
+        @NameValue(unique = false)
         @Attribute("javaType")
         fun getJavaType(): GenericAttributeValue<PsiClass>
 
-        @NameValue
+        @NameValue(unique = false)
         @Attribute("jdbcType")
         @Convert(JdbcTypeConverter::class)
         fun getJdbcType(): GenericAttributeValue<PsiEnumConstant>

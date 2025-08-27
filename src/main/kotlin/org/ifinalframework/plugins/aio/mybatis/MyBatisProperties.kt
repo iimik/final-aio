@@ -19,6 +19,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 data class MyBatisProperties(
     var mapperXmlPath: MapperXmlPath = MapperXmlPath.RESOURCE,
     var tableSqlFragment: TableSqlFragment = TableSqlFragment(),
+    var columnSqlFragment: ColumnSqlFragment = ColumnSqlFragment(),
     var resultMapInspection: Boolean = true,
     var statementMethodCompletion: StatementMethodCompletion = StatementMethodCompletion(),
     var testCompletion: TestCompletion = TestCompletion(),
@@ -67,15 +68,32 @@ data class MyBatisProperties(
     )
 
     /**
+     * 表SQL片段
+     *
+     * ```xml
      * <sql id="${id}">
      *
      * </sql>
-     *
+     * ```
      */
     data class TableSqlFragment(
         var enable: Boolean = true,
-        var id: String = "table",
+        var ids: String = "table",
         var prefix: String = "t_"
+    )
+
+    /**
+     * 列SQL片段
+     *
+     * ```xml
+     * <sql id="${id}">
+     *     column1, column2, ...
+     * </sql>
+     * ```
+     */
+    data class ColumnSqlFragment(
+        var enable: Boolean = true,
+        var ids: String = "columns",
     )
 
     data class LineMarker(

@@ -18,7 +18,11 @@
     </resultMap>
 
     <sql id="table">
+        t_address_regulars
+    </sql>
 
+    <sql id="columns">
+        `wallet_type`,`regular`
     </sql>
 
     <insert id="insert">

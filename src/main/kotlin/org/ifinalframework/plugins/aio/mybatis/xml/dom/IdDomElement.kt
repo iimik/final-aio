@@ -17,4 +17,6 @@ interface IdDomElement : DomElement {
     fun getId(): GenericAttributeValue<String>
 
     fun setValue(content: String)
+
+    fun getValue(): String
 }

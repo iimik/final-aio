@@ -36,7 +36,10 @@ object MyBatisUtils {
         }
     }
 
-    fun isMapperFile(file: PsiFile?): Boolean {
+    /**
+     * 判断一个文件是否是Mapper.xml文件
+     */
+    fun isMapperXml(file: PsiFile?): Boolean {
         if (file !is XmlFile) {
             return false
         }
