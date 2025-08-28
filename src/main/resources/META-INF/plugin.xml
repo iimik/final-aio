@@ -28,6 +28,9 @@
         <applicationService
                 serviceInterface="org.ifinalframework.plugins.aio.service.NotificationService"
                 serviceImplementation="org.ifinalframework.plugins.aio.service.DefaultNotificationService"/>
+        <applicationService
+                serviceImplementation="org.ifinalframework.plugins.aio.datasource.service.DefaultShardingTableService"
+                serviceInterface="org.ifinalframework.plugins.aio.datasource.service.ShardingTableService"/>
         <projectService
                 serviceInterface="org.ifinalframework.plugins.aio.service.EnvironmentService"
                 serviceImplementation="org.ifinalframework.plugins.aio.service.SpringModuleEnvironmentService"
@@ -150,7 +153,7 @@
         />
         <completion.contributor
                 language="SQL"
-                implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperSqlParamCompletionContributor"
+                implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperSqlCompletionContributor"
                 order="first"
         />
         <projectConfigurable

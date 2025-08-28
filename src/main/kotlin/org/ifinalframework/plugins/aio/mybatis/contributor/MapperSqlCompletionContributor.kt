@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.database.introspection.isNotEmpty
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.*
@@ -31,7 +30,7 @@ import org.ifinalframework.plugins.aio.service.PsiService
  * @author iimik
  * @since 0.0.7
  */
-class MapperSqlParamCompletionContributor : AbsMapperCompletionContributor() {
+class MapperSqlCompletionContributor : AbsMapperCompletionContributor() {
     val docService = service<DocService>()
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         if (parameters.completionType != CompletionType.BASIC) {
@@ -77,11 +76,11 @@ class MapperSqlParamCompletionContributor : AbsMapperCompletionContributor() {
         val myBatisProperties = position.project.service<MyBatisProperties>()
         val dataSourceService = position.project.service<DataSourceService>()
         val tables = dataSourceService.getTables(myBatisProperties.tableSqlFragment.prefix)
-        if (tables.isNotEmpty) {
+        if (tables.isNotEmpty()) {
             tables.forEach { table ->
                 result.addElement(
-                    LookupElementBuilder.create(table.name)
-                        .withTypeText(table.comment)
+                    LookupElementBuilder.create(table.logicTable)
+                        .withTypeText(table.toString())
                         .withCaseSensitivity(false)
                 )
             }
@@ -105,6 +104,9 @@ class MapperSqlParamCompletionContributor : AbsMapperCompletionContributor() {
         if (tables.isEmpty()) {
             return
         }
+
+
+
         val tableSqlFragmentIds = myBatisProperties.tableSqlFragment.ids.split(",")
         val mapper = DomUtil.getParentOfType(sql, Mapper::class.java, true) ?: return
         val tableSqls = mapper.getSqls().filter { tableSqlFragmentIds.contains(it.getId().value) }.toList()
@@ -117,21 +119,18 @@ class MapperSqlParamCompletionContributor : AbsMapperCompletionContributor() {
             return
         }
 
-        val matchTables = tables.filter { tableName == it.name }.toList()
+        val matchTables = tables.filter { tableName == it.logicTable }.toList()
         if (matchTables.isNotEmpty()) {
             // 找到了匹配的表
-            val table = matchTables.get(0)
-            val columns = table.columns.map { "`${it.name}`" }.joinToString(",")
+            val table = matchTables.get(0).actualTables[0]
+            val columns = table.columns.map { "`${it.name}`" }.joinToString(", ")
             result.addElement(
                 LookupElementBuilder.create(columns)
                     .withTypeText("${table.name}(${table.comment})")
                     .withCaseSensitivity(false)
             )
             result.stopHere()
-        } else {
-            // 可能存在分表，通过前缀+分表后缀找 TODO
         }
-
 
     }
 

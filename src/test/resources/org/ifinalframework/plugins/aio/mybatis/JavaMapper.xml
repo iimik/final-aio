@@ -2,9 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.ifinalframework.plugins.aio.mybatis.JavaMapper">
 
+    <resultMap id="BaseMap" type="org.ifinalframework.plugins.aio.mybatis.ResultMap">
+        <id column="wallet_type" property="id"/>
+        <result column="wallet_type" property="id"/>
+    </resultMap>
+
 
     <sql id="table">
-        t_address_regulars
+        t_wallet_trans_sys_extra
     </sql>
 
     <sql id="columns">

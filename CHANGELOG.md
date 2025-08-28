@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### 新增
+
+- MyBatis
+  - SQL片段支持表`table`和列`columns`补全
+
 ## [0.0.21] - 2025-08-07
 
 ### 新增
@@ -192,7 +197,8 @@
 - Issue 管理
   - 🔥添加Issue行标记，并可在浏览器中快速打开，支持Git Issue和Jira。(#10)
 
-[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.21...HEAD
+[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.22...HEAD
+[0.0.22]: https://github.com/iimik/final-aio/compare/v0.0.21...v0.0.22
 [0.0.21]: https://github.com/iimik/final-aio/compare/v0.0.20...v0.0.21
 [0.0.20]: https://github.com/iimik/final-aio/compare/v0.0.19...v0.0.20
 [0.0.19]: https://github.com/iimik/final-aio/compare/v0.0.18...v0.0.19

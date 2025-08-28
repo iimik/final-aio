@@ -6,7 +6,9 @@ import com.intellij.database.dialects.mysql.model.MysqlModel
 import com.intellij.database.model.basic.BasicTableOrView
 import com.intellij.database.view.DatabaseView
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import org.ifinalframework.plugins.aio.datasource.model.Table
 
 /**
  * DataSourceService
@@ -34,25 +36,31 @@ class DataSourceService(
         return emptyList();
     }
 
-    fun getTables(prefix: String?): List<BasicTableOrView>{
+    fun getTables(prefix: String?): List<Table>{
         val localDataSourceManager = LocalDataSourceManager.getInstance(project)
         val dataSources = localDataSourceManager.dataSources
+        val shardingTableService = service<ShardingTableService>()
 
-        val tables = mutableListOf<BasicTableOrView>()
+        var basicTableOrViews = mutableListOf<BasicTableOrView>()
 
         for (dataSource in dataSources) {
             val model = dataSource.model
             if(model is MysqlModel){
-                tables.addAll(model.root.schemas.flatMap { it.tables })
+                basicTableOrViews.addAll(model.root.schemas.flatMap { it.tables })
             }
         }
 
         if(prefix != null && prefix.isNotEmpty()){
-            return tables.stream()
+            basicTableOrViews =  basicTableOrViews.stream()
                 .filter { it.name.startsWith(prefix) }
                 .toList()
         }
 
+        val map = basicTableOrViews.groupBy { shardingTableService.getLogicTable(it.name) }
+
+        val tables = map.entries
+            .map { Table(it.key, it.value) }
+            .toList()
 
         return tables
     }
@@ -64,4 +72,6 @@ class DataSourceService(
         }
         return emptyList();
     }
+
+
 }
