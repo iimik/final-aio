@@ -3,39 +3,17 @@
 <mapper namespace="org.ifinalframework.plugins.aio.mybatis.JavaMapper">
 
     <resultMap id="BaseMap" type="org.ifinalframework.plugins.aio.mybatis.ResultMap">
-        <id column="wallet_type" property="id"/>
-        <result column="wallet_type" property="id"/>
+        <id column="id" property="id"/>
+        <result column="name" property="id"/>
     </resultMap>
-
-
-    <sql id="table">
-        t_wallet_trans_sys_extra
-    </sql>
-
-    <sql id="columns">
-        `wallet_type`,`regular`
-    </sql>
-
-    <insert id="insert">
-        INSERT INTO
+    <sql id="table">-- TODO</sql>
+    <sql id="columns">-- TODO</sql>
+    <select id="select" resultType="java.lang.Integer">
+        SELECT
+        <include refid="columns"/>
+        FROM
         <include refid="table"/>
-        (name)
-        VALUE (#{})
-    </insert>
-    <delete id="delete">
-        DELETE FROM
-    </delete>
-    <delete id="delete2">
-
-    </delete>
-    <update id="update"></update>
-    <select id="select" resultType="java.lang.String" resultMap="resultMap2">
-
-    </select>
-    <select id="selectResultMaps" resultMap="resultMap2"></select>
-    <select id="selectSingle" resultType="java.lang.Integer">
-       SELECT * FROM <include refid="table"/>
-       #{id,typeHandler=haha.java.typeHandler}
+        <where></where>
     </select>
 
 

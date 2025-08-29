@@ -10,21 +10,21 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.PopupStep
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
-import com.intellij.psi.PsiJavaCodeReferenceElement
-import com.intellij.psi.PsiMethod
-import com.intellij.psi.PsiPrimitiveType
-import com.intellij.psi.PsiType
+import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.xml.XmlTag
 import org.ifinalframework.plugins.aio.intellij.GenericQuickFix
 import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
+import org.ifinalframework.plugins.aio.mybatis.xml.MapperUtils
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.*
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
+import org.ifinalframework.plugins.aio.util.XmlUtils
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.getContainingUClass
 import java.util.stream.Collectors
+import java.util.stream.Stream
 
 
 /**
@@ -111,7 +111,6 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
                 val mapper = mappers.iterator().next()
                 val statement = generateStatement(mapper, method)
                 statement.getId().stringValue = method.name
-                statement.setValue(" ")
                 val tag: XmlTag = statement.xmlTag!!
                 val offset = tag.textOffset + tag.textLength - tag.name.length - 3
                 val editorService: FileEditorManager = FileEditorManager.getInstance(method.project)
@@ -147,9 +146,23 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
         }
     }
 
+    /**
+     * ```xml
+     * <update id="{update}">
+     *     UPDATE
+     *     <include refid="{table.sql.id}"/>
+     *     <set>
+     *     </set>
+     *     <where>
+     *     </where>
+     * </update>
+     * ```
+     */
     class UpdateStatementGenerator : AbstractStatementGenerator<Update>() {
         override fun generateStatement(mapper: Mapper, method: UMethod): Update {
-            return mapper.addUpdate()
+            return mapper.addUpdate().apply {
+
+            }
         }
 
         override fun getDisplayText(): String {
@@ -157,6 +170,16 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
         }
     }
 
+    /**
+     * ```xml
+     * <delete id="{delete}">
+     *     DELETE FROM
+     *     <include refid="table.sql.id"/>
+     *     <where>
+     *     </where>
+     * </delete>
+     * ```
+     */
     class DeleteStatementGenerator : AbstractStatementGenerator<Delete>() {
         override fun generateStatement(mapper: Mapper, method: UMethod): Delete {
             return mapper.addDelete()
@@ -173,6 +196,19 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
      *      - 方法的返回类型，如果是参数化类型，用只有一个参数（如List），收使用参数化类型，否则使用直接返回类型
      *      - 如果返回类型是基础类型（如String，Int等），则直接填写`resultType`属性，否则优化查询是否有定义`resultMap`，有则填写`resultMap`属性。
      *
+     *
+     *
+     * ```xml
+     * <select id="{method}" resultType="{returnType}" resultMap="{resultMap.id}">
+     *     SELECT
+     *     <include refId="{columns.sql.id}"/>
+     *     FROM
+     *     <include refId="{table.sql.id}"/>
+     *     <where>
+     *     </where>
+     * </select>
+     * ```
+     *
      */
     class SelectStatementGenerator : AbstractStatementGenerator<Select>() {
         override fun generateStatement(mapper: Mapper, method: UMethod): Select {
@@ -181,6 +217,7 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
 
             return mapper.addSelect().apply {
 
+                // 填写resultType或resultMap属性
                 if (returnType is PsiPrimitiveType) {
                     getResultType().stringValue = returnType.boxedTypeName
                 } else if (returnType is PsiClassReferenceType) {
@@ -194,6 +231,30 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
                     }
 
                 }
+
+                val project = method.project
+                val tableSqlFragment = MapperUtils.getTableSqlFragment(project, mapper)
+                val columnSqlFragment = MapperUtils.getColumnSqlFragment(project, mapper)
+
+                var addedElement: PsiElement? = null
+
+                Stream.of(
+                    "SELECT ",
+                    "<include refid=\"${columnSqlFragment.getId().stringValue}\"/>",
+                    "FROM ",
+                    "<include refid=\"${tableSqlFragment.getId().stringValue}\"/>",
+                    "<where></where>"
+                )
+                    .forEach { content ->
+                        val element = XmlUtils.createElement(project, content)
+                        if (addedElement == null) {
+                            addedElement = xmlTag!!.add(element)
+                        } else {
+                            addedElement = xmlTag!!.addAfter(element, addedElement)
+                        }
+                    }
+
+
             }
         }
 

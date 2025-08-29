@@ -7,6 +7,7 @@ import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomUtil
 import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
+import org.ifinalframework.plugins.aio.mybatis.xml.dom.Sql
 import org.ifinalframework.plugins.aio.psi.service.DocService
 
 /**
@@ -15,6 +16,40 @@ import org.ifinalframework.plugins.aio.psi.service.DocService
  * @author iimik
  */
 object MapperUtils {
+
+    /**
+     * 获取表SQL片段，不存在时，则创建
+     * @see [MyBatisProperties.TableSqlFragment.ids]
+     */
+    fun getTableSqlFragment(project: Project, mapper: Mapper): Sql {
+        val myBatisProperties = project.service<MyBatisProperties>()
+        val ids = myBatisProperties.tableSqlFragment.ids.split(",").toSet()
+        return doFoundOrCreateSql(mapper, ids, "-- TODO")
+    }
+
+    /**
+     * 获取列SQL片段，不存在时，则创建
+     * @see [MyBatisProperties.ColumnSqlFragment.ids]
+     */
+    fun getColumnSqlFragment(project: Project, mapper: Mapper): Sql {
+        val myBatisProperties = project.service<MyBatisProperties>()
+        val ids = myBatisProperties.columnSqlFragment.ids.split(",").toSet()
+        return doFoundOrCreateSql(mapper, ids, "-- TODO")
+    }
+
+    private fun doFoundOrCreateSql(mapper: Mapper, ids: Set<String>, content: String): Sql {
+        val sql = mapper.getSqls().firstOrNull { ids.contains(it.getId().stringValue) }
+        if (sql != null) {
+            return sql
+        }
+
+        // 不存在，创建
+        val id = ids.first()
+        return mapper.addSql().apply {
+            getId().stringValue = id
+            setValue(content)
+        }
+    }
 
     fun getTableName(project: Project, domElement: DomElement): String? {
         val mapper = DomUtil.getParentOfType(domElement, Mapper::class.java, true) ?: return null

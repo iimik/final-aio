@@ -163,6 +163,10 @@
                 displayName="MyBatis"
                 nonDefaultProject="true"
         />
+        <projectService
+                serviceInterface="org.ifinalframework.plugins.aio.mybatis.function.MapperTableProvider"
+                serviceImplementation="org.ifinalframework.plugins.aio.mybatis.function.DefaultMapperTableProvider"
+        />
         <!--=============================================================================================================================-->
         <!--=======================================================    Spring     =======================================================-->
         <!--=============================================================================================================================-->

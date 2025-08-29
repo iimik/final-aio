@@ -535,7 +535,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
      *
      * 从以下配置中读取：
      * - 表：[MyBatisProperties.TableSqlFragment.ids]
-     * - 列：[MyBatisProperties.TableSqlFragment.ids]
+     * - 列：[MyBatisProperties.ColumnSqlFragment.ids]
      */
     private fun sqlIdCompletion() {
         val sqlId = XmlPatterns.psiElement().inside(
@@ -581,7 +581,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
             XmlPatterns.xmlAttribute().withName("refid").inside(XmlPatterns.xmlTag().withName("include"))
         )
 
-        thisLogger().info("resultMapPropertyCompletion: $includeRefid")
+        thisLogger().info("includeRefidCompletion: $includeRefid")
 
         extend(
             CompletionType.BASIC,

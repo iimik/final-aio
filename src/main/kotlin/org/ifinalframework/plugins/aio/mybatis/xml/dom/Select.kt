@@ -21,7 +21,7 @@ interface Select : Statement {
     /**
      * 查询返回的结果类型
      */
-    @NameValue
+    @NameValue(unique = false)
     @Attribute("resultType")
     fun getResultType(): GenericAttributeValue<PsiClass>
 

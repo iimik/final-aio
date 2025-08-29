@@ -22,6 +22,10 @@ interface SqlFragment : DomElement {
 
     @SubTagList("where")
     fun getWheres(): List<Where>
+
+    fun addInclude(): Include
+
+    fun addWhere(): Where
 }
 
 /**
