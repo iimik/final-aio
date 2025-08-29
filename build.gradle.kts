@@ -41,7 +41,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:${properties["retrofit.version"]}")
     implementation("com.squareup.retrofit2:converter-jackson:${properties["retrofit.version"]}")
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.20.0")
     // https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core
 //    implementation("org.apache.velocity:velocity-engine-core:2.4.1")
     // https://mvnrepository.com/artifact/org.apache.velocity.tools/velocity-tools-generic
