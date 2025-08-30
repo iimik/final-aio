@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.ifinalframework.plugins.aio.mybatis.JavaMapper">
+    <sql id="table">
+        t_java
+    </sql>
+    <sql id="columns">
+        `id`
+        , `name`, `age`
+    </sql>
+    <update id="update">
+        UPDATE
+        <include refid="table"/>
+        <set></set>
+        <where></where>
+    </update>
 
-    <resultMap id="BaseMap" type="org.ifinalframework.plugins.aio.mybatis.ResultMap">
-        <id column="id" property="id"/>
-        <result column="name" property="id"/>
-    </resultMap>
-    <sql id="table">-- TODO</sql>
-    <sql id="columns">-- TODO</sql>
     <select id="select" resultType="java.lang.Integer">
         SELECT
-        <include refid="columns"/>
-        FROM
         <include refid="table"/>
+        FROM
+        <include refid="columns"/>
         <where></where>
     </select>
-
-
 </mapper>

@@ -3,6 +3,7 @@ package org.ifinalframework.plugins.aio.datasource.service
 import com.intellij.database.dataSource.DatabaseConnectionManager
 import com.intellij.database.dataSource.LocalDataSourceManager
 import com.intellij.database.dialects.mysql.model.MysqlModel
+import com.intellij.database.model.ObjectKind
 import com.intellij.database.model.basic.BasicTableOrView
 import com.intellij.database.view.DatabaseView
 import com.intellij.openapi.components.Service
@@ -44,9 +45,23 @@ class DataSourceService(
         var basicTableOrViews = mutableListOf<BasicTableOrView>()
 
         for (dataSource in dataSources) {
+            val schemes = HashSet<String>()
+            val root = dataSource.introspectionScope.root
+            root.groups.filter { it.kind == ObjectKind.SCHEMA }
+                .filter { it.children != null }
+                .forEach {
+                    it.children?.forEach { child ->
+                        child.naming.names.forEach { name ->
+                            schemes.add(name.name)
+                        }
+                    }
+                }
             val model = dataSource.model
             if(model is MysqlModel){
-                basicTableOrViews.addAll(model.root.schemas.flatMap { it.tables })
+                model.root.schemas.filter { schemes.contains(it.name) }
+                    .forEach {
+                        basicTableOrViews.addAll(it.tables)
+                    }
             }
         }
 

@@ -1,14 +1,20 @@
 package org.ifinalframework.plugins.aio.mybatis
 
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.ui.popup.PopupStep
+import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.psi.*
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomUtil
+import org.ifinalframework.plugins.aio.datasource.model.Table
 import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils.isMapper
 import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils.isStatementMethod
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.IdDomElement
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Statement
+import org.ifinalframework.plugins.aio.resource.AllIcons
+import java.util.function.Consumer
 
 
 /**
@@ -125,6 +131,21 @@ object MyBatisUtils {
         // 含有特定注解
         val hasAnnotation = MybatisConstants.ALL_SQL_ANNOTATIONS.map { method.hasAnnotation(it) }.firstOrNull { it } ?: false
         return !hasAnnotation
+    }
+
+    fun showTableSelectPopup(title: String, tables: List<Table>, consumer: Consumer<Table?>) {
+        JBPopupFactory.getInstance().createListPopup(
+            object : BaseListPopupStep<Table>(
+                title,
+                tables,
+                AllIcons.Mybatis.JVM
+            ) {
+                override fun onChosen(selectedValue: Table, finalChoice: Boolean): PopupStep<*>? {
+                    consumer.accept(selectedValue)
+                    return FINAL_CHOICE
+                }
+            }
+        ).showInFocusCenter()
     }
 
 

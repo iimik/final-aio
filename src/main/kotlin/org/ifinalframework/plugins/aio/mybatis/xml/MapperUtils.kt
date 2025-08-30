@@ -5,10 +5,14 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomUtil
+import org.ifinalframework.plugins.aio.datasource.model.Table
+import org.ifinalframework.plugins.aio.datasource.service.DataSourceService
 import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
+import org.ifinalframework.plugins.aio.mybatis.xml.MapperUtils.createTableSql
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Sql
 import org.ifinalframework.plugins.aio.psi.service.DocService
+import org.ifinalframework.plugins.aio.util.CaseFormatUtils
 
 /**
  * MapperUtils
@@ -18,36 +22,51 @@ import org.ifinalframework.plugins.aio.psi.service.DocService
 object MapperUtils {
 
     /**
-     * 获取表SQL片段，不存在时，则创建
+     * 获取表SQL片段
      * @see [MyBatisProperties.TableSqlFragment.ids]
+     * @see [createTableSql]
      */
-    fun getTableSqlFragment(project: Project, mapper: Mapper): Sql {
+    fun getTableSql(project: Project, mapper: Mapper): Sql? {
         val myBatisProperties = project.service<MyBatisProperties>()
         val ids = myBatisProperties.tableSqlFragment.ids.split(",").toSet()
-        return doFoundOrCreateSql(mapper, ids, "-- TODO")
+        return tryFoundSql(mapper, ids)
+    }
+
+    fun createTableSql(project: Project, mapper: Mapper, table: Table?): Sql {
+        val content = table?.logicTable ?: "-- TODO"
+        val myBatisProperties = project.service<MyBatisProperties>()
+        val ids = myBatisProperties.tableSqlFragment.ids.split(",").toSet()
+        return doCreateSqlFragment(mapper, ids, content)
+    }
+
+    fun createColumnSql(project: Project, mapper: Mapper, table: Table?): Sql {
+        val content = table?.actualTables[0]!!.columns.joinToString(", ") { "`${it.name}`" } ?: "-- TODO"
+        val myBatisProperties = project.service<MyBatisProperties>()
+        val ids = myBatisProperties.columnSqlFragment.ids.split(",").toSet()
+        return doCreateSqlFragment(mapper, ids, content)
     }
 
     /**
-     * 获取列SQL片段，不存在时，则创建
+     * 获取列SQL片段
      * @see [MyBatisProperties.ColumnSqlFragment.ids]
      */
-    fun getColumnSqlFragment(project: Project, mapper: Mapper): Sql {
+    fun getColumnSql(project: Project, mapper: Mapper): Sql? {
         val myBatisProperties = project.service<MyBatisProperties>()
         val ids = myBatisProperties.columnSqlFragment.ids.split(",").toSet()
-        return doFoundOrCreateSql(mapper, ids, "-- TODO")
+        return tryFoundSql(mapper, ids)
+
+
     }
 
-    private fun doFoundOrCreateSql(mapper: Mapper, ids: Set<String>, content: String): Sql {
-        val sql = mapper.getSqls().firstOrNull { ids.contains(it.getId().stringValue) }
-        if (sql != null) {
-            return sql
-        }
+    private fun tryFoundSql(mapper: Mapper, ids: Set<String>): Sql? {
+        return mapper.getSqls().firstOrNull { ids.contains(it.getId().stringValue) }
+    }
 
-        // 不存在，创建
+    private fun doCreateSqlFragment(mapper: Mapper, ids: Set<String>, content: String): Sql {
         val id = ids.first()
         return mapper.addSql().apply {
             getId().stringValue = id
-            setValue(content)
+            setValue("\n$content\n")
         }
     }
 
@@ -78,6 +97,25 @@ object MapperUtils {
         }
 
         return null
+    }
+
+    fun getMapperTableOptions(project: Project, mapper: Mapper): List<Table> {
+        val myBatisProperties = project.service<MyBatisProperties>()
+        val tables = project.service<DataSourceService>().getTables(myBatisProperties.tableSqlFragment.prefix)
+        if (tables.isEmpty()) {
+            return emptyList()
+        }
+
+        val suggestTable = getSuggestTable(mapper) ?: return tables
+
+        val list = tables.filter { it.logicTable.endsWith(suggestTable) }.toList()
+        if (list.isEmpty()) return tables
+        return list
+    }
+
+    private fun getSuggestTable(mapper: Mapper): String? {
+        val mapperClass = mapper.getNamespace().value ?: return null
+        return CaseFormatUtils.upperCamel2LowerUnderscore(mapperClass.name!!.substringBeforeLast("Mapper"))
     }
 
 }
