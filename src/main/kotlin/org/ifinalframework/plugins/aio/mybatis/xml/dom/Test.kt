@@ -20,6 +20,7 @@ interface Test : SqlFragment {
     @Convert(TestConverter::class)
     fun getTest(): GenericAttributeValue<List<PsiElement>>
 
+    fun setValue(value: String)
 
     interface If : Test {}
     interface When : Test {}

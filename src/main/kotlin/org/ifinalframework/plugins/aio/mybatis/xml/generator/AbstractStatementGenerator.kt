@@ -7,6 +7,7 @@ import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlTag
+import org.ifinalframework.plugins.aio.datasource.model.Table
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Statement
@@ -16,7 +17,7 @@ import org.jetbrains.uast.getContainingUClass
 
 abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
 
-    final override fun generate(project: Project, method: UMethod) {
+    final override fun generate(project: Project, method: UMethod, table: Table) {
         val uClass = method.getContainingUClass() ?: return
         val mappers = project.service<MapperService>().findMappers(uClass.qualifiedName!!)
         if (mappers.isEmpty()) {
@@ -24,11 +25,12 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
         } else if (mappers.size == 1) {
             // 只有一个mapper，直接添加
             val mapper = mappers.iterator().next()
-            val statement = generateStatement(mapper, method)
-            statement.getId().stringValue = method.name
+            val statement = generateStatement(mapper, method, table).apply {
+                getId().stringValue = method.name
+            }
             val tag: XmlTag = statement.xmlTag!!
             val offset = tag.textOffset + tag.textLength - tag.name.length - 3
-            val editorService: FileEditorManager = FileEditorManager.getInstance(method.project)
+            val editorService: FileEditorManager = FileEditorManager.getInstance(project)
             activateFileWithPsiElement(tag, true)
 //                editorService.openFile(tag.containingFile!!.virtualFile)
             val editor = editorService.selectedTextEditor
@@ -36,13 +38,14 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
                 editor.caretModel.moveToOffset(offset)
                 editor.scrollingModel.scrollToCaret(ScrollType.RELATIVE)
             }
+
         } else {
 
         }
     }
 
 
-    protected abstract fun generateStatement(mapper: Mapper, method: UMethod): T
+    protected abstract fun generateStatement(mapper: Mapper, method: UMethod, table: Table): T
 
     protected fun generateSql(project: Project, statement: Statement, vararg sqls: String) {
         var addedElement: PsiElement? = null

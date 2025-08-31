@@ -1,5 +1,6 @@
 package org.ifinalframework.plugins.aio.mybatis
 
+import com.intellij.openapi.components.service
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.PopupStep
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
@@ -8,12 +9,15 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomUtil
 import org.ifinalframework.plugins.aio.datasource.model.Table
+import org.ifinalframework.plugins.aio.datasource.service.DataSourceService
 import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils.isMapper
 import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils.isStatementMethod
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.IdDomElement
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Statement
 import org.ifinalframework.plugins.aio.resource.AllIcons
+import org.ifinalframework.plugins.aio.service.NotificationService
+import org.ifinalframework.plugins.aio.util.CaseFormatUtils
 import java.util.function.Consumer
 
 
@@ -133,7 +137,33 @@ object MyBatisUtils {
         return !hasAnnotation
     }
 
-    fun showTableSelectPopup(title: String, tables: List<Table>, consumer: Consumer<Table?>) {
+    fun doSelectTable(mapperClass: PsiClass, consumer: Consumer<Table>) {
+        val project = mapperClass.project
+        val myBatisProperties = project.service<MyBatisProperties>()
+        val tables = project.service<DataSourceService>().getTables(myBatisProperties.tableSqlFragment.prefix)
+        if (tables.isEmpty()) {
+            service<NotificationService>().error("未找到可以操作的数据表！！！")
+            return
+        }
+
+        val title = "请选择${mapperClass.name}要操作的数据表："
+
+        val suggestTable = CaseFormatUtils.upperCamel2LowerUnderscore(mapperClass.name!!.substringBeforeLast("Mapper"))
+        val list = tables.filter { it.logicTable.endsWith(suggestTable) }.toList()
+        if (list.isEmpty()) {
+            showTableSelectPopup(title, tables, consumer)
+        }
+        if (list.size > 1) {
+            showTableSelectPopup(title, list, consumer)
+        }
+
+        if (list.size == 1) {
+            consumer.accept(list[0])
+        }
+    }
+
+
+    fun showTableSelectPopup(title: String, tables: List<Table>, consumer: Consumer<Table>) {
         JBPopupFactory.getInstance().createListPopup(
             object : BaseListPopupStep<Table>(
                 title,

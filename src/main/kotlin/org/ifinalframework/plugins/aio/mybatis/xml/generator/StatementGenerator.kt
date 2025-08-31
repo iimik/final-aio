@@ -1,6 +1,7 @@
 package org.ifinalframework.plugins.aio.mybatis.xml.generator
 
 import com.intellij.openapi.project.Project
+import org.ifinalframework.plugins.aio.datasource.model.Table
 import org.jetbrains.uast.UMethod
 
 /**
@@ -13,5 +14,5 @@ import org.jetbrains.uast.UMethod
  * @see [org.ifinalframework.plugins.aio.mybatis.xml.dom.Statement]
  */
 interface StatementGenerator {
-    fun generate(project: Project, method: UMethod)
+    fun generate(project: Project, method: UMethod, table: Table)
 }

@@ -21,10 +21,9 @@ interface KotlinMapper {
         return insert("")
     }
 
-    /**
-     * 插入
-     */
-    fun insert(@Param("p1")name: String, age: Int, list: List<String>, resultMap: ResultMap): Int
+    fun insertBatch(list: List<JavaModel>): Int
+
+
 
     @Insert("")
     fun insertWithInsert(): Int

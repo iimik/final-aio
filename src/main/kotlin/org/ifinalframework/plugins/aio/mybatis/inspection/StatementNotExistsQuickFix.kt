@@ -9,6 +9,7 @@ import com.intellij.openapi.ui.popup.PopupStep
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import org.ifinalframework.plugins.aio.intellij.GenericQuickFix
 import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
+import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 import org.ifinalframework.plugins.aio.mybatis.xml.generator.*
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
@@ -35,14 +36,17 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
 
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        method.getContainingUClass() ?: return
-
+        val mapperClass = method.getContainingUClass() ?: return
 
         val generators = findStatementGenerators(project)
 
         if (generators.size == 1) {
             val generator = generators.first()
-            generator.generate(project, method)
+            MyBatisUtils.doSelectTable(mapperClass) {
+                WriteCommandAction.runWriteCommandAction(project) {
+                    generator.generate(project, method, it)
+                }
+            }
         } else {
             JBPopupFactory.getInstance().createListPopup(
                 object : BaseListPopupStep<StatementGenerator>(
@@ -51,8 +55,10 @@ class StatementNotExistsQuickFix(val method: UMethod) : GenericQuickFix() {
                     AllIcons.Mybatis.JVM
                 ) {
                     override fun onChosen(selectedValue: StatementGenerator, finalChoice: Boolean): PopupStep<*>? {
-                        WriteCommandAction.runWriteCommandAction(project) {
-                            selectedValue.generate(project, method)
+                        MyBatisUtils.doSelectTable(mapperClass) {
+                            WriteCommandAction.runWriteCommandAction(project) {
+                                selectedValue.generate(project, method, it)
+                            }
                         }
                         return PopupStep.FINAL_CHOICE
                     }

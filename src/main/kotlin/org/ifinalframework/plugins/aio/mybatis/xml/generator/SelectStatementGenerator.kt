@@ -1,13 +1,12 @@
 package org.ifinalframework.plugins.aio.mybatis.xml.generator
 
-import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiJavaCodeReferenceElement
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiPrimitiveType
 import com.intellij.psi.PsiType
 import com.intellij.psi.impl.source.PsiClassReferenceType
-import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
+import org.ifinalframework.plugins.aio.datasource.model.Table
 import org.ifinalframework.plugins.aio.mybatis.xml.MapperUtils
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Select
@@ -36,11 +35,10 @@ import org.jetbrains.uast.UMethod
  *
  */
 class SelectStatementGenerator : AbstractStatementGenerator<Select>() {
-    override fun generateStatement(mapper: Mapper, method: UMethod): Select {
+    override fun generateStatement(mapper: Mapper, method: UMethod, table: Table): Select {
 
         val returnType = resolveReturnType(method)
         val project = method.project
-
 
         return mapper.addSelect().apply {
 
@@ -61,42 +59,14 @@ class SelectStatementGenerator : AbstractStatementGenerator<Select>() {
 
             var tableSql = MapperUtils.getTableSql(project, mapper)
             var columnSql = MapperUtils.getColumnSql(project, mapper)
-
-            if (tableSql == null || columnSql == null) {
-
-                val tables = MapperUtils.getMapperTableOptions(project, mapper)
-
-                if (tables.isEmpty()) {
-                    return@apply
-                }
-                if (tables.size == 1) {
-                    val table = tables[0]
-                    if (tableSql == null) {
-                        tableSql = MapperUtils.createTableSql(project, mapper, table)
-                    }
-                    if (columnSql == null) {
-                        columnSql = MapperUtils.createColumnSql(project, mapper, table)
-                    }
-                    doGenerateSql(project, this, tableSql, columnSql)
-                } else if (tables.size > 1) {
-                    MyBatisUtils.showTableSelectPopup("请选择${mapper.getNamespace().value!!.name}对应的数据表", tables) { table ->
-                        WriteCommandAction.runWriteCommandAction(project) {
-                            if (tableSql == null) {
-                                tableSql = MapperUtils.createTableSql(project, mapper, table)
-                            }
-                            if (columnSql == null) {
-                                columnSql = MapperUtils.createColumnSql(project, mapper, table)
-                            }
-                            doGenerateSql(project, this, tableSql!!, columnSql!!)
-                        }
-
-                    }
-                }
-
-
-            } else {
-                doGenerateSql(project, this, tableSql!!, columnSql!!)
+            if (tableSql == null) {
+                tableSql = MapperUtils.createTableSql(project, mapper, table)
             }
+            if (columnSql == null) {
+                columnSql = MapperUtils.createColumnSql(project, mapper, table)
+            }
+
+            doGenerateSql(project, this, tableSql!!, columnSql!!)
         }
 
     }

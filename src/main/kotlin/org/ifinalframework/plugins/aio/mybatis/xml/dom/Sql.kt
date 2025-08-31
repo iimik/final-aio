@@ -13,5 +13,5 @@ package org.ifinalframework.plugins.aio.mybatis.xml.dom
  * @author iimik
  * @since 0.0.6
  **/
-interface Sql : IdDomElement {
+interface Sql : IdDomElement, SqlFragment {
 }

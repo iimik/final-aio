@@ -163,6 +163,14 @@
                 displayName="MyBatis"
                 nonDefaultProject="true"
         />
+        <applicationService
+                serviceInterface="org.ifinalframework.plugins.aio.mybatis.xml.generator.ColumnGenerator"
+                serviceImplementation="org.ifinalframework.plugins.aio.mybatis.xml.generator.DefaultColumnGenerator"
+        />
+        <applicationService
+                serviceInterface="org.ifinalframework.plugins.aio.mybatis.xml.generator.TestGenerator"
+                serviceImplementation="org.ifinalframework.plugins.aio.mybatis.xml.generator.DefaultTestGenerator"
+        />
         <projectService
                 serviceInterface="org.ifinalframework.plugins.aio.mybatis.function.MapperTableProvider"
                 serviceImplementation="org.ifinalframework.plugins.aio.mybatis.function.DefaultMapperTableProvider"

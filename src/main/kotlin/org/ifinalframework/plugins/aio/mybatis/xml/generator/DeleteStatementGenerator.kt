@@ -1,5 +1,6 @@
 package org.ifinalframework.plugins.aio.mybatis.xml.generator
 
+import org.ifinalframework.plugins.aio.datasource.model.Table
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Delete
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
 import org.jetbrains.uast.UMethod
@@ -16,7 +17,7 @@ import org.jetbrains.uast.UMethod
  * ```
  */
 class DeleteStatementGenerator : AbstractStatementGenerator<Delete>() {
-    override fun generateStatement(mapper: Mapper, method: UMethod): Delete {
+    override fun generateStatement(mapper: Mapper, method: UMethod, table: Table): Delete {
         return mapper.addDelete()
     }
 

@@ -11,21 +11,33 @@ import com.intellij.util.xml.SubTagsList
  */
 interface SqlFragment : DomElement {
 
-    @SubTagsList("include", "if", "where")
+    @SubTagsList("include", "if", "where", "trim", "foreach")
     fun getSqlFragments(): List<SqlFragment>
 
     @SubTagList("include")
     fun getIncludes(): List<Include>
 
+    fun addInclude(): Include
+
     @SubTagList("if")
     fun getIfs(): List<Test.If>
+
+    fun addIf(): Test.If
 
     @SubTagList("where")
     fun getWheres(): List<Where>
 
-    fun addInclude(): Include
-
     fun addWhere(): Where
+
+    @SubTagList("trim")
+    fun getTrims(): List<Trim>
+
+    fun addTrim(): Trim
+
+    @SubTagList("foreach")
+    fun getForeachs(): List<Foreach>
+
+    fun addForeach(): Foreach
 }
 
 /**
@@ -35,3 +47,4 @@ interface SqlFragment : DomElement {
  */
 interface Where : SqlFragment {
 }
+
