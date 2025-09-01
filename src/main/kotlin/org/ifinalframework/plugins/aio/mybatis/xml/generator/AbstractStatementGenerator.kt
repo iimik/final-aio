@@ -1,15 +1,11 @@
 package org.ifinalframework.plugins.aio.mybatis.xml.generator
 
 import com.intellij.codeInsight.navigation.activateFileWithPsiElement
-import com.intellij.lang.jvm.JvmModifier
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.ScrollType
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiField
-import com.intellij.psi.PsiParameter
-import com.intellij.psi.PsiType
+import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.xml.XmlTag
 import org.ifinalframework.plugins.aio.datasource.model.Table
@@ -157,7 +153,7 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
 
         val wheres = statement.getWheres()
 
-        val where = if(wheres.isEmpty()) statement.addWhere() else wheres[0]
+        val where = if (wheres.isEmpty()) statement.addWhere() else wheres[0]
 
         for (parameter in parameters) {
             doGenerateWhere(where, parameter, parameters.size == 1)
@@ -180,7 +176,7 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
             if (type is PsiClassReferenceType) {
                 val qualifiedName = type.reference.qualifiedName ?: return
 
-                if(qualifiedName == "java.lang.String"){
+                if (qualifiedName == "java.lang.String") {
                     doGenerateWhereCriterion(where, parameter, null, AndOr.AND, CriterionType.EQUAL)
                 }
 
@@ -189,7 +185,7 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
                 }
                 val psiClass = parameter.project.service<PsiService>().findClass(qualifiedName) ?: return
                 for (psiField in psiClass.allFields) {
-                    if (psiField.hasModifier(JvmModifier.STATIC)) {
+                    if (psiField.hasModifierProperty(PsiModifier.STATIC)) {
                         continue
                     }
 
@@ -216,11 +212,13 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
 
     }
 
-    private fun doGenerateWhereSimpleCriterion(where: Where,
-                                         psiElement: PsiElement,
-                                         prefix: String?,
-                                         andOr: AndOr,
-                                         criterionType: CriterionType){
+    private fun doGenerateWhereSimpleCriterion(
+        where: Where,
+        psiElement: PsiElement,
+        prefix: String?,
+        andOr: AndOr,
+        criterionType: CriterionType
+    ) {
 
         val test = generateTest(psiElement, prefix)
         val column = generateColumn(psiElement)

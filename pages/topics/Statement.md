@@ -54,3 +54,29 @@
     </insert>
 </mapper>
 ```
+
+## Select
+
+```xml
+<select id="selectMethod" resultType="{}" resultMap="{}">
+    SELECT
+    <include refid="columns"/>
+    FROM
+    <include refid="table"/>
+    <where>
+        
+    </where>
+</select>
+```
+
+## DELETE
+
+```xml
+<delete id="deleteMethod">
+    DELETE FROM
+    <include refid="table"/>
+    <where>
+        
+    </where>
+</delete>
+```
