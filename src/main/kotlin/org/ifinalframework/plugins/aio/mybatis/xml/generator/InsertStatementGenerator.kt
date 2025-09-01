@@ -178,8 +178,8 @@ class InsertStatementGenerator : AbstractStatementGenerator<Insert>() {
 
             val fields = getInsertFields(modelClass, table)
 
-            val columns = fields.joinToString("\n") { "`${MapperUtils.generateColumn(project, it, table)}`," }
-            val values = fields.joinToString("\n") { "#{item.${MapperUtils.generateSqlParam(project, it)}}," }
+            val columns = fields.joinToString("\n") { "`${generateColumn( it)}`," }
+            val values = fields.joinToString("\n") { "#{item.${generateSqlParam( it)}}," }
 
             MapperUtils.appendSql(project, columnsTrim, columns)
             MapperUtils.appendSql(project, valuesTrim, values)
@@ -205,7 +205,7 @@ class InsertStatementGenerator : AbstractStatementGenerator<Insert>() {
             return psiClass.allFields.toList()
         }
 
-        return psiClass.allFields.filter { !autoIncColumns.contains(MapperUtils.generateColumn(psiClass.project, it, null)) }.toList()
+        return psiClass.allFields.filter { !autoIncColumns.contains(generateColumn(it)) }.toList()
 
     }
 
@@ -229,9 +229,9 @@ class InsertStatementGenerator : AbstractStatementGenerator<Insert>() {
 
         for (field in insertFields) {
 
-            val test = MapperUtils.generateTest(project, field.type, null, field.name)
-            val column = MapperUtils.generateColumn(project, field)
-            val sqlParam = MapperUtils.generateSqlParam(project, field)
+            val test = generateTest(field)
+            val column = generateColumn( field)
+            val sqlParam = generateSqlParam(field)
 
             columnsTrim.addIf().apply {
                 getTest().stringValue = test

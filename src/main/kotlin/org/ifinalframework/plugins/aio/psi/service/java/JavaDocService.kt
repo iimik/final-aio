@@ -56,6 +56,12 @@ class JavaDocService : DocService {
         } else null
     }
 
+    override fun hasTag(element: PsiElement, tag: String): Boolean {
+        val psiDocComment = getDocComment(element) ?: return false
+        val docTags = psiDocComment.tags
+        return docTags.stream().filter { it is PsiDocTag && it.name.equals(tag, ignoreCase = true) }.findAny().isPresent
+    }
+
     override fun findTagValueByTag(element: PsiElement, tag: String): String? {
         val psiDocComment = getDocComment(element) ?: return null
         val docTags = psiDocComment.tags

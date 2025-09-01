@@ -83,6 +83,7 @@ class SelectStatementGenerator : AbstractStatementGenerator<Select>() {
 
     }
 
+
     private fun resolveReturnType(method: PsiMethod): PsiType? {
         val psiType = method.returnType ?: return null
 

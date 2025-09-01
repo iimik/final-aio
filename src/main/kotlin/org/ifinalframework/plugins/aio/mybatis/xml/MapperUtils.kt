@@ -4,20 +4,14 @@ import com.intellij.database.util.common.isNotNullOrEmpty
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiType
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomUtil
 import org.ifinalframework.plugins.aio.datasource.model.Table
-import org.ifinalframework.plugins.aio.datasource.service.DataSourceService
 import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
 import org.ifinalframework.plugins.aio.mybatis.xml.MapperUtils.createTableSql
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Sql
-import org.ifinalframework.plugins.aio.mybatis.xml.generator.ColumnGenerator
-import org.ifinalframework.plugins.aio.mybatis.xml.generator.SqlParamGenerator
-import org.ifinalframework.plugins.aio.mybatis.xml.generator.TestGenerator
 import org.ifinalframework.plugins.aio.psi.service.DocService
-import org.ifinalframework.plugins.aio.util.CaseFormatUtils
 import org.ifinalframework.plugins.aio.util.XmlUtils
 
 /**
@@ -107,22 +101,10 @@ object MapperUtils {
 
     fun appendSql(project: Project, domElement: DomElement, sql: String, psiElement: PsiElement? = null): PsiElement {
         val element = XmlUtils.createElement(project, sql)
-        if(psiElement != null) {
+        if (psiElement != null) {
             return domElement.xmlTag!!.addAfter(element, psiElement)
         }
         return domElement.xmlTag!!.add(element)
-    }
-
-    fun generateColumn(project: Project, psiElement: PsiElement, table: Table? = null): String {
-        return service<ColumnGenerator>().generate(project, psiElement, table)
-    }
-
-    fun generateSqlParam(project: Project, psiElement: PsiElement): String {
-        return service<SqlParamGenerator>().generate(project, psiElement)
-    }
-
-    fun generateTest(project: Project, psiType: PsiType, prefix: String? = null, name: String): String {
-        return service<TestGenerator>().generate(project, psiType, prefix, name)
     }
 
 }
