@@ -77,8 +77,7 @@ class SelectStatementGenerator : AbstractStatementGenerator<Select>() {
             "SELECT ",
             "<include refid=\"${tableSql!!.getId().stringValue}\"/>",
             "FROM ",
-            "<include refid=\"${columnSql!!.getId().stringValue}\"/>",
-            "<where></where>"
+            "<include refid=\"${columnSql!!.getId().stringValue}\"/>"
         )
 
     }

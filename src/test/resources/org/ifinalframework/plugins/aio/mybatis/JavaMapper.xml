@@ -8,6 +8,15 @@
         `id`
         , `name`, `age`
     </sql>
+    <delete id="deleteById">
+        DELETE FROM
+        <include refid="table"/>
+        <where>
+            <if test="null != id">
+                AND id = #{id}
+            </if>
+        </where>
+    </delete>
     <select id="selectByIdAndName" resultType="org.ifinalframework.plugins.aio.mybatis.JavaModel">
         SELECT
         <include refid="table"/>

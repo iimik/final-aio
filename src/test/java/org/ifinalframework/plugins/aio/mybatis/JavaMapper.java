@@ -31,6 +31,8 @@ public interface JavaMapper {
 
     int delete();
 
+    int deleteById(@Param("id") Integer id);
+
     int select();
 
     JavaModel selectById(@Param("id") Long id);

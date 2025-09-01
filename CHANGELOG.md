@@ -8,6 +8,7 @@
 
 - MyBatis
   - SQL片段支持表`table`和列`columns`补全
+  - Statement生成支持`insert`、`select`和`delete`，自动生成列和`<where>`
 
 ## [0.0.21] - 2025-08-07
 

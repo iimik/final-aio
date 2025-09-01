@@ -41,8 +41,7 @@ class UpdateStatementGenerator : AbstractStatementGenerator<Update>() {
             project, statement,
             "UPDATE ",
             "<include refid=\"${tableSql.getId().stringValue}\"/>",
-            "<set></set>",
-            "<where></where>"
+            "<set></set>"
         )
     }
 

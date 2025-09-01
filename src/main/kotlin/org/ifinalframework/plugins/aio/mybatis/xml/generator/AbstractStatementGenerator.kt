@@ -148,18 +148,16 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
      *
      */
     protected fun generateWhere(statement: Statement, method: UMethod, table: Table) {
-        val wheres = statement.getWheres()
-        if (wheres.isEmpty()) {
-            return
-        }
-
-        val where = wheres[0]
 
         val parameters = method.parameterList.parameters
         if (parameters.isEmpty()) {
             // 没有参数，不需要处理
             return
         }
+
+        val wheres = statement.getWheres()
+
+        val where = if(wheres.isEmpty()) statement.addWhere() else wheres[0]
 
         for (parameter in parameters) {
             doGenerateWhere(where, parameter, parameters.size == 1)
