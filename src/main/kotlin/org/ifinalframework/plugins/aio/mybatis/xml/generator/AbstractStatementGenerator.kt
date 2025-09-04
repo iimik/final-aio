@@ -16,7 +16,6 @@ import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Insert
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Statement
-import org.ifinalframework.plugins.aio.mybatis.xml.dom.Where
 import org.ifinalframework.plugins.aio.mybatis.xml.model.AndOr
 import org.ifinalframework.plugins.aio.mybatis.xml.model.CriterionType
 import org.ifinalframework.plugins.aio.psi.service.DocService
@@ -153,31 +152,48 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
 
         val wheres = statement.getWheres()
 
-        val where = if (wheres.isEmpty()) statement.addWhere() else wheres[0]
+        val list = mutableListOf<String>()
 
         for (parameter in parameters) {
-            doGenerateWhere(where, parameter, parameters.size == 1)
+            doGenerateWhere(list, parameter, parameters.size == 1)
+
+            if (list.isEmpty()) {
+                return
+            }
+
+            if (wheres.isEmpty()) {
+                var where = list.joinToString("\n")
+                if (where.startsWith("and ", ignoreCase = true) || where.startsWith("or ", ignoreCase = true)) {
+                    where = where.substringAfter(" ")
+                }
+                val element = XmlUtils.createElement(method.project, "<where>\n$where\n</where>")
+                statement.xmlTag!!.add(element)
+            } else {
+                // TODO
+            }
+
         }
 
     }
 
-    private fun doGenerateWhere(where: Where, parameter: PsiParameter, isSingleParam: Boolean) {
+
+    private fun doGenerateWhere(where: MutableList<String>, parameter: PsiParameter, isSingleParam: Boolean) {
         val paramAnnotation = annotationService.findAnnotationAttributes(parameter, MybatisConstants.PARAM)
         val prefix: String? = (if (paramAnnotation != null) paramAnnotation["value"] else null) as String?
         val name = getName(parameter)
         val type = getType(parameter)
         if ("id" == name) {
             // where id = #{id}
-            doGenerateWhereCriterion(where, parameter, null, AndOr.AND, CriterionType.EQUAL)
+            doGenerateWhereCriterion(where, parameter, null, AndOr.AND, CriterionType.EQUAL, true)
         } else if ("ids" == name) {
             // where ids in #{ids.item}
-            doGenerateWhereCriterion(where, parameter, null, AndOr.AND, CriterionType.IN)
+            doGenerateWhereCriterion(where, parameter, null, AndOr.AND, CriterionType.IN, true)
         } else {
             if (type is PsiClassReferenceType) {
                 val qualifiedName = type.reference.qualifiedName ?: return
 
                 if (qualifiedName == "java.lang.String") {
-                    doGenerateWhereCriterion(where, parameter, null, AndOr.AND, CriterionType.EQUAL)
+                    doGenerateWhereCriterion(where, parameter, null, AndOr.AND, CriterionType.EQUAL, false)
                 }
 
                 if (qualifiedName.startsWith("java.")) {
@@ -189,7 +205,7 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
                         continue
                     }
 
-                    doGenerateWhereCriterion(where, psiField, prefix, AndOr.AND, CriterionType.EQUAL)
+                    doGenerateWhereCriterion(where, psiField, prefix, AndOr.AND, CriterionType.EQUAL, false)
 
                 }
             }
@@ -197,56 +213,79 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
     }
 
     private fun doGenerateWhereCriterion(
-        where: Where,
+        where: MutableList<String>,
         psiElement: PsiElement,
         prefix: String?,
         andOr: AndOr,
-        criterionType: CriterionType
+        criterionType: CriterionType,
+        required: Boolean
     ) {
 
         when (criterionType) {
-            CriterionType.IN -> doGenerateWhereInCriterion(where, psiElement, prefix, andOr, criterionType)
-            CriterionType.NOT_INT -> doGenerateWhereInCriterion(where, psiElement, prefix, andOr, criterionType)
-            else -> doGenerateWhereSimpleCriterion(where, psiElement, prefix, andOr, criterionType)
+            CriterionType.IN -> doGenerateWhereInCriterion(where, psiElement, prefix, andOr, criterionType, required)
+            CriterionType.NOT_INT -> doGenerateWhereInCriterion(where, psiElement, prefix, andOr, criterionType, required)
+            else -> doGenerateWhereSimpleCriterion(where, psiElement, prefix, andOr, criterionType, required)
         }
 
     }
 
     private fun doGenerateWhereSimpleCriterion(
-        where: Where,
+        where: MutableList<String>,
         psiElement: PsiElement,
         prefix: String?,
         andOr: AndOr,
-        criterionType: CriterionType
+        criterionType: CriterionType,
+
+        required: Boolean
     ) {
 
         val test = generateTest(psiElement, prefix)
         val column = generateColumn(psiElement)
         val sqlParam = generateSqlParam(psiElement)
         val param = Stream.of<String>(prefix, sqlParam).filter { Objects.nonNull(it) }.collect(Collectors.joining("."))
-        val sql = """
+
+        if (required) {
+            where.add("$andOr $column ${criterionType.operation} #{$param}")
+        } else {
+            where.add(
+                """
               <if test="$test">
                 $andOr $column ${criterionType.operation} #{$param}
               </if>          
         """.trimIndent()
-        val ifSql = XmlUtils.createElement(psiElement.project, sql)
-        where.xmlTag!!.add(ifSql)
+            )
+        }
+
+
     }
 
     private fun doGenerateWhereInCriterion(
-        where: Where,
+        where: MutableList<String>,
         psiElement: PsiElement,
         prefix: String?,
         andOr: AndOr,
-        criterionType: CriterionType
+        criterionType: CriterionType,
+        required: Boolean
     ) {
         val test = generateTest(psiElement, prefix)
         val name = getName(psiElement)
         val column = generateColumn(psiElement)
         val collection = Stream.of<String>(prefix, name).filter { Objects.nonNull(it) }.collect(Collectors.joining("."))
 
-        val ifSql = XmlUtils.createElement(
-            psiElement.project, """
+
+        if (required) {
+            // 不需要<if test>
+            where.add("$andOr $column ${criterionType.operation}")
+            where.add(
+                """
+                <foreach collection="$collection" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            """.trimIndent()
+            )
+        } else {
+            where.add(
+                """
             <if test="$test">
                 $andOr $column ${criterionType.operation}
                 <foreach collection="$collection" item="item" open="(" close=")" separator=",">
@@ -254,8 +293,8 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
                 </foreach>
             </if>
         """.trimIndent()
-        )
-        where.xmlTag!!.add(ifSql)
+            )
+        }
 
     }
 

@@ -79,6 +79,9 @@ data class MyBatisProperties(
     data class TableSqlFragment(
         var enable: Boolean = true,
         var ids: String = "table",
+        /**
+         * 表名前缀
+         */
         var prefix: String = "t_"
     )
 
@@ -102,6 +105,20 @@ data class MyBatisProperties(
         var resultMapProperty: Boolean = true,
         var resultMapResult: Boolean = true,
     )
+
+    data class OrderBySqlFragment(
+        var enable: Boolean = true,
+        /**
+         * 排序字段名
+         */
+        var orderByFieldName: String = "orderBy",
+        /**
+         * 排序方向字段名
+         */
+        var orderByDirectionFileName: String = "orderDirection",
+
+
+        )
 
 
     enum class MapperXmlPath {

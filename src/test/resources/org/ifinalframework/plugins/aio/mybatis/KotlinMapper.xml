@@ -2,15 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.ifinalframework.plugins.aio.mybatis.KotlinMapper">
     <sql id="table">
-        t_table
+        t_java
     </sql>
     <sql id="columns">
         `id`, `name`, `age`
     </sql>
-    <insert id="insert"/>
 
-
-    <select id="select" resultType="java.lang.Integer">
+    <insert id="insertBatch" useGeneratedKeys="true" keyProperty="list.id">
+        INSERT INTO
+        <include refid="table"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `name1`,
+            `age`,
+        </trim>
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{item.name},
+                #{item.age, typeHandler=org.ifinalframework.plugins.aio.mybatis.MyTypeHandler},
+            </trim>
+        </foreach>
+    </insert>
+    <select id="selectSingle" resultType="org.ifinalframework.plugins.aio.mybatis.ResultMap">
         SELECT
         <include refid="table"/>
         FROM

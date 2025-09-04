@@ -8,39 +8,16 @@
         `id`
         , `name`, `age`
     </sql>
-    <delete id="deleteById">
-        DELETE FROM
-        <include refid="table"/>
-        <where>
-            <if test="null != id">
-                AND id = #{id}
-            </if>
-        </where>
-    </delete>
-    <select id="selectByIdAndName" resultType="org.ifinalframework.plugins.aio.mybatis.JavaModel">
+    <select id="selectByIds" resultType="org.ifinalframework.plugins.aio.mybatis.JavaModel">
         SELECT
         <include refid="table"/>
         FROM
         <include refid="columns"/>
         <where>
-            <if test="null != id">
-                AND id = #{id}
-            </if>
-            <if test="null != name and name != ''">
-                AND name = #{name}
-            </if>
-            <if test="null != query.id">
-                AND id = #{query.id, typeHandler=org.ifinalframework.plugins.aio.mybatis.MyTypeHandler}
-            </if>
-            <if test="null != query.ids and query.ids.size > 0">
-                AND id = #{query.ids}
-            </if>
-            <if test="null != query.name and query.name != ''">
-                AND name = #{query.name}
-            </if>
-            <if test="null != query.age">
-                AND age = #{query.age}
-            </if>
+            id IN
+            <foreach collection="ids" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
         </where>
     </select>
 
