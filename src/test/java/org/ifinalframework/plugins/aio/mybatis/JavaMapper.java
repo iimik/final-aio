@@ -3,18 +3,22 @@ package org.ifinalframework.plugins.aio.mybatis;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * JavaMapper
- *
  * @author iimik
  * @since 0.0.4
  **/
 public interface JavaMapper {
-    int insert();
+    int insert(JavaModel model);
+
+    int insertList(List<JavaModel> list);
 
     default int defaultInsert() {
-        return insert();
+        return insert(null);
     }
 
     @Insert("")
@@ -27,7 +31,15 @@ public interface JavaMapper {
 
     int delete();
 
+    int deleteById(@Param("id") Integer id);
+
     int select();
 
-    int selectSingle(JavaQuery query);
+    JavaModel selectById(@Param("id") Long id);
+
+    List<JavaModel> selectByIds(@Param("ids") List<Long> ids);
+
+    JavaModel selectByIdAndName(@Param("id") Long id, @Param("name") String name, @Param("query") JavaQuery query);
+
+    JavaModel selectSingle(JavaQuery query);
 }

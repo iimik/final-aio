@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.ifinalframework.plugins.aio.mybatis.JavaMapper">
-
-
-    <insert id="insert">
-        INSERT INTO
+    <sql id="table">
+        t_java
+    </sql>
+    <sql id="columns">
+        `id`
+        , `name`, `age`
+    </sql>
+    <select id="selectByIds" resultType="org.ifinalframework.plugins.aio.mybatis.JavaModel">
+        SELECT
         <include refid="table"/>
-        (name)
-        VALUE (#{})
-    </insert>
-    <delete id="delete">
-        
-    </delete>
-    <delete id="delete2">
-
-    </delete>
-    <update id="update"></update>
-    <select id="select" resultType="java.lang.String" resultMap="resultMap2">
-
-    </select>
-    <select id="selectResultMaps" resultMap="resultMap2"></select>
-    <select id="selectSingle" resultType="java.lang.Integer">
-       #{id,typeHandler=haha.java.typeHandler}
+        FROM
+        <include refid="columns"/>
+        <where>
+            id IN
+            <foreach collection="ids" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </where>
     </select>
 
 

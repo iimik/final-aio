@@ -28,7 +28,7 @@ class ResultMapIdReferenceConverter : CustomReferenceConverter<GenericAttributeV
 
         val mapper = MyBatisUtils.getMapper(context.invocationElement)
 
-        val resultMaps = mapper.getSelects().filter { resultMapId == it.getResultMap().rawText }.map { it.getResultMap() }.toList()
+        val resultMaps = mapper.getSelects().filter { resultMapId == it.getResultMap().stringValue }.map { it.getResultMap() }.toList()
         return resultMaps.map { GenericDomValueReference(it) }.toTypedArray()
     }
 }

@@ -24,6 +24,10 @@ class DefaultDocService() : DocService {
         return docService.getTagValue(element)
     }
 
+    override fun hasTag(element: PsiElement, tag: String): Boolean {
+        return docService.hasTag(element, tag)
+    }
+
     override fun findTagValueByTag(element: PsiElement, tag: String): String? {
         return docService.findTagValueByTag(element, tag)
     }

@@ -14,4 +14,14 @@ import org.ifinalframework.plugins.aio.application.annotation.EDT
 interface NotificationService {
     @EDT
     fun notify(displayType: NotificationDisplayType, content: String, notificationType: NotificationType)
+
+    @EDT
+    fun info(content: String){
+        notify(NotificationDisplayType.TOOL_WINDOW, content, NotificationType.INFORMATION)
+    }
+
+    @EDT
+    fun error(content: String){
+        notify(NotificationDisplayType.TOOL_WINDOW, content, NotificationType.ERROR)
+    }
 }

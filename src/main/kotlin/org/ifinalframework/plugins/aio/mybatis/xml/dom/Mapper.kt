@@ -18,9 +18,19 @@ interface Mapper : DomElement {
     @Convert(MapperConverter::class)
     fun getNamespace(): GenericAttributeValue<PsiClass>
 
+    /**
+     * ```xml
+     * <resultMap/>
+     * ```
+     */
     @SubTagList("resultMap")
     fun getResultMaps(): List<ResultMap>
 
+    /**
+     * ```xml
+     * <sql id="{id}"/>
+     * ```
+     */
     @SubTagList("sql")
     fun getSqls(): List<Sql>
 

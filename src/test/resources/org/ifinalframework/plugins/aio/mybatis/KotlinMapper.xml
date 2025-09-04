@@ -1,51 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.ifinalframework.plugins.aio.mybatis.KotlinMapper">
-
-    <resultMap id="baseMap" type="org.ifinalframework.plugins.aio.mybatis.ResultMap">
-
-        <result column="name" property="name"/>
-    </resultMap>
-
-    <resultMap id="resultMap" type="org.ifinalframework.plugins.aio.mybatis.ResultMap" extends="resultMap">
-        <id column="id" property="id" />
-        <result column="id" property="age"/>
-    </resultMap>
-
-    <resultMap id="resultMap2" type="org.ifinalframework.plugins.aio.mybatis.ResultMap" extends="baseMap">
-        <id column="id" property="id"/>
-        <result column="id" property="id"/>
-    </resultMap>
-
     <sql id="table">
-
+        t_java
+    </sql>
+    <sql id="columns">
+        `id`, `name`, `age`
     </sql>
 
-    <insert id="insert">
+    <insert id="insertBatch" useGeneratedKeys="true" keyProperty="list.id">
         INSERT INTO
         <include refid="table"/>
-        (name)
-        VALUE (#{})
-    </insert>
-    <insert id="insert3"></insert>
-    <delete id="delete"></delete>
-
-    <delete id="delete2">
-
-    </delete>
-    <delete id="remove"></delete>
-    <update id="update"></update>
-    <update id="test"></update>
-    <select id="select" resultType="java.lang.String" resultMap="resultMap2">
-
-    </select>
-    <select id="selectResultMaps" resultMap="baseMap"></select>
-    <select id="selectSingle" resultMap="baseMap">
-        #{a}
-        <foreach collection="tags" open="(" close=")" separator="," item="item">
-            #{st}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `name1`,
+            `age`,
+        </trim>
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{item.name},
+                #{item.age, typeHandler=org.ifinalframework.plugins.aio.mybatis.MyTypeHandler},
+            </trim>
         </foreach>
+    </insert>
+    <select id="selectSingle" resultType="org.ifinalframework.plugins.aio.mybatis.ResultMap">
+        SELECT
+        <include refid="table"/>
+        FROM
+        <include refid="columns"/>
+        <where></where>
     </select>
-
-
 </mapper>

@@ -56,6 +56,22 @@ class KotlinDocService : DocService {
         } else null
     }
 
+    override fun hasTag(element: PsiElement, tag: String): Boolean {
+        val kDoc = findKDoc(element) ?: return false
+
+        val kTag = KDocKnownTag.findByTagName(tag)
+        if (kTag != null) {
+            return true
+        }
+
+        return R.computeInRead {
+            kDoc.children
+                .filterIsInstance<KDocSection>()
+                .flatMap { it.findTagsByName(tag) }
+                .isNotEmpty()
+        }!!
+    }
+
     override fun findTagValueByTag(element: PsiElement, tag: String): String? {
         val kDoc = findKDoc(element) ?: return null
 

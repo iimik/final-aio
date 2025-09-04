@@ -9,23 +9,29 @@ import org.ifinalframework.plugins.aio.mybatis.xml.converter.ResultMapConverter
 
 
 /**
- * Select
+ * ```xml
+ * <select id="">
+ * ```
  *
  * @author iimik
  * @since 0.0.4
  **/
 interface Select : Statement {
 
-    @NameValue
+    /**
+     * 查询返回的结果类型
+     */
+    @NameValue(unique = false)
     @Attribute("resultType")
     fun getResultType(): GenericAttributeValue<PsiClass>
 
     /**
-     * @see [ResultMap.getId]
+     * 查询返回的结果集
+     * @see [ResultMap]
      */
-    @NameValue
+    @NameValue(unique = false)
     @Attribute("resultMap")
     @Convert(ResultMapConverter::class)
-    fun getResultMap(): GenericAttributeValue<String>
+    fun getResultMap(): GenericAttributeValue<ResultMap>
 
 }

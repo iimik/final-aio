@@ -26,6 +26,8 @@ interface DocService {
 
     fun getTagValue(element: PsiElement): String?
 
+    fun hasTag(element: PsiElement, tag: String): Boolean
+
     fun findTagValueByTag(element: PsiElement, tag: String): String?
 
     fun getLineComment(element: PsiElement): String?

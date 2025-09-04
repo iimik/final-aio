@@ -16,9 +16,11 @@ import com.intellij.psi.xml.XmlToken
 import com.intellij.util.PlatformIcons
 import com.intellij.util.ProcessingContext
 import com.intellij.util.xml.DomUtil
+import org.ifinalframework.plugins.aio.datasource.service.DataSourceService
 import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
 import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
+import org.ifinalframework.plugins.aio.mybatis.xml.MapperUtils
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.*
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.resource.AllIcons
@@ -38,6 +40,31 @@ private const val TEST_COMPLETION_END_PLACE_HOLDER = "\${END_TARGET}"
  *
  * Statement.id属性使用对应的mapper中声明的方法进行补全
  *
+ * ## ResultMap
+ *
+ * 对引用了`<resultMap>`的属性进行补全，支持以下属性：
+ *
+ * - `<resultMap extends="{resultMap.id}"`
+ * - `<select resultMap="{resultMap.id}"/>`
+ *
+ * 对`<resultMap>`子标签<id>和<result>中的`property`、`column`、`jdbcType`等属性进行补全：
+ *
+ * - `<id column="{column}" property="{property}" jdbcType="{jdbcType}"/>`
+ * - `<result column="{column}" property="{property}" jdbcType="{jdbcType}"/>`
+ *
+ * ## Include
+ *
+ * 对`<include>`标签的`refId`属性进行补全：
+ *
+ * - `<include refId="{sql.id}"`/>
+ *
+ * ## Test
+ *
+ * 对`test`属性标间补全：
+ *
+ * - `<if test="{test}"/>`
+ * - `<when test="{test}"/>`
+ *
  * @issue 33
  * @author iimik
  */
@@ -47,12 +74,14 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
 
     init {
         statementIdCompletion()
-        resultMapCompletion()
-        propertyCompletion()
+        resultMapReferenceCompletion()
+        resultMapColumnCompletion()
+        resultMapPropertyCompletion()
         foreachCompletion()
         jdbcTypeCompletion()
         includeRefidCompletion()
         testPropertyCompletion()
+        sqlIdCompletion()
     }
 
 
@@ -140,7 +169,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
      *
      * Note: 需要排除自身
      */
-    private fun resultMapCompletion() {
+    private fun resultMapReferenceCompletion() {
         val selectResultMap = XmlPatterns.psiElement().inside(
             XmlPatterns.xmlAttribute().withName("resultMap").inside(XmlPatterns.xmlTag().withName("select"))
         )
@@ -187,6 +216,70 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
 
     }
 
+
+    /**
+     * ```xml
+     * <id column=""/>
+     * <result column=""/>
+     * ```
+     */
+    private fun resultMapColumnCompletion() {
+        val column = XmlPatterns.psiElement()
+            .inside(
+                XmlPatterns.xmlAttributeValue()
+                    .inside(XmlPatterns.xmlAttribute().withName("column"))
+            )
+
+        Stream.of(column)
+            .forEach { place ->
+
+                thisLogger().info("columnCompletion: $place")
+
+                extend(
+                    CompletionType.BASIC,
+                    place,
+                    object : CompletionProvider<CompletionParameters>() {
+                        override fun addCompletions(
+                            parameters: CompletionParameters,
+                            context: ProcessingContext,
+                            result: CompletionResultSet
+                        ) {
+                            val position = parameters.position
+                            if (position !is XmlToken) return
+                            val domElement = DomUtil.getDomElement(position) ?: return
+                            val property = DomUtil.getParentOfType(domElement, ResultMap.Property::class.java, true) ?: return
+                            val parent = property.parent ?: return
+
+                            val project = position.project
+                            val tableName = MapperUtils.getTableName(project, property)
+                            val dataSourceService = project.service<DataSourceService>()
+                            val myBatisProperties = project.service<MyBatisProperties>()
+                            val tables = dataSourceService.getTables(myBatisProperties.tableSqlFragment.prefix)
+                            if (tables.isEmpty()) {
+                                return
+                            }
+
+                            val matchTables = tables.filter { tableName == it.logicTable }.toList()
+                            if (matchTables.isNotEmpty()) {
+                                // 找到了匹配的表
+                                val table = matchTables.get(0).actualTables[0]
+
+                                table.columns.forEach { column ->
+                                    result.addElement(
+                                        LookupElementBuilder.create(column.name)
+                                            .withTypeText("${column.dasType.toDataType()}(${table.comment})")
+                                    )
+                                }
+
+                                result.stopHere()
+                            }
+
+                        }
+                    })
+            }
+    }
+
+
     /**
      * ```xml
      * <id property=""/>
@@ -194,7 +287,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
      * ```
      * @see [jdbcTypeCompletion]
      */
-    private fun propertyCompletion() {
+    private fun resultMapPropertyCompletion() {
 
         val property = XmlPatterns.psiElement()
             .inside(
@@ -391,7 +484,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
      * <id jdbcType=""/>
      * <result jdbcType=""/>
      * ```
-     * @see [propertyCompletion]
+     * @see [resultMapPropertyCompletion]
      */
     private fun jdbcTypeCompletion() {
 
@@ -438,6 +531,46 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
     }
 
     /**
+     * SQL片段`id`属性补全
+     *
+     * 从以下配置中读取：
+     * - 表：[MyBatisProperties.TableSqlFragment.ids]
+     * - 列：[MyBatisProperties.ColumnSqlFragment.ids]
+     */
+    private fun sqlIdCompletion() {
+        val sqlId = XmlPatterns.psiElement().inside(
+            XmlPatterns.xmlAttribute().withName("id").inside(XmlPatterns.xmlTag().withName("sql"))
+        )
+
+        thisLogger().info("sqlIdCompletion: $sqlId")
+
+        extend(
+            CompletionType.BASIC,
+            sqlId,
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(
+                    parameters: CompletionParameters,
+                    context: ProcessingContext, result: CompletionResultSet
+                ) {
+                    val position = parameters.position
+                    if (position !is XmlToken) return
+                    val domElement = DomUtil.getDomElement(position) ?: return
+
+                    val myBatisProperties = position.project.service<MyBatisProperties>()
+                    myBatisProperties.tableSqlFragment.ids.split(",")
+                        .forEach { id ->
+                            result.addElement(LookupElementBuilder.create(id))
+                        }
+
+                    myBatisProperties.columnSqlFragment.ids.split(",")
+                        .forEach { id -> result.addElement(LookupElementBuilder.create(id)) }
+
+                    result.stopHere()
+                }
+            })
+    }
+
+    /**
      * `include`标签`refid`使用`sql.id`补全提示
      * ```xml
      * <include refid="{sqlId}"/>
@@ -448,7 +581,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
             XmlPatterns.xmlAttribute().withName("refid").inside(XmlPatterns.xmlTag().withName("include"))
         )
 
-        thisLogger().info("resultMapPropertyCompletion: $includeRefid")
+        thisLogger().info("includeRefidCompletion: $includeRefid")
 
         extend(
             CompletionType.BASIC,

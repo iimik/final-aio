@@ -59,9 +59,10 @@ class MyBatisConfigurable(val project: Project) : Configurable {
                     .label("Id:")
                     .align(Align.FILL)
                     .bindText(
-                        getter = { tableSqlFragment.id },
-                        setter = { tableSqlFragment.id = it }
+                        getter = { tableSqlFragment.ids },
+                        setter = { tableSqlFragment.ids = it }
                     )
+                    .comment("多个使用英文','分隔")
 
 
                 textField()
@@ -71,6 +72,27 @@ class MyBatisConfigurable(val project: Project) : Configurable {
                         getter = { tableSqlFragment.prefix },
                         setter = { tableSqlFragment.prefix = it }
                     )
+            }
+
+            // Column Sql Fragment
+            row {
+                val columnSqlFragment = myBatisProperties.columnSqlFragment
+                checkBox("Column Sql Fragment")
+                    .bindSelected(
+                        getter = { columnSqlFragment.enable },
+                        setter = { columnSqlFragment.enable = it }
+                    )
+
+                textField()
+                    .label("Id:")
+                    .align(Align.FILL)
+                    .bindText(
+                        getter = { columnSqlFragment.ids },
+                        setter = { columnSqlFragment.ids = it }
+                    )
+                    .comment("多个使用英文','分隔")
+
+
             }
 
         }.layout(RowLayout.LABEL_ALIGNED)
