@@ -7,7 +7,6 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.openapi.components.service
 import org.ifinalframework.plugins.aio.api.service.MarkdownService
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
-import org.ifinalframework.plugins.aio.psi.AbstractUastLocalInspectionTool
 import org.ifinalframework.plugins.aio.resource.I18N
 import org.jetbrains.kotlin.idea.base.util.module
 import org.jetbrains.uast.UElement
