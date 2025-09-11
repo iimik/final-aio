@@ -11,29 +11,60 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.PopupStep
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
+import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.intellij.GenericQuickFix
 import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
+import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
+import org.ifinalframework.plugins.aio.mybatis.xml.MapperUtils
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.ResultMap
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.resource.I18N
+import org.ifinalframework.plugins.aio.util.EditorUtils
+import org.jetbrains.uast.UClass
 import org.jetbrains.uast.UField
 import org.jetbrains.uast.getContainingUClass
 
 /**
  * ResultMap 检查
- *
- * 检查ResultMap类中的属性(`Field`)是否有在`<resultMap>`中定义，并提供快速修复方式。
- *
+ * - 检查ResultMap所在的Mapper是否有定义`<sql id="{sql.table.id}">`片段
+ * - 检查ResultMap类中的属性(`Field`)是否有在`<resultMap>`中定义，并提供快速修复方式。
  * @author iimik
  * @see org.ifinalframework.plugins.aio.mybatis.xml.dom.ResultMap
  */
 class ResultMapInspection : AbstractBaseUastLocalInspectionTool() {
+
+    override fun checkClass(uClass: UClass, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor?>? {
+        val qualifiedName = uClass.qualifiedName ?: return null
+        val resultMaps = manager.project.service<MapperService>().findResultMaps(qualifiedName)
+        if (resultMaps.isEmpty()) return null
+
+        val noTableResultMaps = resultMaps.filter {
+            val tableName = MapperUtils.getTableName(uClass.project, it)
+            tableName == null
+        }
+
+        if (noTableResultMaps.isNotEmpty()) {
+            val problemDescriptor = manager.createProblemDescriptor(
+                uClass.identifyingElement!!,
+                "ResultMap with type=\"${qualifiedName}\" can not found table.",
+                ResultMapTableNotExistsQuickFix(uClass),
+                ProblemHighlightType.ERROR,
+                isOnTheFly
+            )
+            return arrayOf(problemDescriptor)
+        }
+
+
+        return super.checkClass(uClass, manager, isOnTheFly)
+    }
+
+
     override fun checkField(field: UField, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor?>? {
 
         val myBatisProperties = field.project.service<MyBatisProperties>()
         // 未开启检查
-        if(!myBatisProperties.resultMapInspection){
+        if (!myBatisProperties.resultMapInspection) {
             return super.checkField(field, manager, isOnTheFly)
         }
 
@@ -54,7 +85,7 @@ class ResultMapInspection : AbstractBaseUastLocalInspectionTool() {
 
 
             val problemDescriptor = manager.createProblemDescriptor(
-                field.sourcePsi!!,
+                field.identifyingElement!!,
                 "ResultMap with type=\"${qualifiedName}\" not defined property of \"${field.name}\".",
                 ResultMapPropertyNotExistsQuickFix(field),
                 ProblemHighlightType.ERROR,
@@ -66,6 +97,29 @@ class ResultMapInspection : AbstractBaseUastLocalInspectionTool() {
 
 
         return super.checkField(field, manager, isOnTheFly)
+    }
+
+    private class ResultMapTableNotExistsQuickFix(val uClass: UClass) : GenericQuickFix() {
+        override fun getFamilyName(): String {
+            return "快速在Mapper中生成<sql id=\"table\">"
+        }
+
+        override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
+            val qualifiedName = uClass.qualifiedName ?: return
+            val resultMaps = project.service<MapperService>().findResultMaps(qualifiedName)
+            if (resultMaps.isEmpty()) return
+            for (resultMap in resultMaps) {
+                val tableName = MapperUtils.getTableName(uClass.project, resultMap)
+                if (tableName == null) {
+                    val mapper = MyBatisUtils.getMapper(resultMap)
+                    MyBatisUtils.doSelectTable(mapper.getNamespace().value!!) { table ->
+                        val tableSql = MapperUtils.generateTableSqlIfNotExists(project, mapper, table)
+                        EditorUtils.open(tableSql.xmlTag!!)
+                    }
+                }
+            }
+
+        }
     }
 
     private class ResultMapPropertyNotExistsQuickFix(val field: UField) : GenericQuickFix() {

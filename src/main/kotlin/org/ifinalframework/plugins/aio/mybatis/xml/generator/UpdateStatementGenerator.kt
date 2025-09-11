@@ -25,12 +25,7 @@ class UpdateStatementGenerator : AbstractStatementGenerator<Update>() {
     override fun generateStatement(mapper: Mapper, method: UMethod, table: Table): Update {
         val project = method.project
         return mapper.addUpdate().apply {
-            var tableSql = MapperUtils.getTableSql(project, mapper)
-
-            if (tableSql == null) {
-                tableSql = MapperUtils.createTableSql(project, mapper, table)
-            }
-
+            var tableSql = MapperUtils.generateTableSqlIfNotExists(project, mapper, table)
             doGenerateSql(project, this, tableSql!!)
 
         }

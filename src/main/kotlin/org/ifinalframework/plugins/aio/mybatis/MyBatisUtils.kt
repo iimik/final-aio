@@ -162,7 +162,6 @@ object MyBatisUtils {
         }
     }
 
-
     fun showTableSelectPopup(title: String, tables: List<Table>, consumer: Consumer<Table>) {
         JBPopupFactory.getInstance().createListPopup(
             object : BaseListPopupStep<Table>(

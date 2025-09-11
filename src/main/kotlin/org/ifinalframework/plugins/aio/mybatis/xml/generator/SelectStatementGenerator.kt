@@ -57,14 +57,8 @@ class SelectStatementGenerator : AbstractStatementGenerator<Select>() {
 
             }
 
-            var tableSql = MapperUtils.getTableSql(project, mapper)
-            var columnSql = MapperUtils.getColumnSql(project, mapper)
-            if (tableSql == null) {
-                tableSql = MapperUtils.createTableSql(project, mapper, table)
-            }
-            if (columnSql == null) {
-                columnSql = MapperUtils.createColumnSql(project, mapper, table)
-            }
+            var tableSql = MapperUtils.generateTableSqlIfNotExists(project, mapper,table)
+            var columnSql = MapperUtils.generateColumnSqlIfNotExists(project, mapper, table)
 
             doGenerateSql(project, this, tableSql!!, columnSql!!)
         }
