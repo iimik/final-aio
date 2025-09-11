@@ -1,5 +1,6 @@
 package org.ifinalframework.plugins.aio.api.inspection
 
+import com.intellij.codeInspection.AbstractBaseUastLocalInspectionTool
 import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemHighlightType
@@ -20,33 +21,28 @@ import org.jetbrains.uast.UMethod
  * @author iimik
  * @since 0.0.6
  **/
-class MarkdownInspection : AbstractUastLocalInspectionTool() {
+class MarkdownInspection : AbstractBaseUastLocalInspectionTool() {
 
-    override fun checkElement(element: UElement, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
 
-        if (element is UIdentifier) {
-            val uastParent = element.uastParent
-            if (uastParent is UMethod) {
-                val psiElement = element.sourcePsi ?: return null
-                val apiMarker = service<ApiMethodService>().getApiMarker(uastParent) ?: return null
-                val module = uastParent.module ?: return null
-                val markdownFile = service<MarkdownService>().findMarkdownFile(module, apiMarker)
+    override fun checkMethod(method: UMethod, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor?>? {
 
-                if (markdownFile == null) {
-                    val problemDescriptor = manager.createProblemDescriptor(
-                        psiElement,
-                        I18N.message("Api.MarkdownInspection.descriptionTemplate"),
-                        MarkdownNotExistsQuickFix(module, apiMarker),
-                        ProblemHighlightType.WEAK_WARNING,
-                        isOnTheFly
-                    )
-                    return arrayOf(problemDescriptor)
-                }
-            }
+        val apiMarker = service<ApiMethodService>().getApiMarker(method) ?: return null
+        val module = method.module ?: return null
+        val markdownFile = service<MarkdownService>().findMarkdownFile(module, apiMarker)
 
+        if (markdownFile == null) {
+            val problemDescriptor = manager.createProblemDescriptor(
+                method.identifyingElement!!,
+                I18N.message("Api.MarkdownInspection.descriptionTemplate"),
+                MarkdownNotExistsQuickFix(module, apiMarker),
+                ProblemHighlightType.WEAK_WARNING,
+                isOnTheFly
+            )
+            return arrayOf(problemDescriptor)
         }
 
-        return super.checkElement(element, manager, isOnTheFly)
 
+        return super.checkMethod(method, manager, isOnTheFly)
     }
+
 }
