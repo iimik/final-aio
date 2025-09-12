@@ -13,6 +13,7 @@ import org.jetbrains.uast.*
 /**
  * JvmMapperLineMarkerService
  *
+ *
  * @author iimik
  * @since 0.0.4
  * @see [StatementLineMarkerService]
@@ -38,13 +39,9 @@ class JvmMapperLineMarkerService : MapperLineMarkerService<PsiElement> {
             return null
         }
 
-        if (uElement !is UIdentifier) return null
-
-        val parent = uElement.uastParent ?: return null
-
-        return when (parent) {
-            is UClass -> processClass(parent)
-            is UMethod -> if (myBatisProperties.lineMarker.mapperMethod) processMethod(parent) else null
+        return when (uElement) {
+            is UClass -> processClass(uElement)
+            is UMethod -> if (myBatisProperties.lineMarker.mapperMethod) processMethod(uElement) else null
             else -> null
         }
 

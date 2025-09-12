@@ -33,6 +33,21 @@
             </if>
         </trim>
     </insert>
+    <insert id="insertList" useGeneratedKeys="true" keyProperty="list.id">
+        INSERT INTO
+        <include refid="table"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `name1`,
+            `age`,
+        </trim>
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{item.name},
+                #{item.age, typeHandler=org.ifinalframework.plugins.aio.mybatis.MyTypeHandler},
+            </trim>
+        </foreach>
+    </insert>
     <select id="selectById" resultMap="JavaModel">
         SELECT
         <include refid="table"/>

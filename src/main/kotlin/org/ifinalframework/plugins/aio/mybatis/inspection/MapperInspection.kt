@@ -5,6 +5,7 @@ import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.openapi.components.service
+import com.intellij.util.containers.toArray
 import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 import org.ifinalframework.plugins.aio.mybatis.service.JvmMapperLineMarkerService
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
@@ -12,6 +13,7 @@ import org.ifinalframework.plugins.aio.service.PsiService
 import org.jetbrains.uast.UClass
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.getContainingUClass
+import java.util.stream.Stream
 
 
 /**
@@ -65,16 +67,32 @@ class MapperInspection : AbstractBaseUastLocalInspectionTool() {
      * 检查方法是否有定义statement
      */
     override fun checkMethod(method: UMethod, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor?>? {
-        val sourcePsi = method.sourcePsi ?: return null
 
         val uClass = method.getContainingUClass() ?: return null
 
         if (!MyBatisUtils.isMapper(uClass)) return null
+
+        val problemDescriptors = Stream.of<ProblemDescriptor?>(
+            buildMethodStatementNotExistsProblemDescriptor(method, manager, isOnTheFly)
+        ).filter { it != null }
+            .toList()
+
+        if(problemDescriptors.isEmpty()){
+            return null
+        }
+
+        return problemDescriptors.toArray(emptyArray<ProblemDescriptor>())
+    }
+
+    private fun buildMethodStatementNotExistsProblemDescriptor(
+        method: UMethod,
+        manager: InspectionManager,
+        isOnTheFly: Boolean
+    ): ProblemDescriptor? {
         val mapperService = service<JvmMapperLineMarkerService>()
-        val marker = mapperService.apply(sourcePsi)
+        val marker = mapperService.apply(method.sourcePsi!!)
 
-        if (marker != null && marker.targets == null) {
-
+        return if (marker != null && marker.targets == null) {
             val problemDescriptor = manager.createProblemDescriptor(
                 method.identifyingElement!!,
                 "Statement with id=\"#ref\" not defined in mapper XML",
@@ -82,12 +100,12 @@ class MapperInspection : AbstractBaseUastLocalInspectionTool() {
                 ProblemHighlightType.GENERIC_ERROR,
                 isOnTheFly
             )
-            return arrayOf(problemDescriptor)
+             problemDescriptor
 
 
+        } else {
+             null
         }
-
-        return null
     }
 
 

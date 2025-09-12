@@ -3,6 +3,7 @@ package org.ifinalframework.plugins.aio.mybatis;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  * @author iimik
  * @since 0.0.4
  **/
+@Mapper
 public interface JavaMapper {
     int insert(JavaModel model);
 
@@ -27,7 +29,7 @@ public interface JavaMapper {
     @InsertProvider
     int insertWithProvider();
 
-    int update();
+    int update2();
 
     int delete();
 
