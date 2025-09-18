@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.issue;
+package org.ifinalframework.plugins.aio.tasks;
 
 import org.apache.commons.lang3.StringUtils
 
@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils
 /**
  * JiraIssueUrlFormatter
  * @issue 12
+ * @jira 2868
  * @jira 1 https://iimik.atlassian.net/browse/AIO-1
  * @author iimik
  * @since 0.0.1

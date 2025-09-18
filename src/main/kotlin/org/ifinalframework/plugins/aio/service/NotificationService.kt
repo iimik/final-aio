@@ -21,6 +21,11 @@ interface NotificationService {
     }
 
     @EDT
+    fun warn(content: String){
+        notify(NotificationDisplayType.TOOL_WINDOW, content, NotificationType.WARNING)
+    }
+
+    @EDT
     fun error(content: String){
         notify(NotificationDisplayType.TOOL_WINDOW, content, NotificationType.ERROR)
     }

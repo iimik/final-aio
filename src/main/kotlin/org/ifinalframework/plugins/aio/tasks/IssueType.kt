@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.issue
+package org.ifinalframework.plugins.aio.tasks
 
 import com.intellij.util.containers.stream
 import org.ifinalframework.plugins.aio.resource.AllIcons

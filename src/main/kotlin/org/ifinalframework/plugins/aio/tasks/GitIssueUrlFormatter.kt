@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.issue
+package org.ifinalframework.plugins.aio.tasks
 
 import org.ifinalframework.plugins.aio.git.GitRemote
 
@@ -11,5 +11,5 @@ import org.ifinalframework.plugins.aio.git.GitRemote
  **/
 @FunctionalInterface
 interface GitIssueUrlFormatter {
-    fun format(remote: GitRemote, issue: Issue): String
+    fun format(remote: GitRemote, issue: TaskDoc): String
 }

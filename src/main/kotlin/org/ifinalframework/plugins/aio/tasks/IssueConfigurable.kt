@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.issue
+package org.ifinalframework.plugins.aio.tasks
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.options.Configurable

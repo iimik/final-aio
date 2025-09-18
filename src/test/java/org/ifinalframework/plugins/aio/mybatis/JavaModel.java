@@ -16,6 +16,9 @@ public class JavaModel {
         return id;
     }
 
+    /**
+     * @param id
+     */
     public void setId(Long id) {
         this.id = id;
     }

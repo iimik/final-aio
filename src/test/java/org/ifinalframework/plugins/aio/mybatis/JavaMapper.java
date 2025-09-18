@@ -10,6 +10,8 @@ import java.util.List;
 
 /**
  * JavaMapper
+ * @issue 1
+ * @jira AIO-1231
  * @author iimik
  * @since 0.0.4
  **/
