@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomUtil
+import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.datasource.model.Table
 import org.ifinalframework.plugins.aio.datasource.service.DataSourceService
 import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils.isMapper
@@ -18,6 +19,9 @@ import org.ifinalframework.plugins.aio.mybatis.xml.dom.Statement
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.service.NotificationService
 import org.ifinalframework.plugins.aio.util.CaseFormatUtils
+import org.jetbrains.uast.UClass
+import org.jetbrains.uast.UElement
+import org.jetbrains.uast.toUElement
 import java.util.function.Consumer
 
 
@@ -35,15 +39,30 @@ object MyBatisUtils {
      * 判断一个元素是不是Mapper
      * Mapper需要满足以下条件
      * - 是接口
-     * - 名称以Mapper结尾
+     * - 名称以Mapper结尾或者有`@Mapper`注解
      * @since 0.0.10
      * @see [isStatementMethod]
      */
     fun isMapper(element: PsiElement): Boolean {
-        return when (element) {
-            is PsiClass -> element.isInterface && element.name != null && element.name!!.endsWith(MAPPER) && element.name != MAPPER
-            else -> false
+
+        val uElement = if(element is UElement){
+            element
+        }else{
+            element.toUElement()?:return false
         }
+
+        // 必须是接口
+        if(uElement !is UClass || !uElement.isInterface) return false
+
+        // 有@Mapper注解
+        val mapperAnnotation = R.computeInRead { uElement.findAnnotation(MybatisConstants.MAPPER_ANNOTATION) }
+        if(mapperAnnotation != null){
+            return true
+        }
+
+        // 名称以Mapper结尾且不等于Mapper
+        return uElement.name != null && uElement.name!!.endsWith(MAPPER) && uElement.name != MAPPER
+
     }
 
     /**
@@ -161,7 +180,6 @@ object MyBatisUtils {
             consumer.accept(list[0])
         }
     }
-
 
     fun showTableSelectPopup(title: String, tables: List<Table>, consumer: Consumer<Table>) {
         JBPopupFactory.getInstance().createListPopup(

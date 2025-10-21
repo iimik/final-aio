@@ -1,6 +1,7 @@
 package org.ifinalframework.plugins.aio.mybatis.xml
 
 import com.intellij.database.util.common.isNotNullOrEmpty
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -8,11 +9,11 @@ import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomUtil
 import org.ifinalframework.plugins.aio.datasource.model.Table
 import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
-import org.ifinalframework.plugins.aio.mybatis.xml.MapperUtils.createTableSql
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Sql
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.util.XmlUtils
+import java.util.function.Consumer
 
 /**
  * MapperUtils
@@ -22,53 +23,52 @@ import org.ifinalframework.plugins.aio.util.XmlUtils
 object MapperUtils {
 
     /**
-     * 获取表SQL片段
-     * @see [MyBatisProperties.TableSqlFragment.ids]
-     * @see [createTableSql]
+     * 生成Table Sql 片段
+     *
+     * ```xml
+     * <sql id="myBatisProperties.tableSqlFragment.ids[0]">
+     *     {table_name}
+     * </sql>
+     * ```
      */
-    fun getTableSql(project: Project, mapper: Mapper): Sql? {
+    fun generateTableSqlIfNotExists(project: Project, mapper: Mapper, table: Table): Sql {
         val myBatisProperties = project.service<MyBatisProperties>()
         val ids = myBatisProperties.tableSqlFragment.ids.split(",").toSet()
-        return tryFoundSql(mapper, ids)
-    }
-
-    fun createTableSql(project: Project, mapper: Mapper, table: Table?): Sql {
-        val content = table?.logicTable ?: "-- TODO"
-        val myBatisProperties = project.service<MyBatisProperties>()
-        val ids = myBatisProperties.tableSqlFragment.ids.split(",").toSet()
-        return doCreateSqlFragment(mapper, ids, content)
-    }
-
-    fun createColumnSql(project: Project, mapper: Mapper, table: Table?): Sql {
-        val content = table?.actualTables[0]!!.columns.joinToString(", ") { "`${it.name}`" } ?: "-- TODO"
-        val myBatisProperties = project.service<MyBatisProperties>()
-        val ids = myBatisProperties.columnSqlFragment.ids.split(",").toSet()
-        return doCreateSqlFragment(mapper, ids, content)
+        val sql = mapper.getSqls().firstOrNull { ids.contains(it.getId().stringValue) }
+        if (sql != null) {
+            return sql
+        }
+        val id = ids.first()
+        return mapper.addSql().apply {
+            getId().stringValue = id
+            setValue("\n${table.logicTable}\n")
+        }
     }
 
     /**
-     * 获取列SQL片段
-     * @see [MyBatisProperties.ColumnSqlFragment.ids]
+     * 生成Column Sql片段
+     *
+     * ```xml
+     * <sql id="myBatisProperties.columnSqlFragment.ids[0]">
+     *     `column1`, `column2`, ...
+     * </sql>
+     * ```
      */
-    fun getColumnSql(project: Project, mapper: Mapper): Sql? {
+    fun generateColumnSqlIfNotExists(project: Project, mapper: Mapper, table: Table): Sql {
         val myBatisProperties = project.service<MyBatisProperties>()
         val ids = myBatisProperties.columnSqlFragment.ids.split(",").toSet()
-        return tryFoundSql(mapper, ids)
-
-
-    }
-
-    private fun tryFoundSql(mapper: Mapper, ids: Set<String>): Sql? {
-        return mapper.getSqls().firstOrNull { ids.contains(it.getId().stringValue) }
-    }
-
-    private fun doCreateSqlFragment(mapper: Mapper, ids: Set<String>, content: String): Sql {
+        val sql = mapper.getSqls().firstOrNull { ids.contains(it.getId().stringValue) }
+        if (sql != null) {
+            return sql
+        }
         val id = ids.first()
+        val content = table.actualTables[0]!!.columns.joinToString(", ") { "`${it.name}`" }
         return mapper.addSql().apply {
             getId().stringValue = id
             setValue("\n$content\n")
         }
     }
+
 
     fun getTableName(project: Project, domElement: DomElement): String? {
         val mapper = DomUtil.getParentOfType(domElement, Mapper::class.java, true) ?: return null

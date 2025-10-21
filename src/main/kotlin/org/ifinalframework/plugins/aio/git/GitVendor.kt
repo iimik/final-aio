@@ -3,7 +3,6 @@ package org.ifinalframework.plugins.aio.git
 
 /**
  * GitVendor
- *
  * @author iimik
  * @since 0.0.1
  **/

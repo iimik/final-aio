@@ -1,16 +1,19 @@
 package org.ifinalframework.plugins.aio.mybatis.inspection;
 
+import com.intellij.codeInspection.AbstractBaseUastLocalInspectionTool
 import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.openapi.components.service
-import com.intellij.psi.PsiElement
+import com.intellij.util.containers.toArray
 import org.ifinalframework.plugins.aio.mybatis.MyBatisUtils
 import org.ifinalframework.plugins.aio.mybatis.service.JvmMapperLineMarkerService
 import org.ifinalframework.plugins.aio.mybatis.service.MapperService
-import org.ifinalframework.plugins.aio.psi.AbstractUastLocalInspectionTool
 import org.ifinalframework.plugins.aio.service.PsiService
-import org.jetbrains.uast.*
+import org.jetbrains.uast.UClass
+import org.jetbrains.uast.UMethod
+import org.jetbrains.uast.getContainingUClass
+import java.util.stream.Stream
 
 
 /**
@@ -26,40 +29,16 @@ import org.jetbrains.uast.*
  * @author iimik
  * @since 0.0.4
  **/
-class MapperInspection : AbstractUastLocalInspectionTool() {
-
-    override fun checkElement(element: UElement, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-
-        if (element !is UIdentifier) return null
-
-        val sourcePsi = element.sourcePsi ?: return null
-        val parent = element.uastParent ?: return null
-
-        val uClass = element.getContainingUClass() ?: return null
-
-        if (!MyBatisUtils.isMapper(uClass)) return null
-
-        return when (parent) {
-            is UClass -> checkClass(sourcePsi, parent, manager, isOnTheFly)
-            is UMethod -> checkMethod(sourcePsi, parent, manager, isOnTheFly)
-            else -> null
-        }
-
-    }
-
+class MapperInspection : AbstractBaseUastLocalInspectionTool() {
 
     /**
      * 检查是否有定义Mapper.xml文件
      * @issue 42
      * @since 0.0.10
      */
-    private fun checkClass(
-        sourcePsi: PsiElement,
-        clazz: UClass,
-        manager: InspectionManager,
-        isOnTheFly: Boolean
-    ): Array<ProblemDescriptor>? {
-        val className = clazz.qualifiedName ?: return null
+    override fun checkClass(uClass: UClass, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor?>? {
+        val className = uClass.qualifiedName ?: return null
+        if (!MyBatisUtils.isMapper(uClass)) return null
         val project = manager.project
         val mappers = project.service<MapperService>().findMappers(className)
         if (mappers.isNotEmpty()) return null
@@ -75,40 +54,58 @@ class MapperInspection : AbstractUastLocalInspectionTool() {
 
 
         val problemDescriptor = manager.createProblemDescriptor(
-            sourcePsi,
+            uClass.identifyingElement!!,
             "Mapper with namespaces=\"#ref\" not defined.",
-            MapperNotExistsQuickFix(clazz),
+            MapperNotExistsQuickFix(uClass),
             problemHighlightType,
             isOnTheFly
         )
         return arrayOf(problemDescriptor)
     }
 
-    private fun checkMethod(
-        sourcePsi: PsiElement,
+    /**
+     * 检查方法是否有定义statement
+     */
+    override fun checkMethod(method: UMethod, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor?>? {
+
+        val uClass = method.getContainingUClass() ?: return null
+
+        if (!MyBatisUtils.isMapper(uClass)) return null
+
+        val problemDescriptors = Stream.of<ProblemDescriptor?>(
+            buildMethodStatementNotExistsProblemDescriptor(method, manager, isOnTheFly)
+        ).filter { it != null }
+            .toList()
+
+        if(problemDescriptors.isEmpty()){
+            return null
+        }
+
+        return problemDescriptors.toArray(emptyArray<ProblemDescriptor>())
+    }
+
+    private fun buildMethodStatementNotExistsProblemDescriptor(
         method: UMethod,
         manager: InspectionManager,
         isOnTheFly: Boolean
-    ): Array<ProblemDescriptor>? {
-
+    ): ProblemDescriptor? {
         val mapperService = service<JvmMapperLineMarkerService>()
-        val marker = mapperService.apply(sourcePsi)
+        val marker = mapperService.apply(method.sourcePsi!!)
 
-        if (marker != null && marker.targets == null) {
-
+        return if (marker != null && marker.targets == null) {
             val problemDescriptor = manager.createProblemDescriptor(
-                sourcePsi!!,
+                method.identifyingElement!!,
                 "Statement with id=\"#ref\" not defined in mapper XML",
                 StatementNotExistsQuickFix(method),
                 ProblemHighlightType.GENERIC_ERROR,
                 isOnTheFly
             )
-            return arrayOf(problemDescriptor)
+             problemDescriptor
 
 
+        } else {
+             null
         }
-
-        return null
     }
 
 

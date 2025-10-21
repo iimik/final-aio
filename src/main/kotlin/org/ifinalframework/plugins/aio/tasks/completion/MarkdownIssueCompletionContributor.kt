@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.issue.completion
+package org.ifinalframework.plugins.aio.tasks.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder

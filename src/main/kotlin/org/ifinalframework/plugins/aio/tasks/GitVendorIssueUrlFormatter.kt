@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.issue;
+package org.ifinalframework.plugins.aio.tasks;
 
 import org.ifinalframework.plugins.aio.git.GitRemote
 import org.ifinalframework.plugins.aio.git.GitVendor
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 @Component
 class GitVendorIssueUrlFormatter : GitIssueUrlFormatter {
 
-    override fun format(remote: GitRemote, issue: Issue): String {
+    override fun format(remote: GitRemote, issue: TaskDoc): String {
 
         val gitVendor = GitVendor.getByHostOrDefault(remote.host)
         val issueFormat = gitVendor.issueFormat

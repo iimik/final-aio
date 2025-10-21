@@ -5,7 +5,7 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.util.ProcessingContext
 import org.ifinalframework.plugins.aio.datasource.completion.DataSourceDocCompletionProvider
-import org.ifinalframework.plugins.aio.issue.IssueDocCompletionProvider
+import org.ifinalframework.plugins.aio.tasks.IssueDocCompletionProvider
 import org.ifinalframework.plugins.aio.mybatis.completion.MyBatisDocCompletionProvider
 
 /**

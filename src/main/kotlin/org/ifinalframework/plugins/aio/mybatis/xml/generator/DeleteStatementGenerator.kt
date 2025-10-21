@@ -23,12 +23,7 @@ class DeleteStatementGenerator : AbstractStatementGenerator<Delete>() {
     override fun generateStatement(mapper: Mapper, method: UMethod, table: Table): Delete {
         val project = method.project
         return mapper.addDelete().apply {
-            var tableSql = MapperUtils.getTableSql(project, mapper)
-
-            if (tableSql == null) {
-                tableSql = MapperUtils.createTableSql(project, mapper, table)
-            }
-
+            var tableSql = MapperUtils.generateTableSqlIfNotExists(project, mapper, table)
             doGenerateSql(project, this, tableSql!!)
 
         }

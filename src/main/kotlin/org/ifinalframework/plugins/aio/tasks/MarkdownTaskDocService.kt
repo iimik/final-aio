@@ -1,9 +1,10 @@
-package org.ifinalframework.plugins.aio.issue
+package org.ifinalframework.plugins.aio.tasks
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import org.ifinalframework.plugins.aio.resource.AllIcons
 
 
 /**
@@ -14,17 +15,17 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
  * @issue 18
  * @author iimik
  * @since 0.0.2
- * @see JvmIssueService
+ * @see JvmTaskDocService
  **/
 @Service
-class MarkdownIssueService : IssueService {
+class MarkdownTaskDocService : TaskDocService {
 
-    override fun getIssue(element: PsiElement): Issue? {
+    override fun getTaskDoc(element: PsiElement): TaskDoc? {
         if (element is LeafPsiElement && element.elementType.toString().equals("Markdown:Markdown:TEXT", true)) {
             val input = element.text
-            logger<MarkdownIssueService>().info("input: $input")
+            logger<MarkdownTaskDocService>().info("input: $input")
             if (Regex("^#\\d+").matches(input)) {
-                return Issue(IssueType.ISSUE, input.trimStart('#'))
+                return TaskDoc("issue", input.trimStart('#'), "", AllIcons.Issues.ISSUE)
             }
         }
         return null

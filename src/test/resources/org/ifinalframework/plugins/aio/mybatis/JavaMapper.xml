@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.ifinalframework.plugins.aio.mybatis.JavaMapper">
+
+    <resultMap id="JavaModel" type="org.ifinalframework.plugins.aio.mybatis.JavaModel">
+
+    </resultMap>
     <sql id="table">
         t_java
     </sql>
@@ -8,16 +12,49 @@
         `id`
         , `name`, `age`
     </sql>
-    <select id="selectByIds" resultType="org.ifinalframework.plugins.aio.mybatis.JavaModel">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        <include refid="table"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="null != name and name != ''">
+                `name1`,
+            </if>
+            <if test="null != age">
+                `age`,
+            </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="null != name and name != ''">
+                #{name},
+            </if>
+            <if test="null != age">
+                #{age, typeHandler=org.ifinalframework.plugins.aio.mybatis.MyTypeHandler},
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertList" useGeneratedKeys="true" keyProperty="list.id">
+        INSERT INTO
+        <include refid="table"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `name1`,
+            `age`,
+        </trim>
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{item.name},
+                #{item.age, typeHandler=org.ifinalframework.plugins.aio.mybatis.MyTypeHandler},
+            </trim>
+        </foreach>
+    </insert>
+    <select id="selectById" resultMap="JavaModel">
         SELECT
         <include refid="table"/>
         FROM
         <include refid="columns"/>
         <where>
-            id IN
-            <foreach collection="ids" item="item" open="(" close=")" separator=",">
-                #{item}
-            </foreach>
+            id = #{id}
         </where>
     </select>
 

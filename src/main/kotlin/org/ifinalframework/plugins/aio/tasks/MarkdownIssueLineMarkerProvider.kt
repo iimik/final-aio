@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.issue
+package org.ifinalframework.plugins.aio.tasks
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
@@ -6,7 +6,7 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.psi.PsiElement
-import org.ifinalframework.plugins.aio.application.ElementApplication
+import org.ifinalframework.plugins.aio.service.BrowserService
 import java.awt.event.MouseEvent
 
 
@@ -16,20 +16,23 @@ import java.awt.event.MouseEvent
  * @issue 10
  * @author iimik
  * @since 0.0.1
- * @see MarkdownIssueLineMarkerProvider
+ * @see JvmIssueLineMarkerProvider
  **/
-class JvmIssueLineMarkerProvider : LineMarkerProvider {
+class MarkdownIssueLineMarkerProvider : LineMarkerProvider {
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
         try {
-            val issue = service<JvmIssueService>().getIssue(element) ?: return null
-            val builder = NavigationGutterIconBuilder.create(issue.type.icon)
+
+
+            val taskDoc = service<MarkdownTaskDocService>().getTaskDoc(element) ?: return null
+            val builder = NavigationGutterIconBuilder.create(taskDoc.icon)
             builder.setTargets(element)
-            builder.setTooltipText(issue.type.toolTip)
+//            builder.setTooltipText(I18N.getMessage("${this::class.simpleName}.${issue.type.name.lowercase()}Tooltip"))
             return builder.createLineMarkerInfo(
                 element
             ) { _: MouseEvent?, _: PsiElement? ->
-                element.project.service<IssueOpener>().open(issue)
+                val url = service<TaskDocProcessor>().buildUrl(element.project, taskDoc)?: return@createLineMarkerInfo
+                service<BrowserService>().open(url)
             }
         } catch (ex: ProcessCanceledException) {
             // ignore

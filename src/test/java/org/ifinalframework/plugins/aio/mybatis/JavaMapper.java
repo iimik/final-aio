@@ -3,15 +3,19 @@ package org.ifinalframework.plugins.aio.mybatis;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 /**
  * JavaMapper
+ * @issue 1
+ * @jira AIO-1231
  * @author iimik
  * @since 0.0.4
  **/
+@Mapper
 public interface JavaMapper {
     int insert(JavaModel model);
 
@@ -27,7 +31,7 @@ public interface JavaMapper {
     @InsertProvider
     int insertWithProvider();
 
-    int update();
+    int update2();
 
     int delete();
 

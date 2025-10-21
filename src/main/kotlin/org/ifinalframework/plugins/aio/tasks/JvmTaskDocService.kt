@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.issue
+package org.ifinalframework.plugins.aio.tasks
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -14,7 +14,7 @@ import org.ifinalframework.plugins.aio.psi.service.DocService
  * - 文档注释
  *    - @jira 编号 [描述]
  *    - @issue 编号 [描述]
- * - 行注释∑
+ * - 行注释
  *    - @jira 编号 [描述]
  *    - @issue 编号 [描述]
  *    - #编号 [描述]
@@ -23,14 +23,14 @@ import org.ifinalframework.plugins.aio.psi.service.DocService
  * @issue 10
  * @author iimik
  * @since 0.0.1
- * @see MarkdownIssueService
+ * @see MarkdownTaskDocService
  **/
 @Service
-class JvmIssueService : IssueService {
+class JvmTaskDocService : TaskDocService {
 
     private val docService = service<DocService>()
 
-    override fun getIssue(element: PsiElement): Issue? {
+    override fun getTaskDoc(element: PsiElement): TaskDoc? {
         // @issue 10 docTag issue
         getDocTagIssue(element)?.let { return it }
         // #10 line issue
@@ -41,7 +41,7 @@ class JvmIssueService : IssueService {
     /**
      * 文档注释
      */
-    private fun getDocTagIssue(element: PsiElement): Issue? {
+    private fun getDocTagIssue(element: PsiElement): TaskDoc? {
         val name = docService.getTagName(element) ?: return null
         val value = docService.getTagValue(element) ?: return null
         return parseDocTagIssue(name, value)
@@ -51,43 +51,40 @@ class JvmIssueService : IssueService {
     /**
      * 行内注释
      */
-    private fun getLineIssue(element: PsiElement): Issue? {
+    private fun getLineIssue(element: PsiElement): TaskDoc? {
         val comment = docService.getLineComment(element)?.trim() ?: return null
         return parseLineIssue(comment)
     }
 
-    private fun parseDocTagIssue(name: String, value: String): Issue? {
-        val issueType = IssueType.ofNullable(name) ?: return null
+    private fun parseDocTagIssue(name: String, value: String): TaskDoc? {
+        val issueType = TaskUtils.getTaskType(name) ?: return null
         val code = value.substringBefore(" ")
         val description = value.substringAfter(" ")
-        return Issue(issueType, code, description)
+        return TaskDoc(name, code, description, issueType.icon)
     }
 
-    private fun parseLineIssue(comment: String): Issue? {
+    private fun parseLineIssue(comment: String): TaskDoc? {
         val comment = comment.removePrefix("//").trimStart()
-        val issueType = parseLineIssueType(comment) ?: return null
+        val tagName = parseLineIssueType(comment) ?: return null
+        val issueType = TaskUtils.getTaskType(tagName) ?: return null
         val code = parseLineIssueCode(comment) ?: return null
         val description = comment.substringAfter(code).trim()
-        return Issue(issueType, code, description)
+        return TaskDoc(tagName, code, description, issueType.icon)
     }
 
-    private fun parseLineIssueType(comment: String): IssueType? {
+    private fun parseLineIssueType(comment: String): String? {
         return if (comment.startsWith("#")) {
-            IssueType.ISSUE
-        } else if (comment.startsWith("@issue")) {
-            IssueType.ISSUE
-        } else if (comment.startsWith("@jira")) {
-            IssueType.JIRA
+            "issue"
+        } else if (comment.startsWith("@")) {
+            return comment.substringBefore(" ").trimStart('@')
         } else null
     }
 
     private fun parseLineIssueCode(comment: String): String? {
         return if (comment.startsWith("#")) {
             comment.substringAfter("#").trimStart().substringBefore(" ")
-        } else if (comment.startsWith("@issue")) {
-            comment.substringAfter("@issue").trimStart().substringBefore(" ")
-        } else if (comment.startsWith("@jira")) {
-            comment.substringAfter("@jira").trimStart().substringBefore(" ")
+        } else if (comment.startsWith("@")) {
+            comment.substringAfter(" ").trimStart().substringBefore(" ")
         } else null
     }
 

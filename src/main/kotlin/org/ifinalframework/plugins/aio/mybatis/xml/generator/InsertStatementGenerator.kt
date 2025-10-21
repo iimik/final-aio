@@ -68,11 +68,7 @@ class InsertStatementGenerator : AbstractStatementGenerator<Insert>() {
     override fun generateStatement(mapper: Mapper, method: UMethod, table: Table): Insert {
         return mapper.addInsert().apply {
             val project = method.project
-            var tableSql = MapperUtils.getTableSql(project, mapper)
-
-            if (tableSql == null) {
-                tableSql = MapperUtils.createTableSql(project, mapper, table)
-            }
+            var tableSql = MapperUtils.generateTableSqlIfNotExists(project, mapper, table)
             doGenerateSql(project, method, this, tableSql, table)
 
         }
