@@ -14,7 +14,7 @@ import org.ifinalframework.plugins.aio.psi.service.DocService
  * - 文档注释
  *    - @jira 编号 [描述]
  *    - @issue 编号 [描述]
- * - 行注释∑
+ * - 行注释
  *    - @jira 编号 [描述]
  *    - @issue 编号 [描述]
  *    - #编号 [描述]
@@ -84,7 +84,7 @@ class JvmTaskDocService : TaskDocService {
         return if (comment.startsWith("#")) {
             comment.substringAfter("#").trimStart().substringBefore(" ")
         } else if (comment.startsWith("@")) {
-            comment.substringAfter("@").trimStart().substringBefore(" ")
+            comment.substringAfter(" ").trimStart().substringBefore(" ")
         } else null
     }
 
