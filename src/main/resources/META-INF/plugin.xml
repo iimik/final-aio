@@ -214,6 +214,7 @@
     <depends>com.intellij.java</depends>
     <depends>org.jetbrains.kotlin</depends>
     <depends>com.intellij.database</depends>
+    <depends>com.intellij.tasks</depends>
 
     <depends>org.intellij.plugins.markdown</depends>
 
