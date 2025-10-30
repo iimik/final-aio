@@ -69,9 +69,9 @@ class SelectStatementGenerator : AbstractStatementGenerator<Select>() {
         generateSql(
             project, select,
             "SELECT ",
-            "<include refid=\"${tableSql!!.getId().stringValue}\"/>",
+            "<include refid=\"${columnSql!!.getId().stringValue}\"/>",
             "FROM ",
-            "<include refid=\"${columnSql!!.getId().stringValue}\"/>"
+            "<include refid=\"${tableSql!!.getId().stringValue}\"/>",
         )
 
     }
