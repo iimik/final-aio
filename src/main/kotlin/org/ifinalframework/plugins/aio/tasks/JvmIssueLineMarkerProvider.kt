@@ -25,6 +25,7 @@ class JvmIssueLineMarkerProvider : LineMarkerProvider {
             val taskDoc = service<JvmTaskDocService>().getTaskDoc(element) ?: return null
             val builder = NavigationGutterIconBuilder.create(taskDoc.icon)
             builder.setTargets(element)
+            builder.setTooltipText(taskDoc.code)
             return builder.createLineMarkerInfo(
                 element
             ) { _: MouseEvent?, _: PsiElement? ->
