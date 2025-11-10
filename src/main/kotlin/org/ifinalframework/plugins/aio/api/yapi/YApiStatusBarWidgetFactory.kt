@@ -47,9 +47,6 @@ class YApiStatusBarWidgetFactory : StatusBarWidgetFactory {
             myStatusBar = statusBar
         }
 
-        override fun getPresentation(): StatusBarWidget.WidgetPresentation {
-            return this
-        }
 
         override fun getTooltipText(): @NlsContexts.Tooltip String {
             return "Yapi"
