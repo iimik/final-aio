@@ -19,6 +19,9 @@ import java.util.*
 @Component
 @ConditionOnJava
 class JavaDocService : DocService {
+    private val DOC_COMMENT_PREFIXES = listOf<String>(
+        "*", "///", "//"
+    )
 
     override fun getSummary(element: PsiElement): String? {
         val docComment = if (element is PsiDocCommentOwner) element.docComment else return null
@@ -52,8 +55,47 @@ class JavaDocService : DocService {
 
     override fun getTagValue(element: PsiElement): String? {
         return if (element is PsiDocTag) {
-            element.dataElements.joinToString("") { it.text }.trim()
+            element.docValue()
         } else null
+    }
+
+    private fun PsiDocTag.docValue(discardName: Boolean = false): String {
+        val lines = this.text.lines()
+        if (lines.isEmpty()) return ""
+        var ret = lines[0].removePrefix(this.nameElement.text).trimStart()
+        if (discardName) {
+            this.valueElement?.text?.let {
+                ret = ret.removePrefix(it).trimStart()
+            }
+        }
+        if (lines.size == 1) {
+            return ret
+        }
+        for (i in 1 until lines.size) {
+            lines[i].trim()
+                .removeCommentPrefix()
+                .takeIf { it.isNotBlank() }
+                ?.let {
+                    ret = "$ret\n$it"
+                }
+        }
+        return ret
+    }
+
+    /**
+     * Removes any documentation comment prefix from the beginning of a line.
+     * This is used to clean up documentation text by removing comment markers
+     * like "*", "///", or "//" from the start of each line.
+     *
+     * @return The line text with any matching prefix removed and trimmed
+     */
+    private fun String.removeCommentPrefix(): String {
+        for (prefix in DOC_COMMENT_PREFIXES) {
+            if (this.startsWith(prefix)) {
+                return this.removePrefix(prefix).trim()
+            }
+        }
+        return this
     }
 
     override fun hasTag(element: PsiElement, tag: String): Boolean {

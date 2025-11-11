@@ -104,6 +104,16 @@
                 implementationClass="org.ifinalframework.plugins.aio.tasks.completion.MarkdownIssueCompletionContributor"
                 order="first"
         />
+        <!-- YAML -->
+        <codeInsight.lineMarkerProvider
+                language="yaml"
+                implementationClass="org.ifinalframework.plugins.aio.tasks.yaml.YamlTaskLineMarkerProvider"
+        />
+        <completion.contributor
+                language="yaml"
+                implementationClass="org.ifinalframework.plugins.aio.tasks.yaml.YamlTaskCompletionContributor"
+                order="first"
+        />
         <projectConfigurable
                 id="org.ifinalframework.plugins.aio.tasks.IssueConfigurable"
                 instance="org.ifinalframework.plugins.aio.tasks.IssueConfigurable"
@@ -214,8 +224,10 @@
     <depends>com.intellij.java</depends>
     <depends>org.jetbrains.kotlin</depends>
     <depends>com.intellij.database</depends>
+    <depends>com.intellij.tasks</depends>
 
     <depends>org.intellij.plugins.markdown</depends>
+    <depends>org.jetbrains.plugins.yaml</depends>
 
 
     <projectListeners>

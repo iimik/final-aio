@@ -3,10 +3,11 @@ final:
     jira:
       server-url: https://iimik.atlassian.net
       project-code: AIO
-  api:
+# @jira BLOCKCHAIN-1052 【UI任务】强充值退回成功通知服务UI模板
+api:
     yapi:
       enable: true
       server-url: ${YAPI_SERVER_URL}
-      token: ${YAPI_TOKEN}
+      token: ${YAPI_TOKEN} fe
     markdown:
       enable: true

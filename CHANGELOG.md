@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [0.0.23] - 2025-11-10
+
+### 新增
+
+- Task(原Issue)
+  - 新增 YAML 的支持
+
 ## [0.0.22] - 2025-09-01
 
 ### 新增
@@ -200,7 +207,8 @@
 - Issue 管理
   - 🔥添加Issue行标记，并可在浏览器中快速打开，支持Git Issue和Jira。(#10)
 
-[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.22...HEAD
+[Unreleased]: https://github.com/iimik/final-aio/compare/v0.0.23...HEAD
+[0.0.23]: https://github.com/iimik/final-aio/compare/v0.0.22...v0.0.23
 [0.0.22]: https://github.com/iimik/final-aio/compare/v0.0.21...v0.0.22
 [0.0.21]: https://github.com/iimik/final-aio/compare/v0.0.20...v0.0.21
 [0.0.20]: https://github.com/iimik/final-aio/compare/v0.0.19...v0.0.20
