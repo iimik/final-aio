@@ -57,7 +57,7 @@ jobs:
           artifact: ${{ steps.define-ids.outputs.artifact }}
 
       - name: Save artifact with build results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: docs
           path: artifacts/*
