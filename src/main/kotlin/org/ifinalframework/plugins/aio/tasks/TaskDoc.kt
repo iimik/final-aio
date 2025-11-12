@@ -3,7 +3,7 @@ package org.ifinalframework.plugins.aio.tasks
 import javax.swing.Icon
 
 /**
- * TaskDoc
+ * Task
  *
  * @author iimik
  */

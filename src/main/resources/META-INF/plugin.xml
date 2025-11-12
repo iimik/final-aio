@@ -87,7 +87,7 @@
                                 id="yapi"
         />
         <!--=============================================================================================================================-->
-        <!--=======================================================     Issue     =======================================================-->
+        <!--=======================================================     Tasks     =======================================================-->
         <!--=============================================================================================================================-->
         <applicationService
                 serviceInterface="org.ifinalframework.plugins.aio.tasks.TaskDocProcessor"
@@ -95,13 +95,13 @@
         />
         <codeInsight.lineMarkerProvider
                 language="Markdown"
-                implementationClass="org.ifinalframework.plugins.aio.tasks.MarkdownIssueLineMarkerProvider"/>
+                implementationClass="org.ifinalframework.plugins.aio.tasks.markdown.MarkdownTaskLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider
                 language="UAST"
-                implementationClass="org.ifinalframework.plugins.aio.tasks.JvmIssueLineMarkerProvider"/>
+                implementationClass="org.ifinalframework.plugins.aio.tasks.jvm.JvmTaskLineMarkerProvider"/>
         <completion.contributor
                 language="Markdown"
-                implementationClass="org.ifinalframework.plugins.aio.tasks.completion.MarkdownIssueCompletionContributor"
+                implementationClass="org.ifinalframework.plugins.aio.tasks.markdown.MarkdownTaskCompletionContributor"
                 order="first"
         />
         <!-- YAML -->
@@ -113,13 +113,6 @@
                 language="yaml"
                 implementationClass="org.ifinalframework.plugins.aio.tasks.yaml.YamlTaskCompletionContributor"
                 order="first"
-        />
-        <projectConfigurable
-                id="org.ifinalframework.plugins.aio.tasks.IssueConfigurable"
-                instance="org.ifinalframework.plugins.aio.tasks.IssueConfigurable"
-                parentId="org.ifinalframework.plugins.aio.setting.FinalConfigurable"
-                nonDefaultProject="true"
-                displayName="Issue"
         />
         <!--=============================================================================================================================-->
         <!--=======================================================    MyBatis    =======================================================-->

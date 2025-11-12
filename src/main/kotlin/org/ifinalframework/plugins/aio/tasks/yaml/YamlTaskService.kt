@@ -4,7 +4,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.tasks.TaskDoc
-import org.ifinalframework.plugins.aio.tasks.TaskDocService
+import org.ifinalframework.plugins.aio.tasks.TaskService
 import org.ifinalframework.plugins.aio.tasks.TaskUtils
 
 /**
@@ -13,7 +13,7 @@ import org.ifinalframework.plugins.aio.tasks.TaskUtils
  * @author iimik
  */
 @Service
-class YamlTaskDocService: TaskDocService {
+class YamlTaskService: TaskService {
     override fun getTaskDoc(element: PsiElement): TaskDoc? {
         if(element !is PsiComment){
             return null

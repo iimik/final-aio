@@ -3,9 +3,7 @@ package org.ifinalframework.plugins.aio.tasks.processor
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.tasks.Task
-import com.intellij.tasks.TaskManager
 import org.ifinalframework.plugins.aio.service.NotificationService
-import org.ifinalframework.plugins.aio.tasks.Issue
 import org.ifinalframework.plugins.aio.tasks.TaskDoc
 import org.ifinalframework.plugins.aio.tasks.TaskDocProcessor
 import org.ifinalframework.plugins.aio.tasks.TaskUtils
@@ -27,7 +25,7 @@ class JiraTaskDocProcessor : TaskDocProcessor {
         )
     }
 
-    override fun buildUrl(project: Project,taskDoc: TaskDoc): String? {
+    override fun buildUrl(project: Project, taskDoc: TaskDoc): String? {
         val repository = TaskUtils.getTaskRepository(project, "JIRA")
         if(repository == null){
             service<NotificationService>().warn("您还没有配置JIRA Server，请前往【Settings->Tools->Tasks->Servers】添加")

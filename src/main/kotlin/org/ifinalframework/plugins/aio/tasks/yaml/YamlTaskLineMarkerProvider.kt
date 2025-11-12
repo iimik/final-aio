@@ -24,7 +24,7 @@ class YamlTaskLineMarkerProvider : LineMarkerProvider {
 
         try {
 
-            val taskDoc = service<YamlTaskDocService>().getTaskDoc(element) ?: return null
+            val taskDoc = service<YamlTaskService>().getTaskDoc(element) ?: return null
             val builder = NavigationGutterIconBuilder.create(taskDoc.icon)
             builder.setTargets(element)
 //            builder.setTooltipText(I18N.getMessage("${this::class.simpleName}.${issue.type.name.lowercase()}Tooltip"))

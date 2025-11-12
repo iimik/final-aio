@@ -5,7 +5,7 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.util.ProcessingContext
 import org.ifinalframework.plugins.aio.datasource.completion.DataSourceDocCompletionProvider
-import org.ifinalframework.plugins.aio.tasks.IssueDocCompletionProvider
+import org.ifinalframework.plugins.aio.tasks.jvm.JvmTaskDocCompletionProvider
 import org.ifinalframework.plugins.aio.mybatis.completion.MyBatisDocCompletionProvider
 
 /**
@@ -15,7 +15,7 @@ import org.ifinalframework.plugins.aio.mybatis.completion.MyBatisDocCompletionPr
 class DocCompletionProviders : CompletionProvider<CompletionParameters>() {
 
     private val providers = listOf(
-        IssueDocCompletionProvider(),
+        JvmTaskDocCompletionProvider(),
         MyBatisDocCompletionProvider(),
         DataSourceDocCompletionProvider(),
     )

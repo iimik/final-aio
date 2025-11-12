@@ -2,6 +2,8 @@ package org.ifinalframework.plugins.aio.tasks
 
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.spi.annotation.LanguageSpi
+import org.ifinalframework.plugins.aio.tasks.jvm.JvmTaskService
+import org.ifinalframework.plugins.aio.tasks.markdown.MarkdownTaskService
 
 
 /**
@@ -11,10 +13,10 @@ import org.ifinalframework.plugins.aio.spi.annotation.LanguageSpi
  * @author iimik
  * @since 0.0.2
  **/
-@LanguageSpi<TaskDocService>(
-    JvmTaskDocService::class,
-    MarkdownTaskDocService::class
+@LanguageSpi<TaskService>(
+    JvmTaskService::class,
+    MarkdownTaskService::class
 )
-interface TaskDocService {
+interface TaskService {
     fun getTaskDoc(element: PsiElement): TaskDoc?
 }

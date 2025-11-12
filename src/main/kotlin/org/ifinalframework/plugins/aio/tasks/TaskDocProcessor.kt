@@ -10,8 +10,8 @@ import com.intellij.tasks.Task
  */
 interface TaskDocProcessor {
 
-    fun buildTaskDoc(task: Task): TaskDoc?
+    fun buildTaskDoc(task: Task): org.ifinalframework.plugins.aio.tasks.TaskDoc?
 
-    fun buildUrl(project: Project,taskDoc: TaskDoc): String?
+    fun buildUrl(project: Project, taskDoc: org.ifinalframework.plugins.aio.tasks.TaskDoc): String?
 
 }

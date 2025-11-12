@@ -1,9 +1,12 @@
-package org.ifinalframework.plugins.aio.tasks
+package org.ifinalframework.plugins.aio.tasks.jvm
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.psi.service.DocService
+import org.ifinalframework.plugins.aio.tasks.TaskDoc
+import org.ifinalframework.plugins.aio.tasks.TaskService
+import org.ifinalframework.plugins.aio.tasks.TaskUtils
 
 
 /**
@@ -23,10 +26,10 @@ import org.ifinalframework.plugins.aio.psi.service.DocService
  * @issue 10
  * @author iimik
  * @since 0.0.1
- * @see MarkdownTaskDocService
+ * @see org.ifinalframework.plugins.aio.tasks.markdown.MarkdownTaskService
  **/
 @Service
-class JvmTaskDocService : TaskDocService {
+class JvmTaskService : TaskService {
 
     private val docService = service<DocService>()
 

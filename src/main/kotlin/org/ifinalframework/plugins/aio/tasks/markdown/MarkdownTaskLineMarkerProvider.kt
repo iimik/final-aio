@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.tasks
+package org.ifinalframework.plugins.aio.tasks.markdown
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
@@ -7,6 +7,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.psi.PsiElement
 import org.ifinalframework.plugins.aio.service.BrowserService
+import org.ifinalframework.plugins.aio.tasks.TaskDocProcessor
 import java.awt.event.MouseEvent
 
 
@@ -16,15 +17,15 @@ import java.awt.event.MouseEvent
  * @issue 10
  * @author iimik
  * @since 0.0.1
- * @see JvmIssueLineMarkerProvider
+ * @see org.ifinalframework.plugins.aio.tasks.jvm.JvmTaskLineMarkerProvider
  **/
-class MarkdownIssueLineMarkerProvider : LineMarkerProvider {
+class MarkdownTaskLineMarkerProvider : LineMarkerProvider {
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
         try {
 
 
-            val taskDoc = service<MarkdownTaskDocService>().getTaskDoc(element) ?: return null
+            val taskDoc = service<MarkdownTaskService>().getTaskDoc(element) ?: return null
             val builder = NavigationGutterIconBuilder.create(taskDoc.icon)
             builder.setTargets(element)
 //            builder.setTooltipText(I18N.getMessage("${this::class.simpleName}.${issue.type.name.lowercase()}Tooltip"))

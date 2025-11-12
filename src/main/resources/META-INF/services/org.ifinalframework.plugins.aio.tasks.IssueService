@@ -1,2 +1,2 @@
-org.ifinalframework.plugins.aio.tasks.JvmTaskDocService
-org.ifinalframework.plugins.aio.tasks.MarkdownTaskDocService
+org.ifinalframework.plugins.aio.tasks.jvm.JvmTaskService
+org.ifinalframework.plugins.aio.tasks.markdown.MarkdownTaskService

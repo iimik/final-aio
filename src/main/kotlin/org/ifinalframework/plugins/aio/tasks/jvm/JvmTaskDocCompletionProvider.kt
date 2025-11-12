@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.tasks
+package org.ifinalframework.plugins.aio.tasks.jvm
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
@@ -7,12 +7,13 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.components.service
 import com.intellij.tasks.TaskManager
 import com.intellij.util.ProcessingContext
+import org.ifinalframework.plugins.aio.tasks.TaskDocProcessor
 
 /**
- * IssueJavaDocCompletionProvider
+ * JvmTaskDocCompletionProvider
  * @author iimik
  */
-class IssueDocCompletionProvider : CompletionProvider<CompletionParameters>() {
+class JvmTaskDocCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(
         parameters: CompletionParameters,
