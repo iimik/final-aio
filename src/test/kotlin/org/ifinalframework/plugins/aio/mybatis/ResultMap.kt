@@ -33,6 +33,8 @@ data class ResultMap(
 ){
     var haha: Int? = null
 
+    var nullOrNotNull: NullOrNotNull? = null
+
     fun setHaha2(haha: String){
 
     }

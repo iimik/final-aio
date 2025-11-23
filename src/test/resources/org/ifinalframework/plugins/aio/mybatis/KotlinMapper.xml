@@ -28,6 +28,8 @@
         <include refid="table"/>
         FROM
         <include refid="columns"/>
-        <where></where>
+        <where>
+            <if test="null != nullOrNotNull and nullOrNotNull != @{org.ifinalframework.plugins.aio.mybatis.NullOrNotNull@NOT_NULL}"
+        </where>
     </select>
 </mapper>

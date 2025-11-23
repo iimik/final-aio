@@ -12,6 +12,7 @@ import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassReferenceType
+import com.intellij.psi.util.PsiUtil
 import com.intellij.psi.xml.XmlToken
 import com.intellij.util.PlatformIcons
 import com.intellij.util.ProcessingContext
@@ -25,6 +26,7 @@ import org.ifinalframework.plugins.aio.mybatis.xml.dom.*
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.resource.AllIcons
 import org.ifinalframework.plugins.aio.service.PsiService
+import org.jetbrains.java.generate.psi.PsiAdapter.isEnumField
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -686,12 +688,13 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                 clazz.allFields
                     .filter { !it.hasModifierProperty(PsiModifier.STATIC) }
                     .forEach { field ->
-                        var typeText = field.type.presentableText
+                        val type = field.type
+                        var typeText = type.presentableText
 
                         docService.getSummary(field)?.let { typeText = "$it ($typeText)" }
 
                         result.addElement(
-                            LookupElementBuilder.create(buildTest(prefix, field.type, field.name, testCompletion))
+                            LookupElementBuilder.create(buildTest(prefix, type, field.name, testCompletion))
                                 .withIcon(PlatformIcons.PROPERTY_ICON)
                                 .withTypeText(typeText)
                                 .withCaseSensitivity(false)
@@ -719,6 +722,12 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                                 )
                             }
                         }
+
+                        // 扩展枚举类型
+                        addEnumFieldExtTests(field, prefix, result)
+
+
+
                     }
             }
         } else if (type is PsiPrimitiveType) {
@@ -728,6 +737,37 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
                     .withIcon(PlatformIcons.PARAMETER_ICON)
                     .withCaseSensitivity(false)
             )
+        }
+    }
+
+    /**
+     * 针对枚举类型的字段，添加扩展`test`
+     * 格式：
+     *
+     * ```code
+     * null != {property} and {property} == @{enumClass}@{enumConstant}
+     * ```
+     * @issue
+     */
+    private fun addEnumFieldExtTests(
+        field: PsiField,
+        prefix: String?,
+        result: CompletionResultSet
+    ) {
+        if (isEnumField(field)) {
+            val enumClass = PsiUtil.resolveClassInClassTypeOnly(field.type)
+
+            val param = Stream.of(prefix, field.name).filter { Objects.nonNull(it) }.collect(Collectors.joining("."))
+
+            enumClass?.allFields?.filterIsInstance<PsiEnumConstant>()
+                ?.forEach { enumConstant ->
+                    val test = "null != $param and $param == @${enumClass.qualifiedName}@${enumConstant.name}"
+                    result.addElement(
+                        LookupElementBuilder.create(test)
+                            .withIcon(PlatformIcons.PROPERTY_ICON)
+                            .withCaseSensitivity(false)
+                    )
+                }
         }
     }
 

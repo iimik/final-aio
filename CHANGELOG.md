@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### 新增
+
+- MyBatis
+  - 新增枚举字段 Mapper xml test 属性扩展
+
 ## [0.0.23] - 2025-11-10
 
 ### 新增
