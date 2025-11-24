@@ -20,7 +20,7 @@ object TaskUtils {
         for (repositoryType in taskRepositoryTypes) {
             map[repositoryType.name.uppercase()] = TaskType(repositoryType.name, repositoryType.icon)
         }
-        map["issue".uppercase()] = TaskType("issue", AllIcons.Issues.ISSUE)
+        map["issue".uppercase()] = TaskType("issue", AllIcons.Task.ISSUE)
     }
 
     fun getTaskType(tagName: String): TaskType? {

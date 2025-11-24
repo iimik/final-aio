@@ -40,7 +40,7 @@ class MarkdownTaskCompletionContributor : CompletionContributor() {
                             var tagName = "issue"
                             if (issue.repository?.javaClass?.name?.contains("jira", ignoreCase = true) ?: false) {
                                 tagName = "jira"
-                                icon = AllIcons.Issues.JIRA
+                                icon = AllIcons.Task.JIRA
                             }
                             val summary = issue.summary
                             val lookupString = "${issue.number}-${summary}"
@@ -68,7 +68,7 @@ class MarkdownTaskCompletionContributor : CompletionContributor() {
                             var tagName = "issue"
                             if (issue.repository?.javaClass?.name?.contains("jira", ignoreCase = true) ?: false) {
                                 tagName = "jira"
-                                icon = AllIcons.Issues.JIRA
+                                icon = AllIcons.Task.JIRA
                             }
                             val summary = issue.summary
                             val lookupString = "${issue.number}-${summary}"

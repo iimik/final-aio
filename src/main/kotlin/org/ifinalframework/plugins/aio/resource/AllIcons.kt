@@ -20,8 +20,9 @@ class AllIcons {
     }
 
 
-    class Issues {
+    class Task {
         companion object {
+            val TASK = load("assets/icons/tasks.svg")
             val ISSUE = load("assets/icons/git.svg")
             val JIRA = load("assets/icons/jira.svg")
         }

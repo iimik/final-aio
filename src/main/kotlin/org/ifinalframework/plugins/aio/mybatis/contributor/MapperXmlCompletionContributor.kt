@@ -747,7 +747,7 @@ class MapperXmlCompletionContributor : AbsMapperCompletionContributor() {
      * ```code
      * null != {property} and {property} == @{enumClass}@{enumConstant}
      * ```
-     * @issue
+     * @issue 112 [feature] MyBatis mapper xml test completion for enum field
      */
     private fun addEnumFieldExtTests(
         field: PsiField,

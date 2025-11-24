@@ -18,7 +18,7 @@ import org.ifinalframework.plugins.aio.tasks.TaskDocProcessor
 class GitIssueTaskDocProcessor : TaskDocProcessor {
     private val gitIssueUrlFormatter: GitIssueUrlFormatter = GitVendorIssueUrlFormatter()
     override fun buildTaskDoc(task: Task): TaskDoc? {
-        val icon = task.repository?.repositoryType?.icon ?: AllIcons.Issues.ISSUE
+        val icon = task.repository?.repositoryType?.icon ?: AllIcons.Task.ISSUE
         return TaskDoc(
             "issue",
             task.number,

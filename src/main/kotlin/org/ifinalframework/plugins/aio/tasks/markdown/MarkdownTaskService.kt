@@ -27,7 +27,7 @@ class MarkdownTaskService : TaskService {
             val input = element.text
             logger<MarkdownTaskService>().info("input: $input")
             if (Regex("^#\\d+").matches(input)) {
-                return TaskDoc("issue", input.trimStart('#'), "", AllIcons.Issues.ISSUE)
+                return TaskDoc("issue", input.trimStart('#'), "", AllIcons.Task.ISSUE)
             }
         }
         return null

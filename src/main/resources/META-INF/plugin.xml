@@ -114,6 +114,10 @@
                 implementationClass="org.ifinalframework.plugins.aio.tasks.yaml.YamlTaskCompletionContributor"
                 order="first"
         />
+        <statusBarWidgetFactory
+                id="tasks"
+                implementation="org.ifinalframework.plugins.aio.tasks.yaml.TaskStatusBarWidgetFactory"
+        />
         <!--=============================================================================================================================-->
         <!--=======================================================    MyBatis    =======================================================-->
         <!--=============================================================================================================================-->
