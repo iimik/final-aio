@@ -114,8 +114,8 @@ class MapperSqlCompletionContributor : AbsMapperCompletionContributor() {
             return
         }
 
-        val tableName = tableSqls.get(0).getValue()
-        if (tableName.isNullOrBlank()) {
+        val tableName = tableSqls[0].getValue()
+        if (tableName.isBlank()) {
             return
         }
 
@@ -176,6 +176,7 @@ class MapperSqlCompletionContributor : AbsMapperCompletionContributor() {
                         var typeText = field.type.presentableText
 
                         docService.getSummary(field)?.let { typeText = "$it ($typeText)" }
+
                         val typeHandler = docService.findTagValueByTag(field, "typeHandler")
                         var name = field.name
 
