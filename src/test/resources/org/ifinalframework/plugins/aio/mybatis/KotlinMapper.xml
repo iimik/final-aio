@@ -25,11 +25,36 @@
     </insert>
     <select id="selectSingle" resultType="org.ifinalframework.plugins.aio.mybatis.ResultMap">
         SELECT
-        <include refid="table"/>
-        FROM
         <include refid="columns"/>
+        FROM
+        <include refid="table"/>
         <where>
-            <if test="null != nullOrNotNull and nullOrNotNull != @{org.ifinalframework.plugins.aio.mybatis.NullOrNotNull@NOT_NULL}"
+            <if test="null != id">
+                AND id = #{id, typeHandler=haha}
+            </if>
+            <if test="null != name and name != ''">
+                AND name = #{name}
+            </if>
+            <if test="null != age">
+                AND age = #{age}
+            </if>
+            <if test="null != tags and tags.size > 0">
+                AND tags IN
+                <foreach collection="tags" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="null != haha">
+                AND haha = #{haha}
+            </if>
+            <if test="null != nullOrNotNull">
+                AND null_or_not_null = #{nullOrNotNull}
+            </if>
+            <if test="null != startDate and null != endDate">
+                AND date BETWEEN #{startDate} AND #{endDate}
+            </if>
         </where>
     </select>
+
+
 </mapper>

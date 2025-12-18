@@ -16,14 +16,15 @@ import org.ifinalframework.plugins.aio.mybatis.service.MapperService
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Insert
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Mapper
 import org.ifinalframework.plugins.aio.mybatis.xml.dom.Statement
-import org.ifinalframework.plugins.aio.mybatis.xml.model.AndOr
-import org.ifinalframework.plugins.aio.mybatis.xml.model.CriterionType
+import org.ifinalframework.plugins.aio.mybatis.xml.generator.criterion.CriterionGenerators
+import org.ifinalframework.plugins.aio.mybatis.xml.model.*
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.service.PsiService
 import org.ifinalframework.plugins.aio.util.CaseFormatUtils
 import org.ifinalframework.plugins.aio.util.XmlUtils
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.getContainingUClass
+import org.springframework.util.LinkedMultiValueMap
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -37,6 +38,8 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
 
     private val docService = service<DocService>()
     private val annotationService = service<AnnotationService>()
+
+    private val criterionGenerators = CriterionGenerators()
 
     final override fun generate(project: Project, method: UMethod, table: Table) {
         val uClass = method.getContainingUClass() ?: return
@@ -90,18 +93,22 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
     protected fun generateColumn(psiElement: PsiElement): String {
         val column = docService.findTagValueByTag(psiElement, "column")
 
-        if (column != null && column.isNotEmpty()) {
+        if (!column.isNullOrEmpty()) {
             return column;
         }
 
         val name = getName(psiElement)
 
+        return generateColumn(name)
+
+    }
+
+    protected fun generateColumn(name: String): String {
         return when (name) {
             "id" -> "id"
             "ids" -> "id"
             else -> CaseFormatUtils.lowerCamel2LowerUnderscore(name)
-        } as String
-
+        }
     }
 
     protected fun generateSqlParam(psiElement: PsiElement): String {
@@ -110,6 +117,22 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
         val typeHandler = docService.findTagValueByTag(psiElement, "typeHandler") ?: return name
 
         return "$name, typeHandler=$typeHandler"
+    }
+
+    protected fun getCriterionType(psiElement: PsiElement): CriterionType {
+
+        // TODO 从文档注释@criterion 读取
+
+        val psiType = getType(psiElement)
+
+        if (psiType is PsiClassReferenceType) {
+            val className = psiType.reference.qualifiedName
+            if ("java.util.List" == className || "java.util.Set" == className) {
+                return CriterionType.IN
+            }
+        }
+
+        return CriterionType.EQUAL
     }
 
     protected fun generateTest(psiElement: PsiElement, prefix: String? = null): String {
@@ -133,6 +156,7 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
 
         return testCompletion.defaultType.replace(TEST_COMPLETION_PLACE_HOLDER, param)
     }
+
 
     /**
      * - 只有一个参数
@@ -199,103 +223,63 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
                 if (qualifiedName.startsWith("java.")) {
                     return
                 }
+                val multiMap = LinkedMultiValueMap<String, PsiField>()
                 val psiClass = parameter.project.service<PsiService>().findClass(qualifiedName) ?: return
                 for (psiField in psiClass.allFields) {
                     if (psiField.hasModifierProperty(PsiModifier.STATIC)) {
                         continue
                     }
 
-                    doGenerateWhereCriterion(where, psiField, prefix, AndOr.AND, CriterionType.EQUAL, false)
+                    val fieldName = psiField.name
+                    if (fieldName.startsWith("start")) {
+                        multiMap.add(fieldName.substringAfter("start"), psiField)
+                        continue
+                    } else if (fieldName.startsWith("end")) {
+                        multiMap.add(fieldName.substringAfter("end"), psiField)
+                        continue
+                    }
 
+                    val criterionType = getCriterionType(psiField)
+                    doGenerateWhereCriterion(where, psiField, prefix, AndOr.AND, criterionType, false)
+
+                }
+
+                if (multiMap.isNotEmpty()) {
+                    for (entry in multiMap) {
+                        doGenerateWhereBetweenCriterion(where, entry.value, prefix, AndOr.AND, CriterionType.BETWEEN, false)
+                    }
                 }
             }
         }
     }
 
     private fun doGenerateWhereCriterion(
-        where: MutableList<String>,
-        psiElement: PsiElement,
-        prefix: String?,
-        andOr: AndOr,
-        criterionType: CriterionType,
-        required: Boolean
+        where: MutableList<String>, psiElement: PsiElement, prefix: String?, andOr: AndOr, criterionType: CriterionType, required: Boolean
     ) {
 
-        when (criterionType) {
-            CriterionType.IN -> doGenerateWhereInCriterion(where, psiElement, prefix, andOr, criterionType, required)
-            CriterionType.NOT_INT -> doGenerateWhereInCriterion(where, psiElement, prefix, andOr, criterionType, required)
-            else -> doGenerateWhereSimpleCriterion(where, psiElement, prefix, andOr, criterionType, required)
-        }
+        val criterion = SimpleCriterion(andOr, criterionType, prefix, psiElement, required)
+        where.add(criterionGenerators.generate(criterion))
 
     }
 
-    private fun doGenerateWhereSimpleCriterion(
+
+    /**
+     * @see org.ifinalframework.plugins.aio.mybatis.xml.generator.criterion.BetweenCriterionGenerator
+     */
+    private fun doGenerateWhereBetweenCriterion(
         where: MutableList<String>,
-        psiElement: PsiElement,
-        prefix: String?,
-        andOr: AndOr,
-        criterionType: CriterionType,
-
-        required: Boolean
-    ) {
-
-        val test = generateTest(psiElement, prefix)
-        val column = generateColumn(psiElement)
-        val sqlParam = generateSqlParam(psiElement)
-        val param = Stream.of<String>(prefix, sqlParam).filter { Objects.nonNull(it) }.collect(Collectors.joining("."))
-
-        if (required) {
-            where.add("$andOr $column ${criterionType.operation} #{$param}")
-        } else {
-            where.add(
-                """
-              <if test="$test">
-                $andOr $column ${criterionType.operation} #{$param}
-              </if>          
-        """.trimIndent()
-            )
-        }
-
-
-    }
-
-    private fun doGenerateWhereInCriterion(
-        where: MutableList<String>,
-        psiElement: PsiElement,
+        psiElement: List<PsiElement>,
         prefix: String?,
         andOr: AndOr,
         criterionType: CriterionType,
         required: Boolean
     ) {
-        val test = generateTest(psiElement, prefix)
-        val name = getName(psiElement)
-        val column = generateColumn(psiElement)
-        val collection = Stream.of<String>(prefix, name).filter { Objects.nonNull(it) }.collect(Collectors.joining("."))
+        val start = psiElement.first { getName(it).startsWith("start") }
+        val end = psiElement.first { getName(it).startsWith("end") }
 
-
-        if (required) {
-            // 不需要<if test>
-            where.add("$andOr $column ${criterionType.operation}")
-            where.add(
-                """
-                <foreach collection="$collection" item="item" open="(" close=")" separator=",">
-                    #{item}
-                </foreach>
-            """.trimIndent()
-            )
-        } else {
-            where.add(
-                """
-            <if test="$test">
-                $andOr $column ${criterionType.operation}
-                <foreach collection="$collection" item="item" open="(" close=")" separator=",">
-                    #{item}
-                </foreach>
-            </if>
-        """.trimIndent()
-            )
-        }
-
+        val criterion: Criterion = BetweenCriterion(andOr, criterionType, prefix, start, end, required)
+        val value = criterionGenerators.generate(criterion)
+        where.add(value)
     }
 
 
@@ -315,6 +299,7 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
             else -> throw IllegalArgumentException("${psiElement.javaClass} is not a field")
         }
     }
+
 
     protected abstract fun getDisplayText(): String
 
