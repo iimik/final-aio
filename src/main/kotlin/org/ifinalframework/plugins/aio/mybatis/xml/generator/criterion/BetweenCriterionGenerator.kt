@@ -21,6 +21,8 @@ private const val TEST_COMPLETION_END_PLACE_HOLDER = $$"${END_TARGET}"
  * ```
  *
  * @author iimik
+ * @see InCriterionGenerator
+ * @see CommonCriterionGenerator
  */
 class BetweenCriterionGenerator : AbstractCriterionGenerator(), CriterionGenerator<BetweenCriterion> {
 

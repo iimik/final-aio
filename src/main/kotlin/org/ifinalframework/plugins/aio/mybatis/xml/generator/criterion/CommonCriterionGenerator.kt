@@ -20,6 +20,8 @@ private const val TEST_COMPLETION_PLACE_HOLDER = $$"${TARGET}"
  * ```
  * 
  * @author iimik
+ * @see BetweenCriterionGenerator
+ * @see InCriterionGenerator
  */
 class CommonCriterionGenerator : AbstractCriterionGenerator(), CriterionGenerator<SimpleCriterion> {
     companion object {

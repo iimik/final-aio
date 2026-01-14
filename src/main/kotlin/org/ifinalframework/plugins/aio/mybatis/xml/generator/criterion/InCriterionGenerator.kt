@@ -13,6 +13,8 @@ private const val TEST_COMPLETION_PLACE_HOLDER = $$"${TARGET}"
  * InCriterionGenerator
  * 
  * @author iimik
+ * @see BetweenCriterionGenerator
+ * @see CommonCriterionGenerator
  */
 class InCriterionGenerator : AbstractCriterionGenerator(), CriterionGenerator<SimpleCriterion> {
 
