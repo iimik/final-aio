@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.tasks;
+package org.ifinalframework.plugins.aio.tasks
 
 import org.ifinalframework.plugins.aio.git.GitRemote
 import org.ifinalframework.plugins.aio.git.GitVendor
@@ -19,9 +19,9 @@ class GitVendorIssueUrlFormatter : GitIssueUrlFormatter {
         val gitVendor = GitVendor.getByHostOrDefault(remote.host)
         val issueFormat = gitVendor.issueFormat
 
-        return issueFormat.replace("\${schema}", remote.schema ?: "https")
-            .replace("\${host}", remote.host)
-            .replace("\${path}", remote.path)
-            .replace("\${issue}", issue.code)
+        return issueFormat.replace($$"${schema}", remote.schema ?: "https")
+            .replace($$"${host}", remote.host)
+            .replace($$"${path}", remote.path)
+            .replace($$"${issue}", issue.code)
     }
 }
