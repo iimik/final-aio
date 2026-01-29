@@ -25,7 +25,8 @@ data class MyBatisProperties(
     var testCompletion: TestCompletion = TestCompletion(),
     var lineMarker: LineMarker = LineMarker(),
 ) : PersistentStateComponent<MyBatisProperties> {
-    override fun getState(): MyBatisProperties? {
+
+    override fun getState(): MyBatisProperties {
         return this
     }
 
@@ -34,10 +35,10 @@ data class MyBatisProperties(
     }
 
     data class StatementMethodCompletion(
-        var insertMethodRegex: String = "^(insert|add|create|new)+\\w*\$",
-        var deleteMethodRegex: String = "^(del|remove|clean)+\\w*\$",
-        var updateMethodRegex: String = "^(update|set)+\\w*\$",
-        var selectMethodRegex: String = "^(select|find|get|query|count)+\\w*\$",
+        var insertMethodRegex: String = "^(insert|add|create|new)+\\w*$",
+        var deleteMethodRegex: String = "^(del|remove|clean)+\\w*$",
+        var updateMethodRegex: String = "^(update|set)+\\w*$",
+        var selectMethodRegex: String = "^(select|find|get|query|count)+\\w$",
         var filterWithRegex: Boolean = true
     )
 
@@ -52,19 +53,19 @@ data class MyBatisProperties(
         /**
          * 字符串
          */
-        var stringType: String = "null != \${TARGET} and \${TARGET} != ''",
+        var stringType: String = $$"null != ${TARGET} and ${TARGET} != ''",
         /**
          * 集合
          */
-        var collectionType: String = "null != \${TARGET} and \${TARGET}.size > 0",
+        var collectionType: String = $$"null != ${TARGET} and ${TARGET}.size > 0",
         /**
          * 区间
          */
-        var betweenType: String = "null != \${START_TARGET} and null != \${END_TARGET}",
+        var betweenType: String = $$"null != ${START_TARGET} and null != ${END_TARGET}",
         /**
          * 默认
          */
-        var defaultType: String = "null != \${TARGET}",
+        var defaultType: String = $$"null != ${TARGET}",
     )
 
     /**

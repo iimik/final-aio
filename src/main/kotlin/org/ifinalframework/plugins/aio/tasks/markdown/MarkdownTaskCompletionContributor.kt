@@ -8,6 +8,7 @@ import com.intellij.patterns.PsiJavaPatterns
 import com.intellij.tasks.TaskManager
 import com.intellij.util.ProcessingContext
 import org.ifinalframework.plugins.aio.resource.AllIcons
+import org.ifinalframework.plugins.aio.util.Velocities
 
 /**
  * Markdown 文档补全
@@ -21,6 +22,7 @@ import org.ifinalframework.plugins.aio.resource.AllIcons
  * @since 0.0.19
  */
 class MarkdownTaskCompletionContributor : CompletionContributor() {
+
     init {
         extend(
             CompletionType.BASIC,
@@ -35,10 +37,10 @@ class MarkdownTaskCompletionContributor : CompletionContributor() {
                     val isHeader = line.startsWith("#")
 
                     if (text.startsWith("@") || text.startsWith("#")) {
+                        val project = position.project
+                        val taskManager = TaskManager.getManager(project)
+                        val tasks = taskManager.cachedIssues
                         if (isHeader) {
-                            val project = position.project
-                            val taskManager = TaskManager.getManager(project)
-                            val tasks = taskManager.cachedIssues
                             tasks?.forEach { issue ->
                                 var icon = issue.icon
                                 var tagName = "issue"
@@ -64,9 +66,6 @@ class MarkdownTaskCompletionContributor : CompletionContributor() {
                                 )
                             }
                         } else {
-                            val project = position.project
-                            val taskManager = TaskManager.getManager(project)
-                            val tasks = taskManager.cachedIssues
                             tasks?.forEach { issue ->
                                 var icon = issue.icon
                                 var tagName = "issue"
@@ -76,6 +75,9 @@ class MarkdownTaskCompletionContributor : CompletionContributor() {
                                 }
                                 val summary = issue.summary
                                 val lookupString = "${issue.number}-${summary}"
+
+                                val template = $$"[#${id}](${issueUrl})"
+
                                 result.addElement(
                                     LookupElementBuilder.create(issue, lookupString)
                                         .withIcon(icon)
@@ -83,7 +85,7 @@ class MarkdownTaskCompletionContributor : CompletionContributor() {
                                         .withInsertHandler { context, _ ->
                                             val document = context.document
                                             val offset = position.textOffset
-                                            val content = "[#${issue.id}](${issue.issueUrl})"
+                                            val content = Velocities.eval(template, issue)
                                             document.replaceString(offset, offset + lookupString.length + 1, content)
                                         }
                                 )
