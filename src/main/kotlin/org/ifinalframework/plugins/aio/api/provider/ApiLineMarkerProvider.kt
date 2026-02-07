@@ -4,6 +4,7 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.openapi.components.service
+import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.psi.PsiElement
 import org.apache.commons.lang3.StringUtils
@@ -39,10 +40,10 @@ class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
             if (uElement is UIdentifier) {
                 val uClass = uElement.getContainingUClass()
                 val yapiProperties = element.project.service<YapiProperties>()
-                val enable = !StringUtils.isAnyBlank(yapiProperties.serverUrl, yapiProperties.tokens[module.name])
+                val yapi = !StringUtils.isAnyBlank(yapiProperties.serverUrl, yapiProperties.tokens[module.name])
                 val apiMethodService = service<ApiMethodService>()
                 apiMethodService.getApiMarker(element.parent)?.let {
-                    if (enable) {
+                    if (yapi) {
                         val apiProperties = project.service<ApiProperties>()
                         val contextPath = apiProperties.contextPaths[module.name]?.trimEnd('/') ?: ""
                         val methodPath = it.paths.first().trimStart('/')
@@ -79,6 +80,7 @@ class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
         val builder = NavigationGutterIconBuilder.create(AllIcons.Api.YAPI)
         builder.setTargets(element)
         builder.setTooltipText("Open API")
+        builder.setAlignment(GutterIconRenderer.Alignment.RIGHT)
         return builder.createLineMarkerInfo(element) { _, _ ->
 
             val apiMarker = service<ApiMethodService>().getApiMarker(element.parent) ?: return@createLineMarkerInfo
@@ -99,6 +101,7 @@ class ApiLineMarkerProvider : RelatedItemLineMarkerProvider() {
                 NavigationGutterIconBuilder.create(AllIcons.Api.MARKDOWN)
             builder.setTargets(it)
             builder.setTooltipText(I18N.message("Api.ApiMarkdownLineMarkerProvider.tooltip"))
+            builder.setAlignment(GutterIconRenderer.Alignment.RIGHT)
             val lineMarkerInfo = builder.createLineMarkerInfo(element)
             result.add(lineMarkerInfo)
         }

@@ -52,18 +52,18 @@ class YApiStatusBarWidgetFactory : StatusBarWidgetFactory {
             return "Yapi"
         }
 
-        override fun getPresentation(): StatusBarWidget.WidgetPresentation? {
+        override fun getPresentation(): StatusBarWidget.WidgetPresentation {
             return this
         }
 
-        override fun getClickConsumer(): Consumer<MouseEvent>? {
+        override fun getClickConsumer(): Consumer<MouseEvent> {
             return Consumer<MouseEvent> {
                 val yapiService = myStatusBar!!.project!!.service<YapiService>()
                 yapiService.refresh()
             }
         }
 
-        override fun getShortcutText(): String? {
+        override fun getShortcutText(): String {
             return "YApi"
         }
 

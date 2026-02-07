@@ -38,10 +38,10 @@ class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
 
     override fun canBeEnabledOn(statusBar: StatusBar): Boolean {
         val project = statusBar.project
-        if (project != null) {
-            return TaskManager.getManager(project).allRepositories.size > 0
+        return if (project != null) {
+            TaskManager.getManager(project).allRepositories.size > 0
         } else {
-            return super.canBeEnabledOn(statusBar)
+            super.canBeEnabledOn(statusBar)
         }
     }
 
@@ -62,16 +62,17 @@ class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
             return "Task"
         }
 
-        override fun getPresentation(): StatusBarWidget.WidgetPresentation? {
+        override fun getPresentation(): StatusBarWidget.WidgetPresentation {
             return this
         }
 
-        override fun getClickConsumer(): Consumer<MouseEvent>? {
+        override fun getClickConsumer(): Consumer<MouseEvent> {
             return Consumer<MouseEvent> {
                 R.async {
                     try {
-                        val issues = TaskManager.getManager(project).getIssues(null, false)
-                        service<NotificationService>().info("已刷新${issues.size}条Issues！")
+                        val taskManager = TaskManager.getManager(project)
+                        val issues = taskManager.getIssues(null, false)
+                        service<NotificationService>().info("已刷新${issues.size}条Tasks！")
                     } catch (ex: Exception) {
                         thisLogger().error("刷新Tasks异常", ex)
                     }
@@ -79,7 +80,7 @@ class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
             }
         }
 
-        override fun getShortcutText(): String? {
+        override fun getShortcutText(): String {
             return "Task"
         }
 
