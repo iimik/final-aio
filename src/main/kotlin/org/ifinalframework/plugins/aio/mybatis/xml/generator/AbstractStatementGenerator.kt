@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.xml.XmlTag
+import kotlinx.html.SELECT
 import org.ifinalframework.plugins.aio.datasource.model.Table
 import org.ifinalframework.plugins.aio.jvm.AnnotationService
 import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
@@ -21,6 +22,7 @@ import org.ifinalframework.plugins.aio.mybatis.xml.model.*
 import org.ifinalframework.plugins.aio.psi.service.DocService
 import org.ifinalframework.plugins.aio.service.PsiService
 import org.ifinalframework.plugins.aio.util.CaseFormatUtils
+import org.ifinalframework.plugins.aio.util.PsiTypeUtils
 import org.ifinalframework.plugins.aio.util.XmlUtils
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.getContainingUClass
@@ -55,6 +57,16 @@ abstract class AbstractStatementGenerator<T : Statement> : StatementGenerator {
 
             if (statement !is Insert) {
                 generateWhere(statement, method, table)
+            }
+
+            if(statement is SELECT){
+                val psiType = method.returnType
+
+                if(psiType != null && PsiTypeUtils.isList(psiType)){
+                    // SELECT LIMIT 1
+                    val element = XmlUtils.createElement(method.project, "\nLIMIT 1")
+                    statement.xmlTag!!.add(element)
+                }
             }
 
             val tag: XmlTag = statement.xmlTag!!
