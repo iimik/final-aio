@@ -9,6 +9,11 @@ plugins {
 allprojects {
     group = providers.gradleProperty("pluginGroup").get()
     version = providers.gradleProperty("pluginVersion").get()
+
+    // Configure project's dependencies
+    repositories {
+        mavenCentral()
+    }
 }
 
 subprojects {
@@ -19,10 +24,7 @@ subprojects {
         jvmToolchain(21)
     }
 
-    // Configure project's dependencies
-    repositories {
-        mavenCentral()
-    }
+
 }
 tasks {
     wrapper {
