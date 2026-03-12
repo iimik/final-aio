@@ -5,6 +5,7 @@ import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
 import org.jetbrains.kotlin.kdoc.lexer.KDocTokens
+import org.jetbrains.kotlin.lexer.KtTokens
 
 /**
  * JavaDocCompletionContributor
@@ -17,14 +18,29 @@ class KDocCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().afterLeaf(
-                StandardPatterns.or(PlatformPatterns.psiElement(KDocTokens.LEADING_ASTERISK), PlatformPatterns.psiElement(KDocTokens.START))
+                StandardPatterns.or(
+                    PlatformPatterns.psiElement(KDocTokens.LEADING_ASTERISK),
+                    PlatformPatterns.psiElement(KDocTokens.START)
+                )
             ),
             DocCompletionProviders()
         )
 
+        /**
+         * 文档注释
+         */
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement(KDocTokens.TAG_NAME),
+            DocCompletionProviders()
+        )
+
+        /**
+         * 单行注释
+         */
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement(KtTokens.EOL_COMMENT),
             DocCompletionProviders()
         )
 

@@ -43,7 +43,7 @@
         <!--=======================================================    JavaDoc   ========================================================-->
         <!--=============================================================================================================================-->
         <completion.contributor
-                language="JAVA"
+                language="any"
                 implementationClass="org.ifinalframework.plugins.aio.javadoc.JavaDocCompletionContributor"
                 order="first"
         />
@@ -52,6 +52,7 @@
                 implementationClass="org.ifinalframework.plugins.aio.javadoc.KDocCompletionContributor"
                 order="first"
         />
+        <typedHandler implementation="org.ifinalframework.plugins.aio.tasks.jvm.JvmTaskAtTypedHandler"/>
         <!--=============================================================================================================================-->
         <!--=======================================================      Api     ========================================================-->
         <!--=============================================================================================================================-->
