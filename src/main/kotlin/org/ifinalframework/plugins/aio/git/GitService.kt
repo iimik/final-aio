@@ -1,5 +1,7 @@
 package org.ifinalframework.plugins.aio.git
 
+import git4idea.repo.GitRemote
+
 
 /**
  * GitService

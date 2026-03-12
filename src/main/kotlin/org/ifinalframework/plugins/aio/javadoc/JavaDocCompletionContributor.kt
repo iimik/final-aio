@@ -10,6 +10,7 @@ import com.intellij.psi.JavaTokenType
 /**
  * JavaDocCompletionContributor
  *
+ * @issue 112 [feature] MyBatis mapper xml test completion for enum field
  * @author iimik
  * @see com.intellij.codeInsight.completion.JavaDocCompletionContributor
  */

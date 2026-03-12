@@ -1,6 +1,6 @@
 package org.ifinalframework.plugins.aio.tasks
 
-import org.ifinalframework.plugins.aio.git.GitRemote
+import git4idea.repo.GitRemote
 
 
 /**

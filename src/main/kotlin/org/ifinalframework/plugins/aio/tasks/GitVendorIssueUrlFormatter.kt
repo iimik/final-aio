@@ -1,8 +1,9 @@
 package org.ifinalframework.plugins.aio.tasks
 
-import org.ifinalframework.plugins.aio.git.GitRemote
+import git4idea.repo.GitRemote
 import org.ifinalframework.plugins.aio.git.GitVendor
 import org.springframework.stereotype.Component
+import java.net.URI
 
 
 /**
@@ -16,12 +17,31 @@ class GitVendorIssueUrlFormatter : GitIssueUrlFormatter {
 
     override fun format(remote: GitRemote, issue: TaskDoc): String {
 
-        val gitVendor = GitVendor.getByHostOrDefault(remote.host)
+        val uri = URI(toWebUrl(remote.firstUrl!!))
+        val gitVendor = GitVendor.getByHostOrDefault(uri.host)
         val issueFormat = gitVendor.issueFormat
 
-        return issueFormat.replace($$"${schema}", remote.schema ?: "https")
-            .replace($$"${host}", remote.host)
-            .replace($$"${path}", remote.path)
+        return issueFormat.replace($$"${scheme}", uri.scheme ?: "https")
+            .replace($$"${host}", uri.host)
+            .replace($$"${path}", uri.path)
             .replace($$"${issue}", issue.code)
+    }
+
+    private fun toWebUrl(remoteUrl: String): String {
+            return when {
+                // git@github.com:user/demo.git
+                remoteUrl.startsWith("git@") -> {
+                    val withoutPrefix = remoteUrl.removePrefix("git@")
+                    val (host, path) = withoutPrefix.split(":", limit = 2)
+                    "https://$host/${path.removeSuffix(".git")}"
+                }
+
+                // https://github.com/user/demo.git
+                remoteUrl.startsWith("http://") || remoteUrl.startsWith("https://") -> {
+                    remoteUrl.removeSuffix(".git")
+                }
+
+                else -> remoteUrl
+            }
     }
 }

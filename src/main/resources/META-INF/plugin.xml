@@ -226,7 +226,7 @@
 
     <depends>org.intellij.plugins.markdown</depends>
     <depends>org.jetbrains.plugins.yaml</depends>
-
+    <depends>Git4Idea</depends>
 
     <projectListeners>
         <listener class="org.ifinalframework.plugins.aio.listener.ConfigFileChangeListener"
