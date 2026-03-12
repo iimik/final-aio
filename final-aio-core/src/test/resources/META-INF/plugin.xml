@@ -2,6 +2,7 @@
 <idea-plugin>
     <id>org.ifinalframework.plugins.aio</id>
     <name>Final AIO</name>
+
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="FINAL_AIO_BALLOON"/>
         <notificationGroup displayType="TOOL_WINDOW" id="FINAL_AIO_TOOL_WINDOW"/>
@@ -43,7 +44,7 @@
         <!--=======================================================    JavaDoc   ========================================================-->
         <!--=============================================================================================================================-->
         <completion.contributor
-                language="any"
+                language="JAVA"
                 implementationClass="org.ifinalframework.plugins.aio.javadoc.JavaDocCompletionContributor"
                 order="first"
         />
@@ -52,7 +53,6 @@
                 implementationClass="org.ifinalframework.plugins.aio.javadoc.KDocCompletionContributor"
                 order="first"
         />
-        <typedHandler implementation="org.ifinalframework.plugins.aio.tasks.jvm.JvmTaskAtTypedHandler"/>
         <!--=============================================================================================================================-->
         <!--=======================================================      Api     ========================================================-->
         <!--=============================================================================================================================-->
@@ -88,41 +88,10 @@
                                 id="yapi"
         />
         <!--=============================================================================================================================-->
-        <!--=======================================================     Tasks     =======================================================-->
-        <!--=============================================================================================================================-->
-        <applicationService
-                serviceInterface="org.ifinalframework.plugins.aio.tasks.TaskDocProcessor"
-                serviceImplementation="org.ifinalframework.plugins.aio.tasks.processor.DefaultTaskDocProcessor"
-        />
-        <codeInsight.lineMarkerProvider
-                language="Markdown"
-                implementationClass="org.ifinalframework.plugins.aio.tasks.markdown.MarkdownTaskLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider
-                language="UAST"
-                implementationClass="org.ifinalframework.plugins.aio.tasks.jvm.JvmTaskLineMarkerProvider"/>
-        <completion.contributor
-                language="Markdown"
-                implementationClass="org.ifinalframework.plugins.aio.tasks.markdown.MarkdownTaskCompletionContributor"
-                order="first"
-        />
-        <!-- YAML -->
-        <codeInsight.lineMarkerProvider
-                language="yaml"
-                implementationClass="org.ifinalframework.plugins.aio.tasks.yaml.YamlTaskLineMarkerProvider"
-        />
-        <completion.contributor
-                language="yaml"
-                implementationClass="org.ifinalframework.plugins.aio.tasks.yaml.YamlTaskCompletionContributor"
-                order="first"
-        />
-        <statusBarWidgetFactory
-                id="tasks"
-                implementation="org.ifinalframework.plugins.aio.tasks.yaml.TaskStatusBarWidgetFactory"
-        />
-        <!--=============================================================================================================================-->
         <!--=======================================================    MyBatis    =======================================================-->
         <!--=============================================================================================================================-->
-        <fileTemplateGroup implementation="org.ifinalframework.plugins.aio.mybatis.template.MyBatisFileTemplateGroupDescriptorFactory"/>
+        <fileTemplateGroup
+                implementation="org.ifinalframework.plugins.aio.mybatis.template.MyBatisFileTemplateGroupDescriptorFactory"/>
         <codeInsight.lineMarkerProvider
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.MapperLineMarkerProvider"/>
@@ -155,7 +124,8 @@
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.StatementDocumentationProvider"
                 order="first"
         />
-        <dom.fileMetaData rootTagName="mapper" implementation="org.ifinalframework.plugins.aio.mybatis.xml.MapperDescription"/>
+        <dom.fileMetaData rootTagName="mapper"
+                          implementation="org.ifinalframework.plugins.aio.mybatis.xml.MapperDescription"/>
         <completion.contributor
                 language="XML"
                 implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperXmlCompletionContributor"
@@ -234,6 +204,10 @@
     </projectListeners>
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
         <supportsKotlinPluginMode supportsK2="true"/>
+    </extensions>
+    <extensions defaultExtensionNs="org.ifinalframework.plugins.aio">
+        <javadoc.jvmDocCompletionProvider
+                implementation="org.ifinalframework.plugins.aio.tasks.jvm.JvmTaskDocCompletionProvider"/>
     </extensions>
 
 </idea-plugin>

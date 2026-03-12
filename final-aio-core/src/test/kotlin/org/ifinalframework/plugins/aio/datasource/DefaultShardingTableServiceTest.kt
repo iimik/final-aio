@@ -1,8 +1,7 @@
 package org.ifinalframework.plugins.aio.datasource
 
-import com.intellij.openapi.components.service
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.ifinalframework.plugins.aio.datasource.service.ShardingTableService
+import org.ifinalframework.plugins.aio.datasource.service.DefaultShardingTableService
 import org.junit.jupiter.api.Test
 
 /**
@@ -13,7 +12,7 @@ import org.junit.jupiter.api.Test
 class DefaultShardingTableServiceTest : BasePlatformTestCase() {
     @Test
     fun testShardingPredicate() {
-        val service = service<ShardingTableService>()
+        val service = DefaultShardingTableService()
         assertTrue(service.isShardingTable("a_1"))
         assertTrue(service.isShardingTable("a_01"))
         assertTrue(service.isShardingTable("a_202503"))

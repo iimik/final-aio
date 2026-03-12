@@ -29,10 +29,19 @@ dependencies {
     // spring boot
     implementation("org.springframework.boot:spring-boot-starter:${properties["spring.boot.version"]}")
     implementation("org.springframework.boot:spring-boot-starter-aop:${properties["spring.boot.version"]}")
-    implementation("com.squareup.retrofit2:retrofit:${properties["retrofit.version"]}")
+    implementation("com.squareup.retrofit2:retrofit:${properties["retrofit.version"]}"){
+        exclude(group = "org.jetbrains.kotlin")
+    }
     implementation("com.squareup.retrofit2:converter-jackson:${properties["retrofit.version"]}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.21")
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.0")
+//    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.21.1"){
+//        exclude(group = "org.jetbrains.kotlin")
+//    }
+    // Source: https://mvnrepository.com/artifact/tools.jackson.module/jackson-module-kotlin
+    implementation("tools.jackson.module:jackson-module-kotlin:3.1.0"){
+        exclude(group = "org.jetbrains.kotlin")
+    }
     // https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core
 //    implementation("org.apache.velocity:velocity-engine-core:2.4.1")
     // https://mvnrepository.com/artifact/org.apache.velocity.tools/velocity-tools-generic
@@ -53,7 +62,6 @@ dependencies {
         // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file for plugin from JetBrains Marketplace.
         plugins(providers.gradleProperty("platformPlugins").map { it.split(',') })
 
-        instrumentationTools()
         pluginVerifier()
         zipSigner()
         testFramework(TestFrameworkType.Platform)
