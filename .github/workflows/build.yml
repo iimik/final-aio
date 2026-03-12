@@ -78,7 +78,7 @@ jobs:
 
       # Build plugin
       - name: Build plugin
-        run: ./gradlew :final-aio-idea:buildPlugin
+        run: ./gradlew :final-aio-idea:buildPlugin --no-configuration-cache
 
       # Prepare plugin archive content for creating artifact
       - name: Prepare Plugin Artifact
