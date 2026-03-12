@@ -3,3 +3,8 @@ plugins {
 }
 
 rootProject.name = "final-aio"
+
+include("final-aio-core")
+include("final-aio-idea")
+
+include("final-aio-tasks")
