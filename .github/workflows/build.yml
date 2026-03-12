@@ -78,7 +78,7 @@ jobs:
 
       # Build plugin
       - name: Build plugin
-        run: ./gradlew buildPlugin
+        run: ./gradlew :final-aio-idea:buildPlugin
 
       # Prepare plugin archive content for creating artifact
       - name: Prepare Plugin Artifact
@@ -96,7 +96,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: ${{ steps.artifact.outputs.filename }}
-          path: ./build/distributions/content/*/*
+          path: ./final-aio-idea/build/distributions/content/*/*
 
   # Run tests and upload a code coverage report
   test:

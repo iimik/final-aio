@@ -1,8 +1,3 @@
-import org.jetbrains.changelog.Changelog
-import org.jetbrains.changelog.markdownToHTML
-import org.jetbrains.intellij.platform.gradle.TestFrameworkType
-import java.util.stream.Collectors
-
 plugins {
     alias(libs.plugins.kotlin) // Kotlin support
     alias(libs.plugins.intelliJPlatform) apply false // IntelliJ Platform Gradle Plugin
@@ -20,7 +15,7 @@ subprojects {
     apply(plugin = "java")
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
-    kotlin{
+    kotlin {
         jvmToolchain(21)
     }
 
