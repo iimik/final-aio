@@ -18,6 +18,10 @@
 
 ## Test
 
-`<if>`和`<when>`标签中的`test`属性
+`<if>`和`<when>`标签中的 `test` 属性
+
+* 扩展
+  * 时间字段且以 `start` 开始: `null != {startProperty} and null != {endProperty}`
+  * 枚举字段：`null != {property} and {property} == @{enumClass}@{enumConstant}` (#112)
 
 ![MyBatis completion test](mybatis-completion-test.png)

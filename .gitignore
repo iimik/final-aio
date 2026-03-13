@@ -4,6 +4,6 @@
 .qodana
 build
 .kotlin
-
+**/.DS_Store
 ## Local
 .env.local
