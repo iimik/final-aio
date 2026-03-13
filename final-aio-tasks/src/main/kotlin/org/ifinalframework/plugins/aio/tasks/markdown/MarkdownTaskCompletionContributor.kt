@@ -2,8 +2,6 @@ package org.ifinalframework.plugins.aio.tasks.markdown
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.jvm.dfa.analysis.ui.inspection.presentation.PsiElementLineLocator.getStartLine
-import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PsiJavaPatterns
 import com.intellij.tasks.TaskManager
 import com.intellij.util.ProcessingContext
@@ -35,9 +33,7 @@ class MarkdownTaskCompletionContributor : CompletionContributor() {
                 ) {
                     val position = parameters.position
                     val text = position.text
-                    position.getStartLine()
-                    val lineStartOffset = parameters.editor.document.getLineStartOffset(position.getStartLine() - 1)
-                    val line = parameters.editor.document.getText(TextRange(lineStartOffset, position.textOffset))
+                    val line = parameters.editor.document.getText(position.textRange)
                     val isHeader = line.startsWith("#")
 
                     if (text.startsWith("@") || text.startsWith("#")) {
