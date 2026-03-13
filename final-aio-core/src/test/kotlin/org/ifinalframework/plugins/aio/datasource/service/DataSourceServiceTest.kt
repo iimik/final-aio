@@ -12,6 +12,6 @@ class DataSourceServiceTest: BasePlatformTestCase() {
 
     public fun testGetSchemas(){
         val dataSourceService = project.service<DataSourceService>()
-        dataSourceService.getSchemas();
+        dataSourceService.getTables(null);
     }
 }
