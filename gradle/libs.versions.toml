@@ -4,11 +4,11 @@ junit = "4.13.2"
 jackson-module-kotlin = "2.21.1"
 
 # plugins
-changelog = "2.4.0"
+changelog = "2.5.0"
 intelliJPlatform = "2.10.2"
 kotlin = "2.2.21"
 kover = "0.9.3"
-qodana = "2025.2.1"
+qodana = "2025.2.2"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
