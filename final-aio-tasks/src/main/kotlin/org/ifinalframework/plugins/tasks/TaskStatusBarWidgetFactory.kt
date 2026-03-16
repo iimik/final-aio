@@ -46,7 +46,8 @@ class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
     }
 
     private
-    class MyStatusBarWidget(val project: Project) : StatusBarWidget, StatusBarWidget.IconPresentation {
+    class MyStatusBarWidget(val project: Project) : StatusBarWidget, StatusBarWidget.MultipleTextValuesPresentation {
+        private val taskManager: TaskManager = TaskManager.getManager(project)
         private var myStatusBar: StatusBar? = null
 
         override fun ID(): String {
@@ -70,7 +71,6 @@ class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
             return Consumer<MouseEvent> {
                 R.async {
                     try {
-                        val taskManager = TaskManager.getManager(project)
                         val issues = taskManager.getIssues(null, false)
                         service<NotificationService>().info("已刷新${issues.size}条Tasks！")
                     } catch (ex: Exception) {
@@ -82,6 +82,13 @@ class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
 
         override fun getShortcutText(): String {
             return "Tasks"
+        }
+
+        override fun getSelectedValue(): @NlsContexts.StatusBarText String {
+            val localTasks = taskManager.localTasks
+            val total = localTasks.size
+            val active = localTasks.count { it.isActive }
+            return "Tasks:${active}/${total}"
         }
 
         override fun getIcon(): Icon {
