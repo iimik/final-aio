@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.tasks.yaml
+package org.ifinalframework.plugins.tasks
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -20,16 +20,16 @@ import javax.swing.Icon
  * Task 状态栏组件
  *
  * 通过点击可强制刷新Tasks列表
- * 
+ *
  * @author iimik
  */
 class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
     override fun getId(): @NonNls String {
-        return "Task"
+        return "Tasks"
     }
 
     override fun getDisplayName(): @NlsContexts.ConfigurableName String {
-        return "Task"
+        return "Tasks"
     }
 
     override fun createWidget(project: Project): StatusBarWidget {
@@ -50,7 +50,7 @@ class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
         private var myStatusBar: StatusBar? = null
 
         override fun ID(): String {
-            return "Task"
+            return "Tasks"
         }
 
         override fun install(statusBar: StatusBar) {
@@ -59,7 +59,7 @@ class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
 
 
         override fun getTooltipText(): @NlsContexts.Tooltip String {
-            return "Task"
+            return "Tasks"
         }
 
         override fun getPresentation(): StatusBarWidget.WidgetPresentation {
@@ -81,7 +81,7 @@ class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
         }
 
         override fun getShortcutText(): String {
-            return "Task"
+            return "Tasks"
         }
 
         override fun getIcon(): Icon {

@@ -121,7 +121,7 @@
         />
         <statusBarWidgetFactory
                 id="tasks"
-                implementation="org.ifinalframework.plugins.aio.tasks.yaml.TaskStatusBarWidgetFactory"
+                implementation="org.ifinalframework.plugins.tasks.TaskStatusBarWidgetFactory"
         />
         <typedHandler implementation="org.ifinalframework.plugins.aio.tasks.jvm.JvmTaskAtTypedHandler"/>
         <psi.referenceContributor

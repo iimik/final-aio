@@ -10,6 +10,7 @@ import com.intellij.psi.javadoc.PsiDocTag
 import com.intellij.util.ProcessingContext
 import org.ifinalframework.plugins.aio.tasks.TaskDocProcessor
 import org.ifinalframework.plugins.aio.tasks.jvm.JvmTaskService
+import org.ifinalframework.plugins.tasks.TaskPsiReference
 import java.util.concurrent.CancellationException
 
 
@@ -34,11 +35,7 @@ class JavaTaskPsiReferenceContributor : PsiReferenceContributor() {
                         val taskDoc = service<JvmTaskService>().getTaskDoc(element) ?: return PsiReference.EMPTY_ARRAY
                         val tagStart = taskDoc.tag.length + 2
                         val tagEnd = tagStart + taskDoc.code.length
-                        return arrayOf(object : WebReference(element, TextRange(tagStart, tagEnd)) {
-                            override fun getValue(): @NlsSafe String {
-                                return service<TaskDocProcessor>().buildUrl(element.project, taskDoc) ?: ""
-                            }
-                        })
+                        return arrayOf(TaskPsiReference(element, TextRange(tagStart, tagEnd), taskDoc))
                     } catch (ex: CancellationException) {
                         // ignore
                         return PsiReference.EMPTY_ARRAY
