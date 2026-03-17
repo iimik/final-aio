@@ -196,6 +196,11 @@
         <codeInsight.lineMarkerProvider
                 language="UAST"
                 implementationClass="org.ifinalframework.plugins.aio.spring.provider.SpringCloudFeignLineMarkerProvider"/>
+        <findUsagesHandlerFactory
+                implementation="org.ifinalframework.plugins.aio.spring.provider.ControllerFindUsagesHandlerFactory"
+                id="spring"
+                order="first"
+        />
         <!--=========================================================================================================-->
         <!--=============================================    Setting    =============================================-->
         <!--=========================================================================================================-->
