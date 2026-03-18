@@ -28,7 +28,7 @@ Spring 模块作用于 Spring / Spring Boot 项目，
 Spring module works with Spring / Spring Boot projects  
 and provides method-level helper actions.
 
-**SEE:** [`spring/README.md`](spring/README.md)
+**SEE:** [`Spring Feign Navigator ｜ final-aio-spring/README.md`](final-aio-spring/README.md)
 
 ---
 
@@ -40,7 +40,7 @@ Tasks 模块是官方 Task 插件的扩展模块，
 Tasks module extends the official Task plugin  
 and adds navigation for task references in code and documents.
 
-**SEE:** [`tasks/README.md`](tasks/README.md)
+**SEE:** [`Task Mention｜final-aio-tasks/README.md`](final-aio-tasks/README.md)
 
 ---
 
