@@ -1,4 +1,4 @@
-# Spring Feign Navigator
+# Spring Feign Navigator ｜ final-aio-spring
 
 **为 Spring Controller 与 Feign Client 提供双向跳转、Find Usages 与 Line Marker 支持**  
 **Bidirectional navigation, Find Usages, and Line Markers for Spring Controllers and Feign Clients**
@@ -8,7 +8,7 @@ Supports **Java & Kotlin** · Zero configuration
 
 ---
 
-## 🚀 插件简介 | Overview
+## 📌 模块介绍 | Introduction
 
 **Spring Feign Navigator** 为 IntelliJ IDEA 增强了  
 **Spring MVC Controller** 与 **Feign Client** 之间的关系感知能力。
