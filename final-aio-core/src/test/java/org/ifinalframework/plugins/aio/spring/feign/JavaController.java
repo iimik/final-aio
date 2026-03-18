@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
  * JavaController
  *
  * @author iimik
- * @since 1.6.0
+ * @since 0.0.25
  **/
 @RequestMapping("/api/feign/java")
 @RestController

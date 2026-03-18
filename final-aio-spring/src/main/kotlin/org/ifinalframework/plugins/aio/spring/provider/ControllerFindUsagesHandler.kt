@@ -3,13 +3,10 @@ package org.ifinalframework.plugins.aio.spring.provider;
 import com.intellij.find.findUsages.FindUsagesHandler
 import com.intellij.find.findUsages.FindUsagesOptions
 import com.intellij.openapi.components.service
-import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiModifier
-import com.intellij.psi.search.searches.AnnotationTargetsSearch
 import com.intellij.usageView.UsageInfo
 import com.intellij.util.Processor
-import com.intellij.util.containers.stream
 import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.constans.SpringAnnotations
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
@@ -23,6 +20,7 @@ import org.jetbrains.uast.getContainingUClass
 
 /**
  * ControllerFindUsagesHandler
+ *
  *
  * @author iimik
  * @since 0.0.25
@@ -42,23 +40,23 @@ class ControllerFindUsagesHandler(element: PsiElement) : FindUsagesHandler(eleme
 
 
         if (feignClientAnnotation == null) {
-            return false
+            return true
         }
 
         val uMethod = element as UMethod
-        val uClass = uMethod.getContainingUClass() ?: return false
+        val uClass = uMethod.getContainingUClass() ?: return true
 
         val apiMethodService = service<ApiMethodService>()
         val isFeignClient = R.computeInRead { uClass.hasAnnotation(SpringAnnotations.FEIGN_CLIENT) }
         if (uClass.isInterface && isFeignClient == true) {
             // @FeignClient
-            return false
+            return true
 
         } else if (uClass.hasAnnotation(SpringAnnotations.REQUEST_MAPPING) && !uClass.hasModifierProperty(
                 PsiModifier.ABSTRACT
             )
         ) {
-            val apiMarker = apiMethodService.getApiMarker(uMethod) ?: return false
+            val apiMarker = apiMethodService.getApiMarker(uMethod) ?: return true
 
             val index = HttpEndPointIndexManager.getIndex(project)
 
@@ -81,6 +79,6 @@ class ControllerFindUsagesHandler(element: PsiElement) : FindUsagesHandler(eleme
             return false
         }
 
-        return false
+        return true
     }
 }

@@ -1,7 +1,6 @@
 package org.ifinalframework.plugins.aio.spring
 
 import com.intellij.database.util.common.asOptional
-import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.DumbService
@@ -12,9 +11,11 @@ import com.intellij.psi.search.searches.AnnotationTargetsSearch
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
+import com.intellij.util.containers.stream
 import org.ifinalframework.plugins.aio.api.constans.SpringAnnotations
 import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
 import org.ifinalframework.plugins.aio.service.PsiService
+import org.ifinalframework.plugins.aio.spring.service.SpringService
 
 
 /**
@@ -27,8 +28,6 @@ object HttpEndPointIndexManager {
     fun getIndex(project: Project): HttpEndPointIndex {
         return CachedValuesManager.getManager(project)
             .getCachedValue(project) {
-
-                ReadAction.nonBlocking { }
                 val index =
                     DumbService.getInstance(project)
                         .runReadActionInSmartMode<HttpEndPointIndex> {
@@ -77,7 +76,19 @@ object HttpEndPointIndexManager {
             }
 
         thisLogger().info("Looking for @")
+        val springService = project.service<SpringService>()
+        val controllers = springService.getResponseBodyAnnotations().flatMap { AnnotationTargetsSearch.search(it) }
+            .filterIsInstance<PsiClass>()
 
+        controllers.stream().flatMap { c -> c.methods.stream() }
+            .forEach { method ->
+                val marker = apiMethodService.getApiMarker(method)
+                if(marker != null) {
+                    val httpEndPoint = HttpEndPoint(marker.methods[0], marker.paths[0], method)
+                    val key = HttpEndPointKey(marker.methods[0], marker.paths[0])
+                    controller.getOrPut(key) { mutableListOf() }.add(httpEndPoint)
+                }
+            }
         return HttpEndPointIndex(feign, controller)
     }
 

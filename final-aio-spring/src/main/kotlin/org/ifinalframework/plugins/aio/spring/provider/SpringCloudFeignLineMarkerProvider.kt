@@ -35,8 +35,8 @@ class SpringCloudFeignLineMarkerProvider : RelatedItemLineMarkerProvider() {
     private val mvcTooltip = I18N.message("Spring.SpringCloudFeignLineMarkerProvider.mvc.tooltip")
     private val feignTooltip = I18N.message("Spring.SpringCloudFeignLineMarkerProvider.feign.tooltip")
 
-    private val feignClientMethodIcon = AllIcons.General.OverridingMethod
-    private val controllerMethodIcon = AllIcons.General.OverridenMethod
+    private val feignClientMethodIcon = AllIcons.Gutter.OverridingMethod
+    private val controllerMethodIcon = AllIcons.Gutter.OverridenMethod
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         val project = element.project

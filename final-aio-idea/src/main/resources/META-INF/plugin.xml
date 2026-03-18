@@ -125,11 +125,8 @@
         />
         <typedHandler implementation="org.ifinalframework.plugins.aio.tasks.jvm.JvmTaskAtTypedHandler"/>
         <psi.referenceContributor
-                language="JAVA"
-                implementation="org.ifinalframework.plugins.tasks.jvm.JavaTaskPsiReferenceContributor"/>
-        <psi.referenceContributor
-                language="kotlin"
-                implementation="org.ifinalframework.plugins.tasks.jvm.KTaskPsiReferenceContributor"/>
+                language="UAST"
+                implementation="org.ifinalframework.plugins.tasks.jvm.JvmTaskPsiReferenceContributor"/>
         <!--=========================================================================================================-->
         <!--=============================================    MyBatis    =============================================-->
         <!--=========================================================================================================-->
@@ -200,6 +197,11 @@
                 implementation="org.ifinalframework.plugins.aio.spring.provider.ControllerFindUsagesHandlerFactory"
                 id="spring"
                 order="first"
+        />
+        <gotoDeclarationHandler
+                implementation="org.ifinalframework.plugins.aio.spring.FeignClientMethodGotoDeclarationHandler"
+                order="first"
+                id="feign"
         />
         <!--=========================================================================================================-->
         <!--=============================================    Setting    =============================================-->
