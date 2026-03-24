@@ -198,10 +198,10 @@
                 id="spring"
                 order="first"
         />
-        <gotoDeclarationHandler
-                implementation="org.ifinalframework.plugins.aio.spring.FeignClientMethodGotoDeclarationHandler"
+        <overridingMethodsSearch
                 order="first"
-                id="feign"
+                implementation="org.ifinalframework.plugins.aio.spring.FeignOverridingMethodsSearcher"
+                id="feignOverridingMethodsSearcher"
         />
         <!--=========================================================================================================-->
         <!--=============================================    Setting    =============================================-->
