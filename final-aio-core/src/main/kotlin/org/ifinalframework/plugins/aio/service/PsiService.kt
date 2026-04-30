@@ -7,8 +7,8 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.searches.AllClassesSearch
 import com.intellij.psi.util.PsiTreeUtil
+import org.ifinalframework.plugins.aio.R
 import org.jetbrains.kotlin.idea.base.psi.kotlinFqName
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
 import org.jetbrains.kotlin.psi.KtClass
@@ -32,7 +32,7 @@ class PsiService(val project: Project) {
      * 查找类
      */
     fun findClass(className: String): PsiClass? {
-        return javaPsiFacade.findClass(className, GlobalSearchScope.allScope(project)) ?: return null
+        return R.computeInRead { javaPsiFacade.findClass(className, GlobalSearchScope.allScope(project)) }
     }
 
     fun findAllClasses(filter: ClassFilter = ClassFilter.ALL): List<PsiClass> {
@@ -50,7 +50,6 @@ class PsiService(val project: Project) {
                 .filter { f -> filter.isAccepted(f) }
         }
     }
-
 
 
 }

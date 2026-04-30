@@ -1,7 +1,9 @@
 package org.ifinalframework.plugins.aio.spring
 
 import com.intellij.psi.PsiElement
+import org.ifinalframework.plugins.aio.R
 import org.ifinalframework.plugins.aio.api.constans.SpringAnnotations
+import org.jetbrains.kotlin.utils.addToStdlib.ifFalse
 import org.jetbrains.uast.UClass
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.getUastParentOfType
@@ -28,10 +30,14 @@ object SpringUtils {
     }
 
     fun isControllerMethod(element: PsiElement): Boolean {
-        val method = getUMethod(element) ?: return false
-        val klass = method.getUastParentOfType<UClass>() ?: return false
-        SpringAnnotations.REQUEST_MAPPINGS.any { method.hasAnnotation(it) } ?: return false
-        return klass.hasAnnotation(SpringAnnotations.REST_CONTROLLER)
+        return R.computeInRead {
+            val method = getUMethod(element) ?: return@computeInRead false
+            val klass = method.getUastParentOfType<UClass>() ?: return@computeInRead false
+            SpringAnnotations.REQUEST_MAPPINGS.any { method.hasAnnotation(it) }.ifFalse { return@computeInRead false }
+            return@computeInRead klass.hasAnnotation(SpringAnnotations.REST_CONTROLLER) || klass.hasAnnotation(
+                SpringAnnotations.REQUEST_MAPPING)
+        } ?: false
+
     }
 
     /**
@@ -41,10 +47,13 @@ object SpringUtils {
      * 3. 类上有`@FeignClient`注解
      */
     fun isFeignMethod(element: PsiElement): Boolean {
-        val method = getUMethod(element) ?: return false
-        val klass = method.getUastParentOfType<UClass>() ?: return false
-        SpringAnnotations.REQUEST_MAPPINGS.any { method.hasAnnotation(it) } ?: return false
-        return klass.hasAnnotation(SpringAnnotations.FEIGN_CLIENT)
+        return R.computeInRead {
+            val method = getUMethod(element) ?: return@computeInRead false
+            val klass = method.getUastParentOfType<UClass>() ?: return@computeInRead false
+            SpringAnnotations.REQUEST_MAPPINGS.any { method.hasAnnotation(it) }.ifFalse { return@computeInRead false }
+            return@computeInRead klass.hasAnnotation(SpringAnnotations.FEIGN_CLIENT)
+        } ?: false
+
     }
 
     private fun getUMethod(element: PsiElement): UMethod? {
@@ -52,5 +61,6 @@ object SpringUtils {
             is UMethod -> element
             else -> element.getUastParentOfType<UMethod>()
         }
+
     }
 }

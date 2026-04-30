@@ -13,13 +13,12 @@ import org.ifinalframework.plugins.aio.api.spi.ApiMethodService
 import org.ifinalframework.plugins.aio.service.PsiService
 import org.ifinalframework.plugins.aio.spring.HttpEndPointIndexManager
 import org.ifinalframework.plugins.aio.spring.HttpEndPointKey
-import org.ifinalframework.plugins.aio.spring.service.SpringService
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.getContainingUClass
 
 
 /**
- * ControllerFindUsagesHandler
+ * Controller使用者查找处理器
  *
  *
  * @author iimik
@@ -32,23 +31,18 @@ class ControllerFindUsagesHandler(element: PsiElement) : FindUsagesHandler(eleme
         options: FindUsagesOptions
     ): Boolean {
 
-
         val project = element.project
-        val springService = project.service<SpringService>()
         val psiService = project.service<PsiService>()
-        val feignClientAnnotation = R.computeInRead { psiService.findClass(SpringAnnotations.FEIGN_CLIENT) }
-
-
-        if (feignClientAnnotation == null) {
-            return true
-        }
+        // @FeignClient不存在
+        psiService.findClass(SpringAnnotations.FEIGN_CLIENT) ?: return true
 
         val uMethod = element as UMethod
-        val uClass = uMethod.getContainingUClass() ?: return true
+        val uClass = R.computeInRead { uMethod.getContainingUClass() } ?: return true
 
         val apiMethodService = service<ApiMethodService>()
         val isFeignClient = R.computeInRead { uClass.hasAnnotation(SpringAnnotations.FEIGN_CLIENT) }
-        if (uClass.isInterface && isFeignClient == true) {
+        val isInterface = R.computeInRead { uClass.isInterface } ?: return true
+        if (isInterface && isFeignClient == true) {
             // @FeignClient
             return true
 
