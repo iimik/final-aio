@@ -33,6 +33,7 @@ dependencies {
     implementation(project(":final-aio-core"))
     implementation(project(":final-aio-tasks"))
     implementation(project(":final-aio-spring"))
+    implementation(project(":final-aio-mybatis"))
 
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {

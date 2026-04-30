@@ -8,7 +8,7 @@ public class JavaModel {
      */
     private String name;
     /**
-     * @typeHandler org.ifinalframework.plugins.aio.mybatis.MyTypeHandler
+     * @typeHandler org.ifinalframework.plugins.mybatis.MyTypeHandler
      */
     private Integer age;
 

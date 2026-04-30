@@ -10,6 +10,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/final-aio-core" />
             <option value="$PROJECT_DIR$/final-aio-idea" />
+            <option value="$PROJECT_DIR$/final-aio-mybatis" />
             <option value="$PROJECT_DIR$/final-aio-spring" />
             <option value="$PROJECT_DIR$/final-aio-tasks" />
           </set>

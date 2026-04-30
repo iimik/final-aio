@@ -91,61 +91,61 @@
         <!--=======================================================    MyBatis    =======================================================-->
         <!--=============================================================================================================================-->
         <fileTemplateGroup
-                implementation="org.ifinalframework.plugins.aio.mybatis.template.MyBatisFileTemplateGroupDescriptorFactory"/>
+                implementation="org.ifinalframework.plugins.mybatis.template.MyBatisFileTemplateGroupDescriptorFactory"/>
         <codeInsight.lineMarkerProvider
                 language="UAST"
-                implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.MapperLineMarkerProvider"/>
+                implementationClass="org.ifinalframework.plugins.mybatis.provider.MapperLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider
                 language="UAST"
-                implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.ResultMapLineMarkerProvider"/>
+                implementationClass="org.ifinalframework.plugins.mybatis.provider.ResultMapLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider
                 language="XML"
-                implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.StatementLineMarkerProvider"/>
+                implementationClass="org.ifinalframework.plugins.mybatis.provider.StatementLineMarkerProvider"/>
         <localInspection
                 language="UAST"
                 displayName="Mapper Inspection"
                 groupName="Mybatis" enabledByDefault="true" level="ERROR"
-                implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.MapperInspection"/>
+                implementationClass="org.ifinalframework.plugins.mybatis.inspection.MapperInspection"/>
         <localInspection
                 language="UAST"
                 displayName="ResultMap Inspection"
                 groupName="MyBatis" enabledByDefault="true" level="ERROR"
-                implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.ResultMapInspection"
+                implementationClass="org.ifinalframework.plugins.mybatis.inspection.ResultMapInspection"
         />
         <localInspection
                 language="XML"
                 shortName="MybatisMapperXmlInspection"
                 displayName="Mapper xml inspection"
                 groupName="Mybatis" enabledByDefault="true" level="ERROR"
-                implementationClass="org.ifinalframework.plugins.aio.mybatis.inspection.MapperXmlInspection"
+                implementationClass="org.ifinalframework.plugins.mybatis.inspection.MapperXmlInspection"
         />
         <lang.documentationProvider
                 language="UAST"
-                implementationClass="org.ifinalframework.plugins.aio.mybatis.provider.StatementDocumentationProvider"
+                implementationClass="org.ifinalframework.plugins.mybatis.provider.StatementDocumentationProvider"
                 order="first"
         />
         <dom.fileMetaData rootTagName="mapper"
-                          implementation="org.ifinalframework.plugins.aio.mybatis.xml.MapperDescription"/>
+                          implementation="org.ifinalframework.plugins.mybatis.xml.MapperDescription"/>
         <completion.contributor
                 language="XML"
-                implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperXmlCompletionContributor"
+                implementationClass="org.ifinalframework.plugins.mybatis.contributor.MapperXmlCompletionContributor"
                 order="first"
         />
         <completion.contributor
                 language="SQL"
-                implementationClass="org.ifinalframework.plugins.aio.mybatis.contributor.MapperSqlCompletionContributor"
+                implementationClass="org.ifinalframework.plugins.mybatis.contributor.MapperSqlCompletionContributor"
                 order="first"
         />
         <projectConfigurable
                 parentId="language"
-                instance="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
-                id="org.ifinalframework.plugins.aio.mybatis.MyBatisConfigurable"
+                instance="org.ifinalframework.plugins.mybatis.MyBatisConfigurable"
+                id="org.ifinalframework.plugins.mybatis.MyBatisConfigurable"
                 displayName="MyBatis"
                 nonDefaultProject="true"
         />
         <projectService
-                serviceInterface="org.ifinalframework.plugins.aio.mybatis.function.MapperTableProvider"
-                serviceImplementation="org.ifinalframework.plugins.aio.mybatis.function.DefaultMapperTableProvider"
+                serviceInterface="org.ifinalframework.plugins.mybatis.function.MapperTableProvider"
+                serviceImplementation="org.ifinalframework.plugins.mybatis.function.DefaultMapperTableProvider"
         />
         <!--=============================================================================================================================-->
         <!--=======================================================    Spring     =======================================================-->

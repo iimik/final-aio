@@ -1,7 +1,7 @@
 package org.ifinalframework.plugins.aio.setting
 
 import com.intellij.util.xmlb.annotations.Tag
-import org.ifinalframework.plugins.aio.mybatis.MyBatisProperties
+import org.ifinalframework.plugins.mybatis.MyBatisProperties
 
 /**
  * FinalProperties

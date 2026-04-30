@@ -6,7 +6,7 @@ import java.util.List;
 public class JavaQuery {
     /**
      * ID
-     * @typeHandler org.ifinalframework.plugins.aio.mybatis.MyTypeHandler
+     * @typeHandler org.ifinalframework.plugins.mybatis.MyTypeHandler
      */
     private Long id;
 

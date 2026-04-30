@@ -8,3 +8,5 @@ include("final-aio-core")
 include("final-aio-tasks")
 include("final-aio-spring")
 include("final-aio-idea")
+
+include("final-aio-mybatis")
