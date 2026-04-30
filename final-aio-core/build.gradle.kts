@@ -24,8 +24,6 @@ repositories {
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
     testImplementation(libs.junit)
-    // https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
-//    implementation("org.eclipse.jgit:org.eclipse.jgit:7.2.0.202503040940-r")
     // spring boot
     implementation("org.springframework.boot:spring-boot-starter:${properties["spring.boot.version"]}")
     implementation("org.springframework.boot:spring-boot-starter-aop:${properties["spring.boot.version"]}")
@@ -38,14 +36,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.21.1"){
         exclude(group = "org.jetbrains.kotlin")
     }
-    // Source: https://mvnrepository.com/artifact/tools.jackson.module/jackson-module-kotlin
-//    implementation("tools.jackson.module:jackson-module-kotlin:3.1.0"){
-//        exclude(group = "org.jetbrains.kotlin")
-//    }
-    // https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core
-//    implementation("org.apache.velocity:velocity-engine-core:2.4.1")
-    // https://mvnrepository.com/artifact/org.apache.velocity.tools/velocity-tools-generic
-//    implementation("org.apache.velocity.tools:velocity-tools-generic:3.1")
     testImplementation("org.springframework.boot:spring-boot-starter-web:${properties["spring.boot.version"]}")
     testImplementation("org.springframework.boot:spring-boot-starter-test:${properties["spring.boot.version"]}")
     testImplementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.2.0")
