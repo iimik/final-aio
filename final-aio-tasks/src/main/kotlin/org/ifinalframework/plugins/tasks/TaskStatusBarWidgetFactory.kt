@@ -1,4 +1,4 @@
-package org.ifinalframework.plugins.aio.tasks.yaml
+package org.ifinalframework.plugins.tasks
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -20,16 +20,16 @@ import javax.swing.Icon
  * Task 状态栏组件
  *
  * 通过点击可强制刷新Tasks列表
- * 
+ *
  * @author iimik
  */
 class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
     override fun getId(): @NonNls String {
-        return "Task"
+        return "Tasks"
     }
 
     override fun getDisplayName(): @NlsContexts.ConfigurableName String {
-        return "Task"
+        return "Tasks"
     }
 
     override fun createWidget(project: Project): StatusBarWidget {
@@ -46,11 +46,12 @@ class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
     }
 
     private
-    class MyStatusBarWidget(val project: Project) : StatusBarWidget, StatusBarWidget.IconPresentation {
+    class MyStatusBarWidget(val project: Project) : StatusBarWidget, StatusBarWidget.MultipleTextValuesPresentation {
+        private val taskManager: TaskManager = TaskManager.getManager(project)
         private var myStatusBar: StatusBar? = null
 
         override fun ID(): String {
-            return "Task"
+            return "Tasks"
         }
 
         override fun install(statusBar: StatusBar) {
@@ -59,7 +60,7 @@ class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
 
 
         override fun getTooltipText(): @NlsContexts.Tooltip String {
-            return "Task"
+            return "Tasks"
         }
 
         override fun getPresentation(): StatusBarWidget.WidgetPresentation {
@@ -70,7 +71,6 @@ class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
             return Consumer<MouseEvent> {
                 R.async {
                     try {
-                        val taskManager = TaskManager.getManager(project)
                         val issues = taskManager.getIssues(null, false)
                         service<NotificationService>().info("已刷新${issues.size}条Tasks！")
                     } catch (ex: Exception) {
@@ -81,7 +81,14 @@ class TaskStatusBarWidgetFactory : StatusBarWidgetFactory {
         }
 
         override fun getShortcutText(): String {
-            return "Task"
+            return "Tasks"
+        }
+
+        override fun getSelectedValue(): @NlsContexts.StatusBarText String {
+            val localTasks = taskManager.localTasks
+            val total = localTasks.size
+            val active = localTasks.count { it.isActive }
+            return "Tasks:${active}/${total}"
         }
 
         override fun getIcon(): Icon {

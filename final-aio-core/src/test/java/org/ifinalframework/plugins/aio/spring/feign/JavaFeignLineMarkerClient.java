@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @author iimik
  * @since 0.0.5
  **/
-@FeignClient(name = "nana", path = "/api/feign")
+@FeignClient(name = "nana", path = "/api/feign/java")
 public interface JavaFeignLineMarkerClient {
-    @GetMapping("/get")
+    @GetMapping("/index")
     String get();
 }

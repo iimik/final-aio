@@ -1,7 +1,8 @@
 package org.ifinalframework.plugins.aio.api.yapi;
 
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.intellij.notification.NotificationDisplayType
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.service
@@ -34,7 +35,8 @@ class DefaultYapiService(val project: com.intellij.openapi.project.Project) : Ya
     private val apiCache: ConcurrentMap<Module, Map<String, Api>> = ConcurrentHashMap<Module, Map<String, Api>>()
 
     init {
-        val objectMapper = jacksonObjectMapper()
+        val objectMapper = ObjectMapper()
+        objectMapper.registerModule(KotlinModule.Builder().build())
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.github.com/")
